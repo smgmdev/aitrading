@@ -56,6 +56,11 @@ export const systemConfig = pgTable("system_config", {
   id: serial("id").primaryKey(),
   maxPortfolioAllocation: integer("max_portfolio_allocation").notNull().default(95),
   maxOpenPositions: integer("max_open_positions").notNull().default(5),
+  connectedExchange: varchar("connected_exchange", { length: 20 }),
+  binanceApiKey: text("binance_api_key"),
+  binanceApiSecret: text("binance_api_secret"),
+  bybitApiKey: text("bybit_api_key"),
+  bybitApiSecret: text("bybit_api_secret"),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 

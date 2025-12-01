@@ -23,6 +23,9 @@ export interface IStorage {
   // System Config
   getSystemConfig(): Promise<SystemConfig | undefined>;
   updateSystemConfig(config: Partial<InsertSystemConfig>): Promise<SystemConfig>;
+  connectExchange(exchange: string, apiKey: string, apiSecret: string): Promise<SystemConfig>;
+  disconnectExchange(): Promise<SystemConfig>;
+  getConnectedExchange(): Promise<string | null>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -112,6 +115,51 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     return updated;
+  }
+
+  async connectExchange(exchange: string, apiKey: string, apiSecret: string): Promise<SystemConfig> {
+    const config = await this.getSystemConfig();
+    if (!config) {
+      const [newConfig] = await db.insert(systemConfig).values({
+        connectedExchange: exchange,
+        [exchange === "BINANCE" ? "binanceApiKey" : "bybitApiKey"]: apiKey,
+        [exchange === "BINANCE" ? "binanceApiSecret" : "bybitApiSecret"]: apiSecret,
+      }).returning();
+      return newConfig;
+    }
+
+    const updates: any = {
+      connectedExchange: exchange,
+      updatedAt: new Date(),
+    };
+    if (exchange === "BINANCE") {
+      updates.binanceApiKey = apiKey;
+      updates.binanceApiSecret = apiSecret;
+    } else {
+      updates.bybitApiKey = apiKey;
+      updates.bybitApiSecret = apiSecret;
+    }
+
+    const [updated] = await db.update(systemConfig).set(updates).where(eq(systemConfig.id, config.id)).returning();
+    return updated;
+  }
+
+  async disconnectExchange(): Promise<SystemConfig> {
+    const config = await this.getSystemConfig();
+    if (!config) {
+      const [newConfig] = await db.insert(systemConfig).values({
+        connectedExchange: null,
+      }).returning();
+      return newConfig;
+    }
+
+    const [updated] = await db.update(systemConfig).set({ connectedExchange: null, updatedAt: new Date() }).where(eq(systemConfig.id, config.id)).returning();
+    return updated;
+  }
+
+  async getConnectedExchange(): Promise<string | null> {
+    const config = await this.getSystemConfig();
+    return config?.connectedExchange || null;
   }
 }
 

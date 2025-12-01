@@ -4,17 +4,32 @@ import {
   History, 
   Settings, 
   Activity, 
-  Wallet,
   LogOut,
   Bell,
-  Menu,
-  Cpu,
   Network
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
+  const [connectedExchange, setConnectedExchange] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchExchange = async () => {
+      try {
+        const res = await fetch("/api/exchange/connected");
+        const data = await res.json();
+        setConnectedExchange(data.connected);
+      } catch (error) {
+        console.error("Failed to fetch connected exchange:", error);
+      }
+    };
+
+    fetchExchange();
+    const interval = setInterval(fetchExchange, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   const navItems = [
     { icon: LayoutDashboard, label: "TERMINAL", href: "/" },
@@ -77,9 +92,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
              <div className="h-4 w-px bg-border"></div>
              <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
                 <Network className="w-3 h-3" />
-                <span>BINANCE: CONNECTED</span>
-                <span className="text-border">|</span>
-                <span>BYBIT: CONNECTED</span>
+                <span>{connectedExchange ? `${connectedExchange}: CONNECTED` : 'NO EXCHANGE: DISCONNECTED'}</span>
              </div>
           </div>
           

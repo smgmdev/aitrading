@@ -86,5 +86,28 @@ export async function registerRoutes(
     res.json(config);
   });
 
+  // Exchange connection endpoints
+  app.get("/api/exchange/connected", async (req, res) => {
+    const exchange = await storage.getConnectedExchange();
+    res.json({ connected: exchange || null });
+  });
+
+  app.post("/api/exchange/connect", async (req, res) => {
+    const { exchange, apiKey, apiSecret } = req.body;
+    if (!exchange || !apiKey || !apiSecret) {
+      return res.status(400).json({ message: "exchange, apiKey, and apiSecret are required" });
+    }
+    if (!["BINANCE", "BYBIT"].includes(exchange)) {
+      return res.status(400).json({ message: "exchange must be BINANCE or BYBIT" });
+    }
+    const config = await storage.connectExchange(exchange, apiKey, apiSecret);
+    res.json(config);
+  });
+
+  app.post("/api/exchange/disconnect", async (req, res) => {
+    const config = await storage.disconnectExchange();
+    res.json(config);
+  });
+
   return httpServer;
 }
