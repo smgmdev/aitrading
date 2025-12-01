@@ -28,7 +28,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [pnl24h, setPnl24h] = useState<number>(0);
   const [winRatio, setWinRatio] = useState<string>("0%");
   const [totalTrades, setTotalTrades] = useState<number>(0);
+  const [showTradeLogsConsole, setShowTradeLogsConsole] = useState<boolean>(false);
   const [showAiBrainEngine, setShowAiBrainEngine] = useState<boolean>(false);
+  const [tradeLogs, setTradeLogs] = useState<any[]>([]);
   const [aiLogs, setAiLogs] = useState<any[]>([]);
 
   useEffect(() => {
@@ -80,6 +82,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             setWinRatio(`${ratio}%`);
             setTotalTrades(closedPositions.length);
             setEquity(10000 + pnl24hSum);
+            setTradeLogs(closedPositions);
           }
         }
 
@@ -126,6 +129,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* Top Bar with Console Toggles */}
         <div className="h-7 border-b border-border flex items-center px-4 gap-2" style={{ backgroundColor: "#f7cea0" }}>
           <button
+            onClick={() => setShowTradeLogsConsole(!showTradeLogsConsole)}
+            data-testid="button-toggle-trade-logs"
+            className={cn(
+              "px-3 py-1 text-[10px] font-mono uppercase transition-colors border",
+              showTradeLogsConsole
+                ? "bg-primary text-black border-primary"
+                : "bg-transparent text-foreground border-border hover:bg-secondary/50 hover:border-foreground"
+            )}
+          >
+            TRADE LOGS CONSOLE
+          </button>
+          <button
             onClick={() => setShowAiBrainEngine(!showAiBrainEngine)}
             data-testid="button-toggle-ai-brain"
             className={cn(
@@ -138,6 +153,30 @@ export function Layout({ children }: { children: React.ReactNode }) {
             AI BRAIN ENGINE
           </button>
         </div>
+
+        {/* Trade Logs Console */}
+        {showTradeLogsConsole && (
+          <div className="h-48 border-b border-border bg-black overflow-y-auto">
+            <div className="p-3 text-[9px] font-mono">
+              <div className="text-muted-foreground mb-2 uppercase font-bold">Trade Logs:</div>
+              <div className="space-y-1">
+                {tradeLogs.length === 0 ? (
+                  <div className="text-muted-foreground">No trades yet</div>
+                ) : (
+                  tradeLogs.slice(0, 30).map((log: any, idx: number) => {
+                    const timestamp = log.exitTime ? new Date(log.exitTime).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
+                    const pnlNumber = parseFloat(log.pnl || 0);
+                    return (
+                      <div key={idx} className="text-foreground text-[8px]">
+                        <span className="text-muted-foreground">[{timestamp}]</span> <span className="text-cyan-400">{log.pair}</span> {log.side === "LONG" ? "🔵" : "🔴"} ${parseFloat(log.exitPrice || log.entryPrice).toFixed(2)} <span className={pnlNumber >= 0 ? "text-success" : "text-destructive"}>{pnlNumber >= 0 ? "✓" : "✗"} {pnlNumber >= 0 ? "+" : ""}{pnlNumber.toFixed(2)}</span>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* AI Brain Engine Console */}
         {showAiBrainEngine && (
