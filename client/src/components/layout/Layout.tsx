@@ -61,21 +61,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans text-sm flex-col">
       {/* Header */}
       <header className="h-12 border-b border-border flex items-center justify-between px-4 bg-background">
-        <div className="flex items-center gap-4">
-           <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
-              <span>{connectedExchange ? `${connectedExchange}: CONNECTED` : 'NO EXCHANGE: DISCONNECTED'}</span>
+        <div className="flex items-center gap-3">
+           <div className="flex items-center gap-1 text-[11px] text-muted-foreground font-mono">
+              <span>{connectedExchange ? `${connectedExchange}: CONNECTED` : 'NO EXCHANGE'}</span>
            </div>
-           <div className="h-4 w-px bg-border"></div>
-           <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
+           <div className="h-3 w-px bg-border"></div>
+           <div className="flex items-center gap-1 text-[11px] text-muted-foreground font-mono">
               <span>LATENCY: {latency}ms</span>
+           </div>
+           <div className="h-3 w-px bg-border"></div>
+           <div className="flex items-center gap-1 text-[11px] font-mono">
+              <span className={cn("w-2 h-2 rounded-full", statusColor)}></span>
+              <span className="text-muted-foreground">{statusLabel}</span>
            </div>
         </div>
         
         <div className="flex items-center gap-3">
-           <div className={cn("flex items-center gap-2 px-3 py-1 bg-secondary border border-border text-xs font-mono")}>
-              <span className={cn("w-2 h-2 rounded-full", statusColor)}></span>
-              {statusLabel}
-           </div>
            <button className="p-2 hover:bg-secondary border border-transparent hover:border-border transition-colors">
               <Bell className="w-4 h-4 text-muted-foreground" />
            </button>
