@@ -7,25 +7,10 @@ import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 export default function Dashboard() {
   return (
     <Layout>
-      <div className="space-y-6 max-w-[1600px] mx-auto">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">Command Center</h1>
-            <p className="text-muted-foreground">Autonomous trading overview</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium border border-primary/20">
-              AI Mode: Aggressive
-            </div>
-            <div className="px-3 py-1 bg-success/10 text-success rounded-full text-xs font-medium border border-success/20">
-              Risk Level: Medium
-            </div>
-          </div>
-        </div>
-
+      <div className="space-y-6 max-w-[1600px] mx-auto pb-6">
         <AIStatus />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[500px]">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:h-[420px]">
           <div className="lg:col-span-2 h-full">
             <MarketChart />
           </div>
@@ -34,7 +19,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="h-[400px]">
+        <div className="h-auto lg:h-[350px]">
           <ActiveTrades />
         </div>
       </div>

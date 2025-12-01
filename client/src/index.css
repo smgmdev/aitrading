@@ -8,6 +8,8 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
   
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
@@ -40,12 +42,6 @@
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
   
-  --color-chart-1: hsl(var(--chart-1));
-  --color-chart-2: hsl(var(--chart-2));
-  --color-chart-3: hsl(var(--chart-3));
-  --color-chart-4: hsl(var(--chart-4));
-  --color-chart-5: hsl(var(--chart-5));
-  
   --color-sidebar: hsl(var(--sidebar));
   --color-sidebar-foreground: hsl(var(--sidebar-foreground));
   --color-sidebar-primary: hsl(var(--sidebar-primary));
@@ -56,48 +52,49 @@
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 }
 
-/* LIGHT MODE - Clean, White, Minimalist */
+/* iOS Modern / Thin Design System */
 :root {
-  --background: 0 0% 100%; /* Pure White */
-  --foreground: 222 47% 11%; /* Dark Navy for text */
-
+  /* iOS System Gray 6 (Background) */
+  --background: 240 5% 96%; 
+  
+  /* iOS Label Colors */
+  --foreground: 0 0% 0%;
+  
   --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
+  --card-foreground: 0 0% 0%;
   
   --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
+  --popover-foreground: 0 0% 0%;
 
-  --primary: 221 83% 53%; /* Bright Trust Blue */
-  --primary-foreground: 210 40% 98%;
+  /* iOS Blue */
+  --primary: 211 100% 50%; 
+  --primary-foreground: 0 0% 100%;
   
-  --secondary: 210 40% 96.1%; /* Very Light Gray */
-  --secondary-foreground: 222 47% 11.2%;
+  /* iOS Fill Colors */
+  --secondary: 240 5% 96%;
+  --secondary-foreground: 240 5.9% 10%;
   
-  --muted: 210 40% 96.1%;
-  --muted-foreground: 215 16% 47%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
   
-  --accent: 210 40% 96.1%;
-  --accent-foreground: 222 47% 11.2%;
+  --accent: 240 4.8% 95.9%;
+  --accent-foreground: 240 5.9% 10%;
   
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 210 40% 98%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
 
   --success: 142 76% 36%;
-  --success-foreground: 355 100% 97%;
+  --success-foreground: 0 0% 100%;
 
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 221 83% 53%;
+  /* Very subtle separators */
+  --border: 240 5.9% 90%; 
+  --input: 240 5.9% 90%;
+  --ring: 211 100% 50%;
 
-  --radius: 0.3rem;
-
-  --chart-1: 221 83% 53%;
-  --chart-2: 142 76% 36%;
-  --chart-3: 0 84% 60%;
-  --chart-4: 262 83% 58%;
-  --chart-5: 316 70% 50%;
+  --radius: 1rem; /* 16px default for smooth corners */
   
-  --sidebar: 0 0% 99%; /* Off-white sidebar */
+  /* Sidebar transparent/glass */
+  --sidebar: 0 0% 100%;
   --sidebar-foreground: 240 5.3% 26.1%;
   --sidebar-primary: 240 5.9% 10%;
   --sidebar-primary-foreground: 0 0% 98%;
@@ -106,15 +103,8 @@
   --sidebar-border: 220 13% 91%;
   --sidebar-ring: 217.2 91.2% 59.8%;
   
-  --font-sans: 'Inter', sans-serif;
-  --font-mono: 'Space Mono', monospace;
-}
-
-/* Dark mode overrides if needed later, but prioritizing white as requested */
-.dark {
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
-  /* ... other dark mode vars ... */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+  --font-mono: 'SF Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
 }
 
 @layer base {
@@ -122,32 +112,45 @@
     @apply border-border;
   }
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased bg-background text-foreground selection:bg-primary/20 selection:text-primary;
   }
 }
 
-/* Custom Utilities for the Finance Look */
 @layer utilities {
-  .text-mono {
-    font-family: var(--font-mono);
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
   }
   
-  .glass-panel {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid hsl(var(--border));
+  .glass-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.6);
   }
 
-  .animate-pulse-subtle {
-    animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  .ios-shadow {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.04);
   }
   
-  @keyframes pulse-subtle {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.8;
-    }
+  .thin-scroll::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .thin-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .thin-scroll::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 100px;
+  }
+  
+  .thin-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.2);
   }
 }
