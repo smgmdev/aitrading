@@ -121,54 +121,53 @@ export function ChartsWithTabs() {
       </div>
 
       {/* Chart Header */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-4 py-2 border-b border-border bg-secondary/10 gap-4">
-        <div className="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-start">
-          <div className="flex-1 lg:flex-none">
-            {activeTab === "GLOBAL" ? (
-              <PairSearch value={globalPair} onChange={setGlobalPair} />
-            ) : (
-              <div>
-                <div className="flex items-baseline gap-2">
-                  <h3 className="font-bold text-lg text-foreground">{chartData?.pair}</h3>
-                  <span className="text-xs font-mono text-muted-foreground">PERP</span>
-                </div>
+      <div className="flex items-center gap-4 px-4 py-2 border-b border-border bg-secondary/10">
+        <div className="flex-1">
+          {activeTab === "GLOBAL" ? (
+            <PairSearch value={globalPair} onChange={setGlobalPair} />
+          ) : (
+            <div>
+              <div className="flex items-baseline gap-2">
+                <h3 className="font-bold text-lg text-foreground">{chartData?.pair}</h3>
+                <span className="text-xs font-mono text-muted-foreground">PERP</span>
               </div>
-            )}
-          </div>
-          <div className="hidden lg:block h-6 w-px bg-border"></div>
-          <div className="flex flex-col items-end lg:items-start">
-            <span className="text-[10px] text-muted-foreground uppercase font-medium">Current</span>
-            <span className="text-sm font-mono font-bold text-foreground">${chartData?.currentPrice.toFixed(2)}</span>
-          </div>
-          {activeTab !== "GLOBAL" && (
-            <div className="flex flex-col items-end lg:items-start">
-              <div className="flex items-center gap-1">
-                <BrainCircuit className="w-3 h-3 text-primary" />
-                <span className="text-[10px] text-primary uppercase font-bold">MODE: ADAPTIVE</span>
-              </div>
-              <span className="text-[10px] text-muted-foreground font-mono">HFT + SWING HYBRID</span>
             </div>
           )}
         </div>
-
-        <div className="w-full lg:w-auto overflow-x-auto">
-          <div className="flex border border-border bg-background min-w-max h-8">
-            {TIMEFRAMES.map((tf) => (
-              <button
-                key={tf}
-                onClick={() => setActiveTimeframe(tf)}
-                data-testid={`timeframe-${tf}`}
-                className={cn(
-                  "text-[10px] font-bold px-3 transition-colors border-r border-border last:border-r-0 min-w-[40px] flex-1 lg:flex-none flex items-center justify-center",
-                  activeTimeframe === tf
-                    ? "bg-primary text-primary-foreground"
-                    : "hover:bg-secondary text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {tf}
-              </button>
-            ))}
+        <div className="hidden lg:block h-6 w-px bg-border"></div>
+        <div className="flex flex-col items-end lg:items-start">
+          <span className="text-[10px] text-muted-foreground uppercase font-medium">Current</span>
+          <span className="text-sm font-mono font-bold text-foreground">${chartData?.currentPrice.toFixed(2)}</span>
+        </div>
+        {activeTab !== "GLOBAL" && (
+          <div className="flex flex-col items-end lg:items-start">
+            <div className="flex items-center gap-1">
+              <BrainCircuit className="w-3 h-3 text-primary" />
+              <span className="text-[10px] text-primary uppercase font-bold">MODE: ADAPTIVE</span>
+            </div>
+            <span className="text-[10px] text-muted-foreground font-mono">HFT + SWING HYBRID</span>
           </div>
+        )}
+      </div>
+
+      {/* Timeframes Bar */}
+      <div className="border-b border-border bg-background px-4 py-2">
+        <div className="flex border border-border bg-background min-w-max h-8 w-fit">
+          {TIMEFRAMES.map((tf) => (
+            <button
+              key={tf}
+              onClick={() => setActiveTimeframe(tf)}
+              data-testid={`timeframe-${tf}`}
+              className={cn(
+                "text-[10px] font-bold px-3 transition-colors border-r border-border last:border-r-0 min-w-[40px] flex-1 lg:flex-none flex items-center justify-center",
+                activeTimeframe === tf
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {tf}
+            </button>
+          ))}
         </div>
       </div>
 
