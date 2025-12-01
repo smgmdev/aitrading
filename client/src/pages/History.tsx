@@ -173,7 +173,6 @@ export default function HistoryPage() {
                       <th className="px-3 py-2">%</th>
                     </>
                   )}
-                  <th className="px-3 py-2">ACTION</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/30">
@@ -252,25 +251,6 @@ export default function HistoryPage() {
                           </td>
                         </>
                       )}
-                      <td className="px-3 py-2 flex gap-1">
-                        {activeTab === "open" && (
-                          <button
-                            onClick={() => closePosition(trade)}
-                            disabled={closingId === trade.id}
-                            className="text-destructive hover:text-destructive border-destructive bg-destructive/10 hover:bg-destructive/20 text-[9px] font-bold uppercase border px-1.5 py-0.5 transition-colors disabled:opacity-50"
-                            data-testid={`button-close-${trade.id}`}
-                          >
-                            {closingId === trade.id ? "..." : "CLOSE"}
-                          </button>
-                        )}
-                        <button
-                          onClick={() => setExpandedId(isExpanded ? null : trade.id)}
-                          className="text-primary hover:text-primary-foreground text-[9px] font-bold uppercase border border-primary px-1.5 py-0.5 hover:bg-primary/20 transition-colors"
-                          data-testid={`button-details-${trade.id}`}
-                        >
-                          {isExpanded ? "HIDE" : "INFO"}
-                        </button>
-                      </td>
                     </tr>
                   );
                 })}
