@@ -192,6 +192,36 @@ export default function Strategies() {
             </div>
           </div>
 
+          {/* Capital Allocation Config */}
+          <div className="bg-background border border-border p-0 shadow-sm">
+            <div className="p-4 border-b border-border bg-secondary/10">
+               <h3 className="font-bold text-sm uppercase tracking-wider">Capital Allocation</h3>
+            </div>
+            <div className="p-6">
+               <div className="flex items-center gap-4 max-w-md">
+                  <div className="flex-1">
+                    <Label className="font-bold text-xs uppercase mb-2 block">Max Portfolio Allocation (%)</Label>
+                    <Input 
+                      type="number" 
+                      defaultValue="95"
+                      className="font-mono text-lg"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Label className="font-bold text-xs uppercase mb-2 block">Max Open Positions</Label>
+                    <Input 
+                      type="number" 
+                      defaultValue="5"
+                      className="font-mono text-lg"
+                    />
+                  </div>
+               </div>
+               <p className="text-[10px] text-muted-foreground mt-3">
+                 * AI automatically balances risk across multiple assets.
+               </p>
+            </div>
+          </div>
+
           {/* Exchange Config */}
           <div className="bg-background border border-border p-0 shadow-sm">
             <div className="p-4 border-b border-border bg-secondary/10">
