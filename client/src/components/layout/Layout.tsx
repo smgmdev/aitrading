@@ -62,17 +62,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
       {/* Header */}
       <header className="h-12 border-b border-border flex items-center justify-between px-4 bg-background">
         <div className="flex items-center gap-3">
+           <div className="flex items-center gap-1 text-[11px] font-mono">
+              <span className={cn("w-2 h-2 rounded-full", statusColor)}></span>
+              <span className="text-muted-foreground">{statusLabel}</span>
+           </div>
+           <div className="h-3 w-px bg-border"></div>
            <div className="flex items-center gap-1 text-[11px] text-muted-foreground font-mono">
               <span>{connectedExchange ? `${connectedExchange}: CONNECTED` : 'NO EXCHANGE'}</span>
            </div>
            <div className="h-3 w-px bg-border"></div>
            <div className="flex items-center gap-1 text-[11px] text-muted-foreground font-mono">
               <span>LATENCY: {latency}ms</span>
-           </div>
-           <div className="h-3 w-px bg-border"></div>
-           <div className="flex items-center gap-1 text-[11px] font-mono">
-              <span className={cn("w-2 h-2 rounded-full", statusColor)}></span>
-              <span className="text-muted-foreground">{statusLabel}</span>
            </div>
         </div>
         
