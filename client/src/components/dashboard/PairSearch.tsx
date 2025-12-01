@@ -62,7 +62,7 @@ export function PairSearch({ value, onChange }: PairSearchProps) {
   const displayValue = search || value;
 
   return (
-    <div className="relative w-full lg:w-64" ref={containerRef}>
+    <div className="relative w-40" ref={containerRef}>
       <div className="relative flex items-center">
         <Search className="absolute left-3 w-3 h-3 text-muted-foreground pointer-events-none" />
         <input
