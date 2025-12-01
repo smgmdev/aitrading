@@ -6,8 +6,7 @@
     "api/index.ts": {
       "runtime": "nodejs20.x",
       "memory": 3008,
-      "maxDuration": 60,
-      "regions": ["sfo1"]
+      "maxDuration": 60
     }
   },
   "rewrites": [
