@@ -57,21 +57,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const statusColor = connectionStatus === "live" ? "bg-success" : connectionStatus === "testnet" ? "bg-warning" : "bg-destructive";
   const statusLabel = connectionStatus === "live" ? "LIVE" : connectionStatus === "testnet" ? "TESTNET" : "NOT CONNECTED";
 
+  const exchangeLabel = connectedExchange === "BINANCE" ? "Binance connected" : connectedExchange === "BYBIT" ? "Bybit connected" : "Exchange not connected";
+
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans text-sm flex-col">
       {/* Header */}
-      <header className="h-12 border-b border-border flex items-center justify-between px-4 bg-background">
+      <header className="h-9 border-b border-border flex items-center justify-between px-4 bg-black py-1">
         <div className="flex items-center gap-3">
-           <div className="flex items-center gap-1 text-[11px] font-mono">
+           <div className="flex items-center gap-1 text-[10px] font-mono text-white">
               <span className={cn("w-2 h-2 rounded-full", statusColor)}></span>
-              <span className="text-muted-foreground">{statusLabel}</span>
+              <span>{statusLabel}</span>
            </div>
            <div className="h-3 w-px bg-border"></div>
-           <div className="flex items-center gap-1 text-[11px] text-muted-foreground font-mono">
-              <span>{connectedExchange ? `${connectedExchange}: CONNECTED` : 'NO EXCHANGE'}</span>
+           <div className="flex items-center gap-1 text-[10px] font-mono text-white">
+              <span>{exchangeLabel}</span>
            </div>
            <div className="h-3 w-px bg-border"></div>
-           <div className="flex items-center gap-1 text-[11px] text-muted-foreground font-mono">
+           <div className="flex items-center gap-1 text-[10px] font-mono text-white">
               <span>LATENCY: {latency}ms</span>
            </div>
         </div>
