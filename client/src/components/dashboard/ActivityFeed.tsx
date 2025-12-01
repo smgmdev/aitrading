@@ -75,6 +75,43 @@ export function ActivityFeed() {
     }
   };
 
+  const formatTradeLog = (logType: string, message: string): string => {
+    const firstLine = message.split('\n')[0];
+    
+    if (logType === "ENTRY") {
+      // Parse format: [MODE] SIDE PAIR @ $PRICE
+      // Example: [HFT SCALPER] LONG BTCUSDT @ $45000 | 20x Leverage...
+      const match = firstLine.match(/\[.*?\]\s+(\w+)\s+(\w+)\s+@\s+\$([0-9.]+)/);
+      if (match) {
+        const side = match[1].toLowerCase();
+        const pair = match[2];
+        const price = match[3];
+        return `AI opened ${side} on ${pair} pair at $${price}`;
+      }
+      return firstLine;
+    } else if (logType === "EXIT") {
+      // Check if manually closed
+      if (firstLine.includes("closed by user") || firstLine.toLowerCase().includes("manual")) {
+        const match = firstLine.match(/(\w+)\s+(\w+)\s+CLOSED/);
+        if (match) {
+          const side = match[1].toLowerCase();
+          return `Manually closed ${side}`;
+        }
+        return "Manually closed position";
+      }
+      // Parse format: SIDE PAIR CLOSED | Exit: $PRICE
+      const match = firstLine.match(/(\w+)\s+(\w+)\s+CLOSED/);
+      if (match) {
+        const side = match[1].toLowerCase();
+        const pair = match[2];
+        return `AI closed ${side} on ${pair} pair`;
+      }
+      return firstLine;
+    }
+    
+    return firstLine;
+  };
+
   return (
     <div className="bg-background border border-border h-full flex flex-col font-mono text-xs">
       <div className="flex items-center justify-between px-3 py-2 border-b border-border bg-secondary/10">
@@ -105,8 +142,7 @@ export function ActivityFeed() {
             const shouldFlash = isExit && log.pnl !== undefined && flashingIds.has(log.id);
             const isProfit = log.pnl && log.pnl > 0;
 
-            // Extract only the first line of the message (trade info without reasoning)
-            const firstLine = log.message.split('\n')[0];
+            const formattedMessage = formatTradeLog(log.logType, log.message);
 
             return (
               <div
@@ -124,14 +160,8 @@ export function ActivityFeed() {
                   });
                 }}
               >
-                <div className="flex gap-2 mb-1">
-                  <div className="text-gray-500 select-none text-[10px]">{time}</div>
-                  <div className={cn("font-bold text-white text-[10px]", getLogTypeColor(log.logType))}>
-                    {log.logType}
-                  </div>
-                </div>
-                <div className="text-gray-300 text-[10px] leading-relaxed pl-2 bg-black/50 p-1.5 rounded border border-white/10">
-                  {firstLine}
+                <div className="text-gray-300 text-[10px] leading-relaxed pl-0">
+                  <span className="text-gray-500">[{time}]</span> {formattedMessage}
                 </div>
               </div>
             );
