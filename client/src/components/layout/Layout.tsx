@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
@@ -83,12 +84,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
         })}
       </nav>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col overflow-hidden bg-background">
-        <div className="flex-1 overflow-y-auto bg-secondary/10 p-4">
+      {/* Main Content Area with Right Sidebar */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto bg-secondary/10 p-4">
           {children}
-        </div>
-      </main>
+        </main>
+
+        {/* Right Sidebar - AI Decision Stream */}
+        <aside className="w-80 border-l border-border bg-sidebar flex flex-col overflow-hidden">
+          <ActivityFeed />
+        </aside>
+      </div>
     </div>
   );
 }

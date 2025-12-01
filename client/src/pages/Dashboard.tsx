@@ -2,12 +2,11 @@ import { Layout } from "@/components/layout/Layout";
 import { AIStatus } from "@/components/dashboard/AIStatus";
 import { ActiveTrades } from "@/components/dashboard/ActiveTrades";
 import { MarketChart } from "@/components/dashboard/MarketChart";
-import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 
 export default function Dashboard() {
   return (
     <Layout>
-      <div className="flex flex-col h-full min-h-[calc(100vh-6rem)] gap-4 pb-4">
+      <div className="flex flex-col h-full min-h-[calc(100vh-11rem)] gap-4 pb-4">
         {/* Top Stats Row */}
         <div className="shrink-0">
            <AIStatus />
@@ -18,14 +17,9 @@ export default function Dashboard() {
            <MarketChart />
         </div>
 
-        {/* Bottom Section - Split Logs and Trades */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-5 gap-4 min-h-[250px]">
-           <div className="lg:col-span-2 h-full">
-              <ActivityFeed />
-           </div>
-           <div className="lg:col-span-3 h-full">
-              <ActiveTrades />
-           </div>
+        {/* Active Trades Section */}
+        <div className="flex-1 min-h-[250px]">
+           <ActiveTrades />
         </div>
       </div>
     </Layout>
