@@ -464,7 +464,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     ? "bg-secondary border-primary text-foreground" 
                     : "border-transparent text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
                 )}>
-                  <Icon className="w-3 h-3" />
+                  <Icon className={cn("w-3 h-3", item.label === "EXCHANGE CONFIG" && (connectedExchange ? "text-green-500" : "text-red-500"))} />
                   <span>{item.label}</span>
                 </div>
               </Link>
