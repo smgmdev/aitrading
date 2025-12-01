@@ -28,6 +28,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [pnl24h, setPnl24h] = useState<number>(0);
   const [winRatio, setWinRatio] = useState<string>("0%");
   const [totalTrades, setTotalTrades] = useState<number>(0);
+  const [showTradeLogsConsole, setShowTradeLogsConsole] = useState<boolean>(false);
+  const [tradeLogs, setTradeLogs] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,6 +80,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             setWinRatio(`${ratio}%`);
             setTotalTrades(closedPositions.length);
             setEquity(10000 + pnl24hSum);
+            setTradeLogs(closedPositions);
           }
         }
       } catch (error) {
@@ -112,6 +115,42 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <TooltipProvider>
       <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans text-sm flex-col">
+        {/* Top Bar with Trade Logs Console Toggle */}
+        <div className="h-7 border-b border-border bg-secondary flex items-center px-4">
+          <button
+            onClick={() => setShowTradeLogsConsole(!showTradeLogsConsole)}
+            data-testid="button-toggle-trade-logs"
+            className={cn(
+              "px-3 py-1 text-[10px] font-mono uppercase transition-colors border",
+              showTradeLogsConsole
+                ? "bg-primary text-black border-primary"
+                : "bg-transparent text-foreground border-border hover:bg-secondary/50 hover:border-foreground"
+            )}
+          >
+            TRADE LOGS CONSOLE
+          </button>
+        </div>
+
+        {/* Trade Logs Console */}
+        {showTradeLogsConsole && (
+          <div className="h-48 border-b border-border bg-background overflow-y-auto">
+            <div className="p-3 text-[10px] font-mono">
+              <div className="text-muted-foreground mb-2">Recent Trade Logs:</div>
+              <div className="space-y-1">
+                {tradeLogs.length === 0 ? (
+                  <div className="text-muted-foreground">No trades yet</div>
+                ) : (
+                  tradeLogs.slice(0, 20).map((log: any, idx: number) => (
+                    <div key={idx} className="text-foreground">
+                      <span className="text-success">[{log.pair}]</span> {log.side} @ ${parseFloat(log.exitPrice || log.entryPrice).toFixed(2)} | PnL: <span className={log.pnl >= 0 ? "text-success" : "text-destructive"}>{log.pnl >= 0 ? "+" : ""}{parseFloat(log.pnl).toFixed(2)}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <header className="h-8 border-b border-border flex items-center justify-between px-4 bg-black overflow-x-auto">
           <div className="flex items-center gap-3 whitespace-nowrap">
