@@ -237,36 +237,6 @@ export default function Strategies() {
               </div>
             </div>
 
-            {/* Test Mode Toggle */}
-            <div className="bg-background border border-border p-0 shadow-sm">
-              <div className="p-4 border-b border-border bg-cyan-500/5 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-cyan-500" />
-                <h3 className="font-bold text-sm uppercase tracking-wider text-cyan-500">Trading Mode</h3>
-              </div>
-              <div className="p-6">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <Label className="font-bold text-xs uppercase">Test Mode {testMode ? '(ACTIVE)' : '(REAL)'}</Label>
-                    <p className="text-[10px] text-muted-foreground">
-                      {testMode 
-                        ? 'Simulated prices and positions. No real trades.'
-                        : 'Using REAL exchange prices. Live trading active.'}
-                    </p>
-                  </div>
-                  <Button
-                    onClick={handleToggleTestMode}
-                    className={`h-9 px-6 font-mono text-xs font-bold transition-all ${
-                      testMode 
-                        ? 'bg-primary/20 text-primary border border-primary hover:bg-primary/30 hover:shadow-lg hover:scale-105' 
-                        : 'bg-destructive/20 text-destructive border border-destructive hover:bg-destructive/30 hover:shadow-lg hover:scale-105'
-                    }`}
-                  >
-                    {testMode ? "Enable Live Trading" : "Switch to Test Mode"}
-                  </Button>
-                </div>
-              </div>
-            </div>
-
             {/* Permission Settings Config */}
             <div className="bg-background border border-border p-0 shadow-sm">
               <div className="p-4 border-b border-border bg-secondary/10 flex items-center justify-between">
@@ -337,11 +307,7 @@ export default function Strategies() {
               </div>
               <Button
                 onClick={handleToggleTestMode}
-                className={`h-9 px-6 font-mono text-xs font-bold transition-all ${
-                  testMode 
-                    ? 'bg-primary/20 text-primary border border-primary hover:bg-primary/30 hover:shadow-lg hover:scale-105' 
-                    : 'bg-destructive/20 text-destructive border border-destructive hover:bg-destructive/30 hover:shadow-lg hover:scale-105'
-                }`}
+                className="h-9 px-6 font-mono text-xs font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black"
                 data-testid="button-toggle-test-mode"
               >
                 {testMode ? "Enable Live Trading" : "Switch to Test Mode"}
