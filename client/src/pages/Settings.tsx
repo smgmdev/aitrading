@@ -292,13 +292,12 @@ export default function Strategies() {
         {/* Test Mode Toggle */}
         <div className="bg-background border border-border p-0 shadow-sm">
           <div className="p-4 border-b border-border bg-cyan-500/5 flex items-center gap-2">
-            <Zap className="w-4 h-4 text-cyan-500" />
             <h3 className="font-bold text-sm uppercase tracking-wider text-cyan-500">Trading Mode</h3>
           </div>
           <div className="p-6">
             <div className="space-y-4">
               <div className="space-y-1">
-                <Label className="font-bold text-xs uppercase">Test Mode {testMode ? '(ACTIVE)' : '(REAL)'}</Label>
+                <Label className="font-bold text-xs uppercase">Exchange Price {testMode ? '(Simulated)' : '(Real Data)'}</Label>
                 <p className="text-[10px] text-muted-foreground">
                   {testMode 
                     ? 'Simulated prices and positions. No real trades.'
