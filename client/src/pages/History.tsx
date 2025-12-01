@@ -26,11 +26,13 @@ export default function HistoryPage() {
   useEffect(() => {
     const fetchTrades = async () => {
       try {
-        const res = await fetch("/api/positions/closed?limit=50");
+        const res = await fetch("/api/positions/closed?limit=100");
+        if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
-        setTrades(data);
+        setTrades(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Failed to fetch closed positions:", error);
+        setTrades([]);
       }
     };
 

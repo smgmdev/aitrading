@@ -18,6 +18,12 @@ export async function registerRoutes(
     res.json(positions);
   });
 
+  app.get("/api/positions/closed", async (req, res) => {
+    const limit = parseInt(req.query.limit as string) || 50;
+    const positions = await storage.getClosedPositions(limit);
+    res.json(positions);
+  });
+
   app.get("/api/positions/:id", async (req, res) => {
     const position = await storage.getPositionById(parseInt(req.params.id));
     if (!position) {

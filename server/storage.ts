@@ -10,6 +10,7 @@ import { eq, desc, and } from "drizzle-orm";
 export interface IStorage {
   // Positions
   getOpenPositions(): Promise<Position[]>;
+  getClosedPositions(limit?: number): Promise<Position[]>;
   getAllPositions(): Promise<Position[]>;
   getPositionById(id: number): Promise<Position | undefined>;
   createPosition(position: InsertPosition): Promise<Position>;
@@ -32,6 +33,10 @@ export class DatabaseStorage implements IStorage {
   // Positions
   async getOpenPositions(): Promise<Position[]> {
     return await db.select().from(positions).where(eq(positions.status, "OPEN")).orderBy(desc(positions.entryTime));
+  }
+
+  async getClosedPositions(limit: number = 50): Promise<Position[]> {
+    return await db.select().from(positions).where(eq(positions.status, "CLOSED")).orderBy(desc(positions.exitTime)).limit(limit);
   }
 
   async getAllPositions(): Promise<Position[]> {
