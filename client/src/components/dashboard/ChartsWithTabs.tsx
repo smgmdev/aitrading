@@ -140,13 +140,15 @@ export function ChartsWithTabs() {
             <span className="text-[10px] text-muted-foreground uppercase font-medium">Current</span>
             <span className="text-sm font-mono font-bold text-foreground">${chartData?.currentPrice.toFixed(2)}</span>
           </div>
-          <div className="flex flex-col items-end lg:items-start">
-            <div className="flex items-center gap-1">
-              <BrainCircuit className="w-3 h-3 text-primary" />
-              <span className="text-[10px] text-primary uppercase font-bold">MODE: ADAPTIVE</span>
+          {activeTab !== "GLOBAL" && (
+            <div className="flex flex-col items-end lg:items-start">
+              <div className="flex items-center gap-1">
+                <BrainCircuit className="w-3 h-3 text-primary" />
+                <span className="text-[10px] text-primary uppercase font-bold">MODE: ADAPTIVE</span>
+              </div>
+              <span className="text-[10px] text-muted-foreground font-mono">HFT + SWING HYBRID</span>
             </div>
-            <span className="text-[10px] text-muted-foreground font-mono">HFT + SWING HYBRID</span>
-          </div>
+          )}
         </div>
 
         <div className="w-full lg:w-auto overflow-x-auto">
@@ -172,16 +174,18 @@ export function ChartsWithTabs() {
 
       {/* Chart */}
       <div className="flex-1 min-h-[300px] w-full relative group">
-        <div className="absolute top-4 left-4 z-10 flex flex-col gap-2 pointer-events-none">
-          <div className="px-2 py-1 bg-background/90 border border-border backdrop-blur text-[10px] font-mono shadow-sm flex items-center gap-2">
-            <Timer className="w-3 h-3 text-cyan-500" />
-            <span className="text-muted-foreground">AI STRATEGY:</span> <span className="text-foreground font-bold">MULTI-TIMEFRAME SCAN</span>
+        {activeTab !== "GLOBAL" && (
+          <div className="absolute top-4 left-4 z-10 flex flex-col gap-2 pointer-events-none">
+            <div className="px-2 py-1 bg-background/90 border border-border backdrop-blur text-[10px] font-mono shadow-sm flex items-center gap-2">
+              <Timer className="w-3 h-3 text-cyan-500" />
+              <span className="text-muted-foreground">AI STRATEGY:</span> <span className="text-foreground font-bold">MULTI-TIMEFRAME SCAN</span>
+            </div>
+            <div className="px-2 py-1 bg-background/90 border border-border backdrop-blur text-[10px] font-mono shadow-sm flex items-center gap-2">
+              <ShieldAlert className="w-3 h-3 text-success" />
+              <span className="text-success font-bold">PROFIT &gt; FEE CHECK: PASS</span>
+            </div>
           </div>
-          <div className="px-2 py-1 bg-background/90 border border-border backdrop-blur text-[10px] font-mono shadow-sm flex items-center gap-2">
-            <ShieldAlert className="w-3 h-3 text-success" />
-            <span className="text-success font-bold">PROFIT &gt; FEE CHECK: PASS</span>
-          </div>
-        </div>
+        )}
 
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 20, right: 60, left: 0, bottom: 0 }}>
