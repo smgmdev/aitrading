@@ -26,3 +26,7 @@ export function formatNumber(value: number | string): string {
   });
   return isNegative ? `-${formatted}` : formatted;
 }
+
+export function removeEmojis(text: string): string {
+  return text.replace(/[\uD83C-\uDBFF][\uDC00-\uDFFF]|[\uD83D][\uDE00-\uDEFF]|[\u2600-\u27BF]|[\u2300-\u23FF]|[\u2B50]|[\u00A9]|[\u00AE]/g, "").trim();
+}

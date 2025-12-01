@@ -7,7 +7,7 @@ import {
   LogOut,
   Bell
 } from "lucide-react";
-import { cn, formatPrice, formatNumber } from "@/lib/utils";
+import { cn, formatPrice, formatNumber, removeEmojis } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import {
@@ -274,7 +274,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                           {relatedLogs.slice(0, 10).map((log: any, idx: number) => (
                             <div key={idx} className="text-[10px] border-l-2 border-blue-300 pl-2 py-1">
                               <div className="font-bold text-blue-700 mb-1">[{log.logType}]</div>
-                              <pre className="whitespace-pre-wrap break-words text-[9px] text-gray-700 leading-relaxed">{log.message}</pre>
+                              <pre className="whitespace-pre-wrap break-words text-[9px] text-gray-700 leading-relaxed">{removeEmojis(log.message)}</pre>
                             </div>
                           ))}
                         </div>
