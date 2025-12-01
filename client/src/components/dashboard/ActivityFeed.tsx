@@ -105,6 +105,9 @@ export function ActivityFeed() {
             const shouldFlash = isExit && log.pnl !== undefined && flashingIds.has(log.id);
             const isProfit = log.pnl && log.pnl > 0;
 
+            // Extract only the first line of the message (trade info without reasoning)
+            const firstLine = log.message.split('\n')[0];
+
             return (
               <div
                 key={log.id}
@@ -127,8 +130,8 @@ export function ActivityFeed() {
                     {log.logType}
                   </div>
                 </div>
-                <div className="text-gray-300 text-[10px] whitespace-pre-wrap leading-relaxed pl-2 bg-black/50 p-1.5 rounded border border-white/10">
-                  {log.message}
+                <div className="text-gray-300 text-[10px] leading-relaxed pl-2 bg-black/50 p-1.5 rounded border border-white/10">
+                  {firstLine}
                 </div>
               </div>
             );
