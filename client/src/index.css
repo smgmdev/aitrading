@@ -209,4 +209,14 @@
   .blink-equity-red {
     animation: blinkEquityRed 0.8s ease-out forwards;
   }
+
+  /* Trade log row hover state */
+  .trade-log-row:hover {
+    background-color: #3662e3;
+    color: white;
+  }
+
+  .trade-log-row:hover span {
+    color: white;
+  }
 }
