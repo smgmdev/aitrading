@@ -80,7 +80,7 @@ export function ActivityFeed() {
       <div className="flex items-center justify-between px-3 py-2 border-b border-border bg-secondary/10">
         <div className="flex items-center gap-2">
           <Terminal className="w-3 h-3" />
-          <h3 className="font-bold text-foreground uppercase tracking-wider">AI Decision Stream</h3>
+          <h3 className="font-bold text-foreground uppercase tracking-wider">TRADE LOG</h3>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
