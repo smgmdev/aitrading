@@ -127,7 +127,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <TooltipProvider>
       <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans text-sm flex-col">
         {/* Top Bar with Console Toggles */}
-        <div className="h-7 border-b border-border bg-secondary flex items-center px-4 gap-2">
+        <div className="h-7 border-b border-border flex items-center px-4 gap-2" style={{ backgroundColor: "#f7cea0" }}>
           <button
             onClick={() => setShowTradeLogsConsole(!showTradeLogsConsole)}
             data-testid="button-toggle-trade-logs"
