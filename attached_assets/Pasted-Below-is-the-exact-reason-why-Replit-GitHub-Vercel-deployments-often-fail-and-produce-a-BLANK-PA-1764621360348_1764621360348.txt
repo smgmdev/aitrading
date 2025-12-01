@@ -1,0 +1,144 @@
+Below is the exact reason why Replit → GitHub → Vercel deployments often fail and produce a BLANK PAGE, and how to fix it quickly.
+
+I’ll explain clearly and give you a step-by-step fix you can do in 2–5 minutes.
+
+✅ WHY YOUR REPLIT EXPORT DOES NOT LOAD ON VERCEL
+
+Replit exports do NOT follow Vercel’s required structure.
+When you export a Replit project to GitHub:
+
+1. Replit puts everything inside a sub-folder
+
+Your real code is often inside folders like:
+
+/app
+/src
+/main.py
+/server.js
+/frontend/
+
+
+Vercel then builds the wrong folder → which results in:
+
+✔ Build "successful"
+❌ But output contains NO app code
+
+So Vercel deploys an empty site → blank screen.
+
+2. Replit includes files that break Vercel builds
+
+Replit export contains files like:
+
+.replit
+
+replit.nix
+
+package-lock.json without matching package.json
+
+Wrong "main" entry
+
+Wrong start script
+
+Missing "build" script
+
+Vercel tries to guess the framework and fails → blank site.
+
+3. Replit projects use ports / servers Vercel does NOT support
+
+Replit apps usually expect:
+
+to run on a PORT
+
+or run a Node server like server.js
+
+But Vercel serverless hosting does NOT allow arbitrary Node servers unless you configure an API route.
+
+So Vercel builds but does not serve your app.
+
+🔥 FIX — DO THIS TO MAKE aitrading-wheat.vercel.app LOAD PROPERLY
+✅ STEP 1 — Fix the PROJECT ROOT on Vercel
+
+Go to:
+
+Vercel → Project → Settings → General → Root Directory
+
+Set this to the folder where your REAL code is.
+
+For example, if your repo looks like:
+
+/
+  replit.nix
+  package.json  ❌ maybe empty
+  app/          ✔ REAL code
+
+
+Change Root directory to:
+
+app
+
+
+Then redeploy.
+
+✅ STEP 2 — Fix package.json
+
+Open your repo and check package.json.
+
+Replit export often makes:
+
+no "build" script
+
+wrong "main"
+
+wrong "start" script
+
+references to replit-run or node server.js ← breaks Vercel
+
+Replace scripts with this if frontend React/Vite:
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}
+
+
+If it is not Vite but plain React (CRA):
+
+{
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build"
+  }
+}
+
+
+If Next.js:
+
+{
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  }
+}
+
+✅ STEP 3 — If it’s a SPA (React/Vite), ADD HOMEPAGE
+
+Blank screen on Vercel is caused by wrong asset paths.
+
+Add this to package.json:
+
+"homepage": "."
+
+✅ STEP 4 — DELETE these Replit files (Vercel breaks on them)
+
+Delete from GitHub repo:
+
+.replit
+replit.nix
+poetry.lock (if Python project)
+requirements.txt (if unused)
+
+
+These confuse Vercel’s autodetection.
