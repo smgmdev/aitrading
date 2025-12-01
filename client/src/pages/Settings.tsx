@@ -13,6 +13,7 @@ interface Config {
   binanceApiSecret?: string;
   bybitApiKey?: string;
   bybitApiSecret?: string;
+  testMode?: boolean;
 }
 
 export default function Strategies() {
@@ -28,6 +29,7 @@ export default function Strategies() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>("");
   const [validating, setValidating] = useState(false);
+  const [testMode, setTestMode] = useState(true);
 
   useEffect(() => {
     fetchConfig();
@@ -38,8 +40,22 @@ export default function Strategies() {
       const res = await fetch("/api/config");
       const data = await res.json();
       setConfig(data);
+      setTestMode(data.testMode ?? true);
     } catch (error) {
       console.error("Failed to fetch config:", error);
+    }
+  };
+
+  const handleToggleTestMode = async () => {
+    try {
+      const res = await fetch("/api/test-mode/toggle", { method: "POST" });
+      if (res.ok) {
+        const data = await res.json();
+        setTestMode(data.testMode);
+        setConfig({ ...config, testMode: data.testMode });
+      }
+    } catch (error) {
+      console.error("Failed to toggle test mode:", error);
     }
   };
 
@@ -210,6 +226,33 @@ export default function Strategies() {
                         </p>
                       </div>
                    </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Test Mode Toggle */}
+            <div className="bg-background border border-border p-0 shadow-sm">
+              <div className="p-4 border-b border-border bg-cyan-500/5 flex items-center gap-2">
+                <Zap className="w-4 h-4 text-cyan-500" />
+                <h3 className="font-bold text-sm uppercase tracking-wider text-cyan-500">Trading Mode</h3>
+              </div>
+              <div className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label className="font-bold text-xs uppercase">Test Mode {testMode ? '(ACTIVE)' : '(REAL)'}</Label>
+                    <p className="text-[10px] text-muted-foreground">
+                      {testMode 
+                        ? 'Simulated prices and positions. No real trades.'
+                        : 'Using REAL exchange prices. Live trading active.'}
+                    </p>
+                  </div>
+                  <Button
+                    onClick={handleToggleTestMode}
+                    className="h-8 px-4 font-mono text-xs"
+                    variant={testMode ? "outline" : "destructive"}
+                  >
+                    {testMode ? "Enable Live Trading" : "Switch to Test Mode"}
+                  </Button>
                 </div>
               </div>
             </div>

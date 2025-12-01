@@ -1,5 +1,6 @@
 import { storage } from "./storage";
 import { randomUUID } from "crypto";
+import { createExchangeClient } from "./exchange";
 import { 
   recordPrice, 
   analyzeMomentum, 
@@ -63,7 +64,19 @@ async function generateAiDecision() {
 
     const leverage = getRandomInt(1, 20);
     const size = parseFloat(getRandomPrice(0.1, 2));
-    const entryPrice = parseFloat(getRandomPrice(100, 50000));
+    
+    // Try to get real price if connected, otherwise use simulated
+    let entryPrice = parseFloat(getRandomPrice(100, 50000));
+    try {
+      const config = await storage.getSystemConfig();
+      if (config?.connectedExchange && !config.testMode) {
+        const exchangeClient = createExchangeClient(config.connectedExchange);
+        const priceData = await exchangeClient.getPrice(pair);
+        entryPrice = priceData.price;
+      }
+    } catch (error) {
+      console.error("Failed to fetch real price:", error);
+    }
 
     const tradeId = `TRADE-${Date.now()}-${Math.random().toString(36).substring(7)}`;
 

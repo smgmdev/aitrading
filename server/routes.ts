@@ -160,8 +160,6 @@ export async function registerRoutes(
 
   // Trading pairs endpoint
   app.get("/api/trading-pairs", async (req, res) => {
-    // Return default trading pairs for now
-    // In a real implementation, this would fetch from the connected exchange API
     const defaultPairs = [
       "BTCUSDT",
       "ETHUSDT",
@@ -175,6 +173,27 @@ export async function registerRoutes(
       "MATICUSDT",
     ];
     res.json({ pairs: defaultPairs });
+  });
+
+  // Test Mode endpoints
+  app.get("/api/test-mode", async (req, res) => {
+    try {
+      const config = await storage.getSystemConfig();
+      res.json({ testMode: config?.testMode ?? true });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/test-mode/toggle", async (req, res) => {
+    try {
+      const config = await storage.getSystemConfig();
+      const newTestMode = !(config?.testMode ?? true);
+      const updated = await storage.updateSystemConfig({ testMode: newTestMode });
+      res.json({ testMode: updated.testMode });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
   });
 
   return httpServer;

@@ -61,6 +61,7 @@ export const systemConfig = pgTable("system_config", {
   binanceApiSecret: text("binance_api_secret"),
   bybitApiKey: text("bybit_api_key"),
   bybitApiSecret: text("bybit_api_secret"),
+  testMode: boolean("test_mode").notNull().default(true),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
