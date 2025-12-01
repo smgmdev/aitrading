@@ -150,7 +150,7 @@ export default function Strategies() {
             {/* Algo Config */}
             <div className="bg-background border border-border p-0 shadow-sm">
               <div className="p-4 border-b border-border bg-primary/5 flex items-center justify-between">
-                 <h3 className="font-bold text-sm uppercase tracking-wider text-primary">Algo Config</h3>
+                 <h3 className="font-bold text-sm uppercase tracking-wider text-primary">AI Engine</h3>
               </div>
               
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
