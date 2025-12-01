@@ -313,7 +313,7 @@ export default function Strategies() {
                   {testMode ? "REAL PRICES ARE OFF" : "REAL PRICES ARE ON"}
                 </span>
                 <span className="hidden group-hover:inline">
-                  {testMode ? "TURN REAL PRICES ARE ON" : "TURN REAL PRICES ARE OFF"}
+                  {testMode ? "TURN REAL PRICES ON" : "TURN REAL PRICES OFF"}
                 </span>
               </Button>
             </div>
