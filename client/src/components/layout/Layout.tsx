@@ -28,6 +28,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [previousEquity, setPreviousEquity] = useState<number>(10000);
   const [equityChange, setEquityChange] = useState<number>(0);
   const [showEquityChange, setShowEquityChange] = useState<boolean>(false);
+  const [equityBlinkColor, setEquityBlinkColor] = useState<"profit" | "loss" | null>(null);
   const [pnl24h, setPnl24h] = useState<number>(0);
   const [winRatio, setWinRatio] = useState<string>("0%");
   const [totalTrades, setTotalTrades] = useState<number>(0);
@@ -91,10 +92,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
               setEquityChange(change);
               setShowEquityChange(true);
               setEquity(newEquity);
+              setEquityBlinkColor(change >= 0 ? "profit" : "loss");
               
               // Hide the change display after 10 seconds
               const timer = setTimeout(() => {
                 setShowEquityChange(false);
+                setEquityBlinkColor(null);
               }, 10000);
               return () => clearTimeout(timer);
             }
@@ -264,7 +267,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex items-center gap-1 text-[10px] font-mono text-white uppercase cursor-help">
-                  <span className={showEquityChange ? "blink-equity" : ""}>EQUITY: {formatPrice(equity)}</span>
+                  <span className={cn(
+                    equityBlinkColor === "profit" && "blink-equity-green",
+                    equityBlinkColor === "loss" && "blink-equity-red"
+                  )}>
+                    EQUITY: {formatPrice(equity)}
+                  </span>
                   {showEquityChange && (
                     <span className={cn("font-bold ml-1", equityChange >= 0 ? "text-success" : "text-destructive")}>
                       {equityChange >= 0 ? "↑" : "↓"} {formatPrice(equityChange)}
