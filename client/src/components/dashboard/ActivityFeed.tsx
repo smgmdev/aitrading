@@ -1,5 +1,5 @@
 import { Terminal, Zap } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { useEffect, useState, useRef } from "react";
 
 type LogType = "ENTRY" | "EXIT" | "ANALYSIS" | "SCAN" | "HOLD" | "HFT";
@@ -85,8 +85,8 @@ export function ActivityFeed() {
       if (match) {
         const side = match[1].toLowerCase();
         const pair = match[2];
-        const price = match[3];
-        return `AI opened ${side} on ${pair} pair at $${price}`;
+        const price = parseFloat(match[3]);
+        return `AI opened ${side} on ${pair} pair at ${formatPrice(price)}`;
       }
       return firstLine;
     } else if (logType === "EXIT") {
@@ -104,9 +104,9 @@ export function ActivityFeed() {
       if (match) {
         const side = match[1].toLowerCase();
         const pair = match[2];
-        const pnl = match[3];
+        const pnl = parseFloat(match[3]);
         const pnlPercent = match[4];
-        return `AI closed ${side} on ${pair} pair with $${pnl} PnL (${pnlPercent})`;
+        return `AI closed ${side} on ${pair} pair with ${formatPrice(pnl)} PnL (${pnlPercent})`;
       }
       // Fallback if PnL not found
       const fallbackMatch = firstLine.match(/(\w+)\s+(\w+)\s+CLOSED/);

@@ -142,6 +142,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   const exchangeLabel = connectedExchange === "BINANCE" ? "Binance connected" : connectedExchange === "BYBIT" ? "Bybit connected" : "Exchange not connected";
 
+  // Helper to format prices in text (fix $-XXX to -$XXX and add commas)
+  const formatPricesInText = (text: string): string => {
+    // Replace $-XXX.XX with -$XXX.XX
+    let formatted = text.replace(/\$(-[\d,]+\.?\d*)/g, '-$${1}');
+    // Add commas to numbers (for prices and values)
+    formatted = formatted.replace(/\$(\d+)\.?(\d{0,2})?(?!\d)/g, (match, num, decimals) => {
+      const numWithCommas = num.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return decimals ? `$${numWithCommas}.${decimals}` : `$${numWithCommas}`;
+    });
+    // Also handle cases like "123.45" (without $) that should have commas
+    formatted = formatted.replace(/(?<!\$)(\d{4,})\.(\d{2})/g, (match, num, decimals) => {
+      const numWithCommas = num.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return `${numWithCommas}.${decimals}`;
+    });
+    return formatted;
+  };
+
   return (
     <TooltipProvider>
       <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans text-sm flex-col">
@@ -223,7 +240,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                           </span>
                         </div>
                         <pre className="whitespace-pre-wrap break-words text-[8.5px] leading-relaxed text-foreground overflow-x-hidden">
-                          {log.message}
+                          {formatPricesInText(log.message)}
                         </pre>
                       </div>
                     );
