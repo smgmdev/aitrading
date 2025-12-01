@@ -50,14 +50,14 @@ export function AIStatus() {
       <StatusTile
         label="TOTAL EQUITY"
         value="$124,592.45"
-        subValue={`${stats.totalPnl > 0 ? "+" : ""}${stats.totalPnl.toFixed(2)} DAILY PNL`}
+        subValue="BINANCE TRADING WALLET"
         icon={BrainCircuit}
         status={stats.totalPnl > 0 ? "success" : "warning"}
         testId="status-equity"
       />
 
       <StatusTile
-        label="24H PROFIT"
+        label="24H PNL"
         value={`${stats.totalPnl > 0 ? "+" : ""}$${stats.totalPnl.toFixed(2)}`}
         subValue={`${stats.tradeCount} TRADES`}
         icon={TrendingUp}
