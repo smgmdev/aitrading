@@ -47,6 +47,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [selectedTradeId, setSelectedTradeId] = useState<number | null>(null);
 
   useEffect(() => {
+    let lastConnectionState = connectedExchange;
+    
     const fetchData = async () => {
       const startTime = Date.now();
       try {
@@ -56,12 +58,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         setLatency(endTime - startTime);
         
         const data = await res.json();
-        setConnectedExchange(data.connected);
         
-        if (data.connected) {
-          setConnectionStatus("live");
-        } else {
-          setConnectionStatus("disconnected");
+        // Only update connection state if it actually changed
+        if (data.connected !== lastConnectionState) {
+          lastConnectionState = data.connected;
+          setConnectedExchange(data.connected);
+          setConnectionStatus(data.connected ? "live" : "disconnected");
         }
 
         // Fetch closed positions for PnL calculation
@@ -130,7 +132,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     fetchData();
     const interval = setInterval(fetchData, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [equity]);
 
   const navItems = [
     { icon: LayoutDashboard, label: "TERMINAL", href: "/" },
