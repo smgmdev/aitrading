@@ -61,7 +61,7 @@ Preferred communication style: Simple, everyday language.
 ### Data Storage
 
 **Database**
-- PostgreSQL via Neon serverless (WebSocket-based connection)
+- PostgreSQL via Supabase (managed serverless PostgreSQL)
 - Drizzle ORM for type-safe database operations
 - Schema-first approach with Drizzle-Zod integration for validation
 
@@ -83,9 +83,9 @@ Preferred communication style: Simple, everyday language.
 - Currently simulation mode - exchange connections configurable via settings
 
 **Database Provider**
-- Neon Serverless PostgreSQL (connection via DATABASE_URL environment variable)
-- WebSocket-based connection using @neondatabase/serverless package
-- Connection pooling for performance
+- Supabase Managed PostgreSQL (connection via DATABASE_URL environment variable)
+- Standard PostgreSQL connection with connection pooling for performance
+- Deployed via Vercel with Supabase credentials in environment
 
 **UI Component Libraries**
 - Radix UI primitives for accessible, unstyled components
@@ -101,7 +101,7 @@ Preferred communication style: Simple, everyday language.
 **Key Third-Party Services**
 - No external authentication service (ready for implementation)
 - No payment processing (ready for implementation)
-- Database provisioned through Replit's Neon integration
+- Database provisioned through Supabase
 
 **Environment Configuration**
 - DATABASE_URL (required) - PostgreSQL connection string
