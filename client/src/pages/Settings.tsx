@@ -292,7 +292,7 @@ export default function Strategies() {
         {/* Test Mode Toggle */}
         <div className="bg-background border border-border p-0 shadow-sm">
           <div className="p-4 border-b border-border bg-cyan-500/5 flex items-center gap-2">
-            <h3 className="font-bold text-sm uppercase tracking-wider text-cyan-500">Trading Mode</h3>
+            <h3 className="font-bold text-sm uppercase tracking-wider text-cyan-500">Data Mode</h3>
           </div>
           <div className="p-6">
             <div className="space-y-4">
