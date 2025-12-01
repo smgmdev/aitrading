@@ -126,6 +126,10 @@ export default function Strategies() {
         const newConfig = await res.json();
         setConfig(newConfig);
         alert("Disconnected from exchange");
+        // Force page reload to ensure all state is refreshed from backend
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       }
     } catch (error) {
       console.error("Failed to disconnect:", error);
