@@ -12,7 +12,6 @@ import {
   Network
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logo from "@assets/generated_images/minimalist_geometric_ai_trading_logo.png";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
@@ -28,15 +27,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans text-sm">
       {/* Professional Sidebar - Solid, Square, Data-heavy */}
       <aside className="w-64 border-r border-border bg-sidebar flex flex-col">
-        <div className="h-12 flex items-center px-4 border-b border-border bg-background">
-          <div className="flex items-center gap-3">
-             <div className="w-6 h-6 bg-primary flex items-center justify-center text-white font-bold">
-                <Cpu className="w-4 h-4" />
-             </div>
-             <span className="font-bold tracking-wider text-sm">AUTOTRADE<span className="text-primary">.PRO</span></span>
-          </div>
-        </div>
-
         <div className="p-2 bg-secondary/30 border-b border-border">
           <div className="flex justify-between items-center text-[10px] font-mono text-muted-foreground mb-1">
             <span>SERVER TIME</span>
