@@ -204,9 +204,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     const modeLabel = log.mode === "HFT_SCALPER" ? "HFT" : "SWING";
                     const sideLabel = log.side === "LONG" ? "LONG" : "SHORT";
                     return (
-                      <div key={idx} className="text-black text-xs flex gap-3 font-mono">
+                      <div key={idx} className="text-black text-[10px] flex gap-3 font-mono">
                         <span className="text-gray-700 min-w-max">[{timestamp}]</span>
-                        <span className="text-black font-bold min-w-max">{log.pair} {sideLabel}</span>
+                        <span className="text-black min-w-max">{log.pair} {sideLabel}</span>
                         <span className="text-gray-700 min-w-max">Entry: {formatPrice(parseFloat(log.entryPrice))}</span>
                         <span className="text-gray-600 min-w-max">{modeLabel}</span>
                         <span className="text-gray-700 min-w-max">Exit: {formatPrice(parseFloat(log.exitPrice))}</span>
