@@ -64,6 +64,7 @@ export async function registerRoutes(
       await storage.createLog({
         logType: "EXIT",
         message: `Manually closed ${position.side} position on ${position.pair} at ${exitPrice}. PnL: ${pnl.toFixed(2)} (${pnlPercent}%)`,
+        pair: position.pair,
         relatedTradeId: position.tradeId,
       });
     }
