@@ -1,7 +1,6 @@
 import { Layout } from "@/components/layout/Layout";
 import { ActiveTrades } from "@/components/dashboard/ActiveTrades";
 import { ChartsWithTabs } from "@/components/dashboard/ChartsWithTabs";
-import { TradeLogs } from "@/components/dashboard/TradeLogs";
 
 export default function Dashboard() {
   return (
@@ -15,11 +14,6 @@ export default function Dashboard() {
         {/* Active Trades Section */}
         <div className="flex-1 min-h-[250px]">
            <ActiveTrades />
-        </div>
-
-        {/* Trade Logs Console */}
-        <div className="flex-1 min-h-[200px]">
-           <TradeLogs />
         </div>
       </div>
     </Layout>
