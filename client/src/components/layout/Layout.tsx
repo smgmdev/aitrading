@@ -359,7 +359,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                           </span>
                         </div>
                         <pre className="whitespace-pre-wrap break-words text-[8.5px] leading-relaxed text-foreground overflow-x-hidden">
-                          {formatPricesInText(log.message)}
+                          {removeEmojis(formatPricesInText(log.message))}
                         </pre>
                       </div>
                     );
