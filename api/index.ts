@@ -20,7 +20,12 @@ async function getDb() {
     throw new Error("DATABASE_URL is required");
   }
 
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const pool = new Pool({ 
+    connectionString: process.env.DATABASE_URL,
+    max: 5,
+    idleTimeoutMillis: 30000,
+  });
+  
   db = { pool };
   return db;
 }
@@ -34,6 +39,7 @@ app.get("/api/logs", async (req, res) => {
     );
     res.json(result.rows);
   } catch (err: any) {
+    console.error("Logs error:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
@@ -45,6 +51,7 @@ app.get("/api/positions", async (req, res) => {
     const result = await database.pool.query("SELECT * FROM positions");
     res.json(result.rows);
   } catch (err: any) {
+    console.error("Positions error:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
@@ -53,10 +60,11 @@ app.get("/api/positions/open", async (req, res) => {
   try {
     const database = await getDb();
     const result = await database.pool.query(
-      "SELECT * FROM positions WHERE status = 'OPEN'"
+      "SELECT * FROM positions WHERE status = 'OPEN' ORDER BY entry_time DESC"
     );
     res.json(result.rows);
   } catch (err: any) {
+    console.error("Open positions error:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
@@ -71,6 +79,7 @@ app.get("/api/positions/closed", async (req, res) => {
     );
     res.json(result.rows);
   } catch (err: any) {
+    console.error("Closed positions error:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
@@ -85,27 +94,33 @@ app.get("/api/exchange/connected", async (req, res) => {
     const config = result.rows[0];
     res.json({ connected: config?.connected_exchange || "BINANCE" });
   } catch (err: any) {
+    console.error("Exchange connected error:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Health check
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok" });
+// Catch-all for 404 on API routes
+app.all("/api/*", (req, res) => {
+  res.status(404).json({ error: "Not found" });
 });
 
-// Catch-all for frontend routing
+// Serve frontend
 app.get("*", (req, res) => {
   try {
     const indexPath = path.join(__dirname, "../dist/public/index.html");
     if (fs.existsSync(indexPath)) {
       res.sendFile(indexPath);
     } else {
-      res.status(404).send("Not found");
+      res.status(404).json({ error: "Frontend not found" });
     }
-  } catch (err) {
-    res.status(500).send("Error");
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
   }
+});
+
+// Health check
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
 });
 
 export default app;
