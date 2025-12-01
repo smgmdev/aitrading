@@ -43,9 +43,10 @@ async function initialize() {
   }
 }
 
-initialize().catch(err => {
-  console.error("Failed to initialize app:", err);
-  process.exit(1);
+// Initialize on first request
+app.use(async (req, res, next) => {
+  await initialize();
+  next();
 });
 
 export default app;
