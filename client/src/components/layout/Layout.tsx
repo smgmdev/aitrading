@@ -146,7 +146,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             className={cn(
               "px-3 py-1 text-[10px] font-mono uppercase transition-colors border",
               showAiBrainEngine
-                ? "bg-cyan-500/30 text-cyan-300 border-cyan-500/50"
+                ? "bg-primary text-black border-primary"
                 : "bg-transparent text-foreground border-border hover:bg-secondary/50 hover:border-foreground"
             )}
           >
@@ -176,9 +176,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
         {/* AI Brain Engine Console */}
         {showAiBrainEngine && (
-          <div className="h-48 border-b border-border bg-black/50 overflow-y-auto">
+          <div className="h-48 border-b border-border bg-background overflow-y-auto">
             <div className="p-3 text-[10px] font-mono">
-              <div className="text-cyan-400 mb-2 animate-pulse">▸ AI BRAIN ENGINE - REAL TIME DECISION LOG</div>
+              <div className="text-muted-foreground mb-2">AI Brain Engine - Real Time Decision Log:</div>
               <div className="space-y-1">
                 {aiLogs.length === 0 ? (
                   <div className="text-muted-foreground">Waiting for AI to think...</div>
@@ -186,14 +186,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   aiLogs.slice(0, 50).reverse().map((log: any, idx: number) => {
                     const logColor = log.logType === "ENTRY" ? "text-success" : 
                                     log.logType === "EXIT" ? "text-warning" :
-                                    log.logType === "ANALYSIS" ? "text-cyan-300" :
-                                    log.logType === "DECISION" ? "text-cyan-400" :
+                                    log.logType === "ANALYSIS" ? "text-foreground" :
+                                    log.logType === "DECISION" ? "text-foreground" :
                                     "text-foreground";
                     const timestamp = log.createdAt ? new Date(log.createdAt).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
                     
                     return (
                       <div key={idx} className={cn("text-foreground", logColor)}>
-                        <span className="text-muted-foreground">[{timestamp}]</span> <span className="text-cyan-500">[{log.logType}]</span> {log.message}
+                        <span className="text-muted-foreground">[{timestamp}]</span> <span className="text-muted-foreground">[{log.logType}]</span> {log.message}
                       </div>
                     );
                   })
