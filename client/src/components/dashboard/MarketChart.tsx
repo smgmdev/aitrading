@@ -1,7 +1,7 @@
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, ReferenceLine } from "recharts";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { BrainCircuit, ShieldAlert } from "lucide-react";
+import { BrainCircuit, ShieldAlert, Timer } from "lucide-react";
 
 // Simulated market data for scalping (faster movements)
 const generateData = () => {
@@ -49,9 +49,9 @@ export function MarketChart() {
           <div className="flex flex-col items-end lg:items-start">
              <div className="flex items-center gap-1">
                 <BrainCircuit className="w-3 h-3 text-primary" />
-                <span className="text-[10px] text-primary uppercase font-bold">AI LEVERAGE: 45x</span>
+                <span className="text-[10px] text-primary uppercase font-bold">MODE: ADAPTIVE</span>
              </div>
-             <span className="text-[10px] text-muted-foreground font-mono">RISK: 0.8% (CALCULATED)</span>
+             <span className="text-[10px] text-muted-foreground font-mono">HFT + SWING HYBRID</span>
           </div>
         </div>
         
@@ -78,11 +78,12 @@ export function MarketChart() {
       <div className="flex-1 min-h-[300px] w-full relative group">
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2 pointer-events-none">
              <div className="px-2 py-1 bg-background/90 border border-border backdrop-blur text-[10px] font-mono shadow-sm flex items-center gap-2">
-                <span className="text-muted-foreground">AI STRATEGY:</span> <span className="text-foreground font-bold">1M MICRO-SCALP</span>
+                <Timer className="w-3 h-3 text-cyan-500" />
+                <span className="text-muted-foreground">AI STRATEGY:</span> <span className="text-foreground font-bold">MULTI-TIMEFRAME SCAN</span>
              </div>
              <div className="px-2 py-1 bg-background/90 border border-border backdrop-blur text-[10px] font-mono shadow-sm flex items-center gap-2">
-                <ShieldAlert className="w-3 h-3 text-warning" />
-                <span className="text-warning font-bold">FAKE-OUT PROTECTION ACTIVE</span>
+                <ShieldAlert className="w-3 h-3 text-success" />
+                <span className="text-success font-bold">PROFIT > FEE CHECK: PASS</span>
              </div>
         </div>
 
@@ -128,9 +129,9 @@ export function MarketChart() {
               cursor={{ stroke: 'hsl(var(--muted-foreground))', strokeWidth: 1, strokeDasharray: '4 4' }}
             />
             
-            <ReferenceLine y={entryPrice} stroke="hsl(var(--primary))" strokeDasharray="3 3" label={{ position: 'right', value: 'ENTRY (AI)', fill: 'hsl(var(--primary))', fontSize: 10, fontFamily: 'monospace' }} />
-            <ReferenceLine y={tpPrice} stroke="hsl(var(--success))" label={{ position: 'right', value: 'TP (AI)', fill: 'hsl(var(--success))', fontSize: 10, fontFamily: 'monospace' }} />
-            <ReferenceLine y={slPrice} stroke="hsl(var(--destructive))" label={{ position: 'right', value: 'SL (AI)', fill: 'hsl(var(--destructive))', fontSize: 10, fontFamily: 'monospace' }} />
+            <ReferenceLine y={entryPrice} stroke="hsl(var(--primary))" strokeDasharray="3 3" label={{ position: 'right', value: 'ENTRY', fill: 'hsl(var(--primary))', fontSize: 10, fontFamily: 'monospace' }} />
+            <ReferenceLine y={tpPrice} stroke="hsl(var(--success))" label={{ position: 'right', value: 'TP', fill: 'hsl(var(--success))', fontSize: 10, fontFamily: 'monospace' }} />
+            <ReferenceLine y={slPrice} stroke="hsl(var(--destructive))" label={{ position: 'right', value: 'SL', fill: 'hsl(var(--destructive))', fontSize: 10, fontFamily: 'monospace' }} />
             
             <Area 
               type="step" 

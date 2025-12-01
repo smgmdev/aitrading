@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { BrainCircuit, RefreshCw, ShieldCheck, Zap } from "lucide-react";
+import { BrainCircuit, RefreshCw, ShieldCheck, Zap, Timer, Scale } from "lucide-react";
 import { useState } from "react";
 
 export default function Strategies() {
@@ -24,11 +24,11 @@ export default function Strategies() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold text-foreground tracking-tight uppercase">Autonomous Core Config</h1>
-            <p className="text-xs font-mono text-muted-foreground mt-1">AI SCALPING ENGINE V4.0</p>
+            <p className="text-xs font-mono text-muted-foreground mt-1">MULTI-TIMEFRAME ADAPTIVE ENGINE</p>
           </div>
           <div className="flex items-center gap-2 px-3 py-1 bg-secondary/50 border border-border">
              <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
-             <span className="text-[10px] font-mono font-medium">ENGINE: ONLINE</span>
+             <span className="text-[10px] font-mono font-medium">AI AUTHORITY: 100%</span>
           </div>
         </div>
 
@@ -50,12 +50,12 @@ export default function Strategies() {
                   {isAnalyzing ? (
                     <>
                       <RefreshCw className="w-3 h-3 mr-2 animate-spin" />
-                      CALIBRATING MARKET SCANNER...
+                      RE-CALIBRATING...
                     </>
                   ) : (
                     <>
                       <Zap className="w-3 h-3 mr-2" />
-                      FORCE MARKET RESCAN
+                      FORCE RE-ANALYSIS
                     </>
                   )}
                 </Button>
@@ -66,10 +66,12 @@ export default function Strategies() {
                  <div className="flex items-start gap-3 p-3 bg-secondary/10 border border-border">
                     <ShieldCheck className="w-5 h-5 text-success mt-0.5" />
                     <div>
-                       <h4 className="font-bold text-xs uppercase">Fully Autonomous Protection</h4>
+                       <h4 className="font-bold text-xs uppercase">Total Authority Protocol</h4>
                        <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">
-                         The AI has full authority to determine Entry, Exit, Stop Loss, Take Profit, and Leverage based on real-time volatility.
-                         It constantly monitors for fake-outs, pump/dump schemes, and liquidity traps.
+                         The AI has absolute control to execute trades ranging from sub-minute HFT scalps to multi-hour swing positions.
+                         <br/><br/>
+                         <span className="font-bold text-foreground">Deciding Factor:</span> Net Profit > Fees.
+                         If a trade is profitable after fees in 15 seconds, the AI will exit immediately.
                        </p>
                     </div>
                  </div>
@@ -77,16 +79,16 @@ export default function Strategies() {
                  <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
-                        <Label className="font-bold text-xs uppercase">Auto-Leverage Management</Label>
-                        <p className="text-[10px] text-muted-foreground">AI dynamically adjusts leverage (1x-125x) based on risk score.</p>
+                        <Label className="font-bold text-xs uppercase">HFT Fee Calculation</Label>
+                        <p className="text-[10px] text-muted-foreground">Real-time calculation of exchange fees vs unrealized PnL.</p>
                       </div>
                       <Switch defaultChecked disabled className="data-[state=checked]:bg-primary opacity-50" />
                     </div>
 
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
-                        <Label className="font-bold text-xs uppercase">Dynamic Pair Selection</Label>
-                        <p className="text-[10px] text-muted-foreground">Scans Binance/Bybit for highest probability scalping pairs.</p>
+                        <Label className="font-bold text-xs uppercase">Dynamic Timeframe Scanning</Label>
+                        <p className="text-[10px] text-muted-foreground">Simultaneous analysis of 1s, 1m, 5m, and 4h charts.</p>
                       </div>
                       <Switch defaultChecked disabled className="data-[state=checked]:bg-primary opacity-50" />
                     </div>
@@ -94,25 +96,28 @@ export default function Strategies() {
               </div>
 
               <div className="space-y-4 border-l border-border pl-0 md:pl-8">
-                 <h4 className="font-bold text-xs uppercase text-muted-foreground mb-2">Active Scalping Logic</h4>
+                 <h4 className="font-bold text-xs uppercase text-muted-foreground mb-2">Active Execution Modes</h4>
                  
-                 <div className="p-3 border border-border bg-background relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-primary"></div>
-                    <div className="font-mono font-bold text-sm mb-1">MICRO-SCALPER (1m-5m)</div>
-                    <p className="text-[10px] text-muted-foreground">
-                      High-frequency execution targeting 0.5% - 1.5% moves. 
-                      Uses volume profile & order flow to detect institutional entries.
-                      <br/><br/>
-                      <span className="text-primary font-bold">PRIMARY OBJECTIVE:</span> Rapid accumulation of small wins.
-                    </p>
+                 <div className="p-3 border border-border bg-background relative overflow-hidden flex gap-3">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-cyan-500"></div>
+                    <Timer className="w-5 h-5 text-cyan-500 mt-1 shrink-0" />
+                    <div>
+                      <div className="font-mono font-bold text-sm mb-1">HFT SCALPER (SUB-MINUTE)</div>
+                      <p className="text-[10px] text-muted-foreground">
+                        Ultra-fast execution. Enters and exits in seconds if volatility spikes allow for profit coverage over fees.
+                      </p>
+                    </div>
                  </div>
 
-                 <div className="p-3 border border-border bg-background relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-success"></div>
-                    <div className="font-mono font-bold text-sm mb-1">FAKE-OUT DETECTION</div>
-                    <p className="text-[10px] text-muted-foreground">
-                      Analyzes order book depth and liquidation clusters to identify and avoid manipulation wicks.
-                    </p>
+                 <div className="p-3 border border-border bg-background relative overflow-hidden flex gap-3">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
+                    <Scale className="w-5 h-5 text-purple-500 mt-1 shrink-0" />
+                    <div>
+                      <div className="font-mono font-bold text-sm mb-1">TECHNICAL SWING</div>
+                      <p className="text-[10px] text-muted-foreground">
+                        Holds positions longer when chart structure (1H/4H) confirms a sustained trend.
+                      </p>
+                    </div>
                  </div>
               </div>
             </div>
@@ -143,7 +148,7 @@ export default function Strategies() {
                   </div>
                </div>
                <p className="text-[10px] text-muted-foreground mt-3">
-                 * The AI will distribute capital across up to 5 simultaneous scalping opportunities.
+                 * AI automatically balances risk across multiple assets.
                </p>
             </div>
           </div>
