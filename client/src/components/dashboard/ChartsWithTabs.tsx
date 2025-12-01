@@ -90,10 +90,10 @@ export function ChartsWithTabs() {
             onClick={() => setActiveTab("GLOBAL")}
             data-testid="tab-global"
             className={cn(
-              "text-[11px] font-bold px-4 transition-colors border-r border-border whitespace-nowrap flex items-center",
+              "text-[11px] font-bold px-4 transition-colors border-r border-border whitespace-nowrap flex items-center text-white",
               activeTab === "GLOBAL"
-                ? "bg-primary text-primary-foreground"
-                : "bg-black text-muted-foreground hover:bg-gray-900 hover:text-foreground"
+                ? "bg-primary"
+                : "bg-black hover:bg-gray-900"
             )}
           >
             GLOBAL
@@ -106,10 +106,10 @@ export function ChartsWithTabs() {
               onClick={() => setActiveTab(position.tradeId)}
               data-testid={`tab-position-${position.id}`}
               className={cn(
-                "text-[11px] font-bold px-4 transition-colors border-r border-border whitespace-nowrap flex items-center",
+                "text-[11px] font-bold px-4 transition-colors border-r border-border whitespace-nowrap flex items-center text-white",
                 activeTab === position.tradeId
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-black text-muted-foreground hover:bg-gray-900 hover:text-foreground"
+                  ? "bg-primary"
+                  : "bg-black hover:bg-gray-900"
               )}
             >
               {position.pair.replace("USDT", "")} ({parseFloat(position.entryPrice).toFixed(0)})
@@ -142,14 +142,14 @@ export function ChartsWithTabs() {
         </div>
 
         <div className="w-full lg:w-auto overflow-x-auto">
-          <div className="flex border border-border bg-background min-w-max">
+          <div className="flex border border-border bg-background min-w-max h-8">
             {TIMEFRAMES.map((tf) => (
               <button
                 key={tf}
                 onClick={() => setActiveTimeframe(tf)}
                 data-testid={`timeframe-${tf}`}
                 className={cn(
-                  "text-[10px] font-bold px-3 py-1.5 transition-colors border-r border-border last:border-r-0 min-w-[40px] flex-1 lg:flex-none",
+                  "text-[10px] font-bold px-3 transition-colors border-r border-border last:border-r-0 min-w-[40px] flex-1 lg:flex-none flex items-center justify-center",
                   activeTimeframe === tf
                     ? "bg-primary text-primary-foreground"
                     : "hover:bg-secondary text-muted-foreground hover:text-foreground"
