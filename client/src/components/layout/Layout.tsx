@@ -242,9 +242,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 const trade = tradeLogs.find((t: any) => t.id === selectedTradeId);
                 if (!trade) return null;
 
+                // Find AI logs related to this trade
+                const relatedAiLogs = aiLogs.filter((log: any) => {
+                  if (log.relatedTradeId === `TRADE-${trade.id}`) return true;
+                  if (log.message?.includes(trade.pair)) {
+                    const logTime = log.createdAt ? new Date(log.createdAt).getTime() : 0;
+                    const entryTime = trade.entryTime ? new Date(trade.entryTime).getTime() : 0;
+                    const exitTime = trade.exitTime ? new Date(trade.exitTime).getTime() : 0;
+                    return logTime >= entryTime - 10000 && logTime <= exitTime + 10000;
+                  }
+                  return false;
+                });
+
                 return (
                   <div className="space-y-3">
                     <div className="bg-gray-50 p-3 border border-gray-200 text-[11px] font-mono">
+                      <h3 className="font-bold mb-2 uppercase">Trade Summary</h3>
                       <div className="grid grid-cols-2 gap-2">
                         <div>Pair: <span className="font-bold">{trade.pair}</span></div>
                         <div>Side: <span className="font-bold">{trade.side}</span></div>
@@ -257,6 +270,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
                         <div>PnL: <span className={cn("font-bold", parseFloat(trade.pnl) >= 0 ? "text-green-600" : "text-red-600")}>{formatPrice(parseFloat(trade.pnl))}</span></div>
                         <div>Return: <span className={cn("font-bold", parseFloat(trade.pnlPercent) >= 0 ? "text-green-600" : "text-red-600")}>{parseFloat(trade.pnlPercent).toFixed(2)}%</span></div>
                       </div>
+                    </div>
+
+                    <div className="bg-blue-50 p-3 border border-blue-200 text-[10px]">
+                      <h3 className="font-bold mb-2 uppercase">AI Reasoning & Analysis</h3>
+                      {relatedAiLogs.length === 0 ? (
+                        <div className="text-gray-600">No analysis logs found for this trade.</div>
+                      ) : (
+                        <div className="space-y-2">
+                          {relatedAiLogs.map((log: any, idx: number) => (
+                            <div key={idx} className="border-l-2 border-blue-400 pl-2 py-1.5">
+                              <div className="font-bold text-blue-700 mb-1 uppercase">[{log.logType}]</div>
+                              <pre className="whitespace-pre-wrap break-words text-[9px] text-gray-700 leading-relaxed font-mono">{removeEmojis(log.message)}</pre>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
