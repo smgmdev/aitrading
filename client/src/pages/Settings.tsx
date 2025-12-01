@@ -156,7 +156,7 @@ export default function Strategies() {
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-6">
                    <div className="flex items-start gap-3 p-3 bg-secondary/10 border border-border">
-                      <ShieldCheck className="w-5 h-5 text-success mt-0.5" />
+                      <ShieldCheck className="w-7 h-7 text-success mt-0.5" />
                       <div>
                          <h4 className="font-bold text-xs uppercase">Total Authority Protocol</h4>
                          <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">
@@ -191,7 +191,6 @@ export default function Strategies() {
                    <h4 className="font-bold text-xs uppercase text-muted-foreground mb-2">Active Execution Modes</h4>
                    
                    <div className="p-3 border border-border bg-background relative overflow-hidden flex gap-3">
-                      <div className="absolute top-0 left-0 w-1 h-full bg-cyan-500"></div>
                       <Timer className="w-5 h-5 text-cyan-500 mt-1 shrink-0" />
                       <div>
                         <div className="font-mono font-bold text-sm mb-1">HFT SCALPER (SUB-MINUTE)</div>
@@ -202,7 +201,6 @@ export default function Strategies() {
                    </div>
 
                    <div className="p-3 border border-border bg-background relative overflow-hidden flex gap-3">
-                      <div className="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
                       <Scale className="w-5 h-5 text-purple-500 mt-1 shrink-0" />
                       <div>
                         <div className="font-mono font-bold text-sm mb-1">TECHNICAL SWING (1-12m)</div>
