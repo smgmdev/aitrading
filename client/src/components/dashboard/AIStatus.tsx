@@ -71,6 +71,7 @@ export function AIStatus() {
         subValue={`${stats.tradeCount} TOTAL TRADES`}
         icon={BarChart3}
         status="neutral"
+        hideBorder
         testId="status-winrate"
       />
 
@@ -80,21 +81,22 @@ export function AIStatus() {
         subValue="OPTIMIZED"
         icon={Wifi}
         status="success"
+        hideBorder
         testId="status-latency"
       />
     </div>
   );
 }
 
-function StatusTile({ label, value, subValue, icon: Icon, status, testId }: any) {
+function StatusTile({ label, value, subValue, icon: Icon, status, testId, hideBorder }: any) {
   return (
     <div
       className="bg-background border border-border p-3 relative overflow-hidden group"
       data-testid={testId}
     >
-      {status === "success" && <div className="absolute left-0 top-0 bottom-0 w-1 bg-success"></div>}
-      {status === "neutral" && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>}
-      {status === "warning" && <div className="absolute left-0 top-0 bottom-0 w-1 bg-warning"></div>}
+      {!hideBorder && status === "success" && <div className="absolute left-0 top-0 bottom-0 w-1 bg-success"></div>}
+      {!hideBorder && status === "neutral" && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>}
+      {!hideBorder && status === "warning" && <div className="absolute left-0 top-0 bottom-0 w-1 bg-warning"></div>}
 
       <div className="pl-2">
         <div className="text-[10px] font-bold text-muted-foreground tracking-widest uppercase mb-0.5">
