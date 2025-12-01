@@ -1,18 +1,68 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, serial, timestamp, decimal, integer } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const users = pgTable("users", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+// Trading Positions Table
+export const positions = pgTable("positions", {
+  id: serial("id").primaryKey(),
+  tradeId: varchar("trade_id", { length: 50 }).notNull().unique(),
+  pair: varchar("pair", { length: 20 }).notNull(),
+  side: varchar("side", { length: 10 }).notNull(),
+  entryPrice: decimal("entry_price", { precision: 18, scale: 8 }).notNull(),
+  currentPrice: decimal("current_price", { precision: 18, scale: 8 }).notNull(),
+  exitPrice: decimal("exit_price", { precision: 18, scale: 8 }),
+  leverage: integer("leverage").notNull(),
+  size: decimal("size", { precision: 18, scale: 8 }).notNull(),
+  pnl: decimal("pnl", { precision: 18, scale: 8 }).notNull().default("0"),
+  pnlPercent: decimal("pnl_percent", { precision: 10, scale: 4 }).notNull().default("0"),
+  status: varchar("status", { length: 20 }).notNull().default("OPEN"),
+  platform: varchar("platform", { length: 20 }).notNull(),
+  stopLoss: decimal("stop_loss", { precision: 18, scale: 8 }),
+  takeProfit: decimal("take_profit", { precision: 18, scale: 8 }),
+  entryTime: timestamp("entry_time").notNull().defaultNow(),
+  exitTime: timestamp("exit_time"),
+  duration: integer("duration"),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
+export const insertPositionSchema = createInsertSchema(positions).omit({
+  id: true,
+  entryTime: true,
 });
 
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = typeof users.$inferSelect;
+export type Position = typeof positions.$inferSelect;
+export type InsertPosition = z.infer<typeof insertPositionSchema>;
+
+// AI Decision Logs Table
+export const aiLogs = pgTable("ai_logs", {
+  id: serial("id").primaryKey(),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+  logType: varchar("log_type", { length: 20 }).notNull(),
+  message: text("message").notNull(),
+  pair: varchar("pair", { length: 20 }),
+  relatedTradeId: varchar("related_trade_id", { length: 50 }),
+});
+
+export const insertAiLogSchema = createInsertSchema(aiLogs).omit({
+  id: true,
+  timestamp: true,
+});
+
+export type AiLog = typeof aiLogs.$inferSelect;
+export type InsertAiLog = z.infer<typeof insertAiLogSchema>;
+
+// System Configuration Table
+export const systemConfig = pgTable("system_config", {
+  id: serial("id").primaryKey(),
+  maxPortfolioAllocation: integer("max_portfolio_allocation").notNull().default(95),
+  maxOpenPositions: integer("max_open_positions").notNull().default(5),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const insertSystemConfigSchema = createInsertSchema(systemConfig).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export type SystemConfig = typeof systemConfig.$inferSelect;
+export type InsertSystemConfig = z.infer<typeof insertSystemConfigSchema>;
