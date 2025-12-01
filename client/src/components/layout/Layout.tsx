@@ -243,20 +243,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 if (!trade) return null;
 
                 // Find AI logs related to this specific trade
-                // Match by pair + entry price + side (ENTRY and EXIT logs for this trade)
-                const entryPriceStr = trade.entryPrice?.toString();
+                // Match by pair name and the @ entry price pattern
+                const entryPriceNum = parseFloat(trade.entryPrice);
+                const entryPriceFormatted = formatPrice(entryPriceNum);
                 const sideText = trade.side === "LONG" ? "LONG" : "SHORT";
                 
+                // Create search pattern like "ETHUSDT @ $12345.67" or "LONG ETHUSDT @ $"
                 const relatedAiLogs = aiLogs.filter((log: any) => {
                   if (!log.message) return false;
                   const msg = log.message;
                   
-                  // Check if message contains pair, entry price, and side
-                  const hasPair = msg.includes(trade.pair);
-                  const hasPrice = msg.includes(formatPrice(parseFloat(entryPriceStr))) || msg.includes(entryPriceStr);
-                  const hasSide = msg.includes(sideText);
-                  
-                  return hasPair && hasPrice && hasSide;
+                  // Must have pair AND @ symbol with entry price
+                  const hasPairAndPrice = msg.includes(`${trade.pair} @`) && msg.includes(entryPriceFormatted);
+                  return hasPairAndPrice;
                 }).sort((a: any, b: any) => {
                   const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
                   const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
