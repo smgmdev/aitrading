@@ -187,7 +187,25 @@ export class DatabaseStorage implements IStorage {
 
   async getConnectedExchange(): Promise<string | null> {
     const config = await this.getSystemConfig();
-    return config?.connectedExchange || null;
+    
+    // Only return as connected if both exchange name and API keys exist
+    if (!config?.connectedExchange) {
+      return null;
+    }
+    
+    const exchange = config.connectedExchange.toUpperCase();
+    
+    if (exchange === "BINANCE") {
+      if (config.binanceApiKey && config.binanceApiSecret) {
+        return "BINANCE";
+      }
+    } else if (exchange === "BYBIT") {
+      if (config.bybitApiKey && config.bybitApiSecret) {
+        return "BYBIT";
+      }
+    }
+    
+    return null;
   }
 }
 
