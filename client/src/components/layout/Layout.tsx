@@ -11,18 +11,34 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 
+type ConnectionStatus = "live" | "testnet" | "disconnected";
+
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const [connectedExchange, setConnectedExchange] = useState<string | null>(null);
+  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>("disconnected");
+  const [latency, setLatency] = useState<number>(0);
 
   useEffect(() => {
     const fetchExchange = async () => {
+      const startTime = Date.now();
       try {
         const res = await fetch("/api/exchange/connected");
+        const endTime = Date.now();
+        setLatency(endTime - startTime);
+        
         const data = await res.json();
         setConnectedExchange(data.connected);
+        
+        // Determine connection status (for now, if connected assume LIVE)
+        if (data.connected) {
+          setConnectionStatus("live");
+        } else {
+          setConnectionStatus("disconnected");
+        }
       } catch (error) {
         console.error("Failed to fetch connected exchange:", error);
+        setConnectionStatus("disconnected");
       }
     };
 
@@ -38,24 +54,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
     { icon: Settings, label: "SYSTEM CONFIG", href: "/settings" },
   ];
 
+  const statusColor = connectionStatus === "live" ? "bg-success" : connectionStatus === "testnet" ? "bg-warning" : "bg-destructive";
+  const statusLabel = connectionStatus === "live" ? "LIVE" : connectionStatus === "testnet" ? "TESTNET" : "NOT CONNECTED";
+
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans text-sm flex-col">
       {/* Header */}
       <header className="h-12 border-b border-border flex items-center justify-between px-4 bg-background">
         <div className="flex items-center gap-4">
-           <h2 className="font-bold text-sm tracking-wide uppercase">
-             {navItems.find(i => i.href === location)?.label || 'TERMINAL'}
-           </h2>
-           <div className="h-4 w-px bg-border"></div>
            <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
               <span>{connectedExchange ? `${connectedExchange}: CONNECTED` : 'NO EXCHANGE: DISCONNECTED'}</span>
+           </div>
+           <div className="h-4 w-px bg-border"></div>
+           <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
+              <span>LATENCY: {latency}ms</span>
            </div>
         </div>
         
         <div className="flex items-center gap-3">
-           <div className="flex items-center gap-2 px-3 py-1 bg-secondary border border-border text-xs font-mono">
-              <span className="w-2 h-2 bg-success rounded-full"></span>
-              SYSTEM: ONLINE
+           <div className={cn("flex items-center gap-2 px-3 py-1 bg-secondary border border-border text-xs font-mono")}>
+              <span className={cn("w-2 h-2 rounded-full", statusColor)}></span>
+              {statusLabel}
            </div>
            <button className="p-2 hover:bg-secondary border border-transparent hover:border-border transition-colors">
               <Bell className="w-4 h-4 text-muted-foreground" />
