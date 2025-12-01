@@ -25,6 +25,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>("disconnected");
   const [latency, setLatency] = useState<number>(0);
   const [equity, setEquity] = useState<number>(10000);
+  const [previousEquity, setPreviousEquity] = useState<number>(10000);
+  const [equityChange, setEquityChange] = useState<number>(0);
+  const [showEquityChange, setShowEquityChange] = useState<boolean>(false);
   const [pnl24h, setPnl24h] = useState<number>(0);
   const [winRatio, setWinRatio] = useState<string>("0%");
   const [totalTrades, setTotalTrades] = useState<number>(0);
@@ -81,7 +84,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
             const ratio = closedPositions.length > 0 ? Math.round((winCount / closedPositions.length) * 100) : 0;
             setWinRatio(`${ratio}%`);
             setTotalTrades(closedPositions.length);
-            setEquity(10000 + pnl24hSum);
+            
+            const newEquity = 10000 + pnl24hSum;
+            if (newEquity !== equity) {
+              const change = newEquity - equity;
+              setEquityChange(change);
+              setShowEquityChange(true);
+              setEquity(newEquity);
+              
+              // Hide the change display after 10 seconds
+              const timer = setTimeout(() => {
+                setShowEquityChange(false);
+              }, 10000);
+              return () => clearTimeout(timer);
+            }
             setTradeLogs(closedPositions);
           }
         }
@@ -248,7 +264,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex items-center gap-1 text-[10px] font-mono text-white uppercase cursor-help">
-                  <span>EQUITY: ${equity.toFixed(2)}</span>
+                  <span className={showEquityChange ? "blink-equity" : ""}>EQUITY: ${equity.toFixed(2)}</span>
+                  {showEquityChange && (
+                    <span className={cn("font-bold ml-1", equityChange >= 0 ? "text-success" : "text-destructive")}>
+                      {equityChange >= 0 ? "↑" : "↓"} {equityChange >= 0 ? "+" : ""}{equityChange.toFixed(2)}
+                    </span>
+                  )}
                 </div>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="bg-black border border-border text-white text-[9px]">

@@ -169,4 +169,18 @@
   .flash-loss {
     animation: flashRed 1s ease-out;
   }
+
+  /* Blinking animation for equity */
+  @keyframes blinkEquity {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .blink-equity {
+    animation: blinkEquity 0.6s ease-in-out infinite;
+  }
 }
