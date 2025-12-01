@@ -259,16 +259,18 @@ export default function Strategies() {
 
         {/* Connection Status Bar */}
         <div className="flex items-center justify-between px-4 py-3 bg-secondary/5 border-b border-border">
-          <div className="text-[11px] font-mono uppercase font-bold text-muted-foreground">Status</div>
-          <span className={`text-[11px] font-mono font-bold px-2 py-1 rounded ${config.connectedExchange ? 'text-success bg-success/10 border border-success/30' : 'text-muted-foreground bg-secondary/10 border border-border'}`}>
-            {config.connectedExchange ? `${config.connectedExchange}: ACTIVE` : 'DISCONNECTED'}
-          </span>
+          <div className="flex items-center gap-3">
+            <div className="text-[11px] font-mono uppercase font-bold text-muted-foreground">Status</div>
+            <span className={`text-[10px] font-mono font-bold px-2 py-1 border ${config.connectedExchange ? 'text-success border-success/40' : 'text-muted-foreground border-border'}`}>
+              {config.connectedExchange ? `${config.connectedExchange}: ACTIVE` : 'DISCONNECTED'}
+            </span>
+          </div>
           {config.connectedExchange && (
             <Button
               onClick={handleDisconnect}
               disabled={loading}
               size="sm"
-              className="h-6 text-[9px] font-mono bg-destructive/20 text-destructive hover:bg-destructive/30 border border-destructive/30"
+              className="h-6 text-[9px] font-mono text-destructive hover:text-destructive-foreground hover:bg-destructive/20 border border-destructive/40"
               variant="outline"
             >
               <Unlock className="w-3 h-3 mr-1" />
@@ -279,14 +281,14 @@ export default function Strategies() {
 
         {/* Error Message */}
         {error && (
-          <div className="px-4 py-2 bg-destructive/10 border border-destructive/30 text-destructive text-[10px] font-mono rounded">
+          <div className="px-4 py-2 border border-destructive/40 text-destructive text-[10px] font-mono">
             {error}
           </div>
         )}
 
         {/* Validating Status */}
         {validating && (
-          <div className="px-4 py-2 bg-primary/10 border border-primary/30 text-primary text-[10px] font-mono rounded">
+          <div className="px-4 py-2 border border-primary/40 text-primary text-[10px] font-mono">
             Validating API credentials with exchange...
           </div>
         )}
@@ -299,7 +301,7 @@ export default function Strategies() {
               <Lock className={`w-4 h-4 ${config.connectedExchange === 'BINANCE' ? 'text-success' : 'text-muted-foreground'}`} />
               <h4 className="font-bold text-[11px] uppercase tracking-wide">Binance</h4>
               {config.connectedExchange === 'BINANCE' && (
-                <span className="text-[8px] font-mono text-success bg-success/10 px-1.5 py-0.5 rounded">CONNECTED</span>
+                <span className="text-[8px] font-mono text-success border border-success/40 px-1.5 py-0.5">CONNECTED</span>
               )}
             </div>
             <div className="space-y-2">
@@ -343,7 +345,7 @@ export default function Strategies() {
               <Lock className={`w-4 h-4 ${config.connectedExchange === 'BYBIT' ? 'text-success' : 'text-muted-foreground'}`} />
               <h4 className="font-bold text-[11px] uppercase tracking-wide">Bybit</h4>
               {config.connectedExchange === 'BYBIT' && (
-                <span className="text-[8px] font-mono text-success bg-success/10 px-1.5 py-0.5 rounded">CONNECTED</span>
+                <span className="text-[8px] font-mono text-success border border-success/40 px-1.5 py-0.5">CONNECTED</span>
               )}
             </div>
             <div className="space-y-2">
