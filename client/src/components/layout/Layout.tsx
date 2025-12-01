@@ -22,6 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
 
 type ConnectionStatus = "live" | "testnet" | "disconnected";
 
@@ -40,6 +41,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [totalTrades, setTotalTrades] = useState<number>(0);
   const [showTradeLogsConsole, setShowTradeLogsConsole] = useState<boolean>(false);
   const [showAiBrainEngine, setShowAiBrainEngine] = useState<boolean>(false);
+  const [showQuickTradeLogs, setShowQuickTradeLogs] = useState<boolean>(false);
   const [tradeLogs, setTradeLogs] = useState<any[]>([]);
   const [aiLogs, setAiLogs] = useState<any[]>([]);
   const [selectedTradeId, setSelectedTradeId] = useState<number | null>(null);
@@ -333,40 +335,79 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </Dialog>
         )}
 
-        {/* AI Brain Engine Console */}
-        {showAiBrainEngine && (
-          <div className="h-96 border-b border-border bg-background overflow-y-auto">
-            <div className="p-3 text-[9px] font-mono">
-              <div className="text-muted-foreground mb-3 uppercase font-bold">AI Brain Engine - Analytical Decision Log:</div>
-              <div className="space-y-4">
-                {aiLogs.length === 0 ? (
-                  <div className="text-muted-foreground">Waiting for AI to think...</div>
+        {/* Terminal Section - AI Brain Engine and Quick Trade Logs */}
+        {(showAiBrainEngine || showQuickTradeLogs) && (
+          <div className="border-b border-border bg-background flex overflow-hidden">
+            {/* AI Brain Engine Console */}
+            {showAiBrainEngine && (
+              <div className={`${showQuickTradeLogs ? 'w-1/2' : 'w-full'} h-96 overflow-y-auto border-r ${showQuickTradeLogs ? 'border-border' : ''}`}>
+                <div className="p-3 text-[9px] font-mono">
+                  <div className="text-muted-foreground mb-3 uppercase font-bold">AI Brain Engine - Analytical Decision Log:</div>
+                  <div className="space-y-4">
+                    {aiLogs.length === 0 ? (
+                      <div className="text-muted-foreground">Waiting for AI to think...</div>
+                    ) : (
+                      aiLogs.slice(0, 50).reverse().map((log: any, idx: number) => {
+                        const logColor = log.logType === "ENTRY" ? "text-success" : 
+                                        log.logType === "EXIT" ? "text-warning" :
+                                        log.logType === "ANALYSIS" ? "text-foreground" :
+                                        log.logType === "DECISION" ? "text-foreground" :
+                                        "text-foreground";
+                        const timestamp = log.createdAt ? new Date(log.createdAt).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
+                        
+                        return (
+                          <div key={idx} className={cn("border border-border/50 p-2 bg-background/50", logColor)}>
+                            <div className="flex items-center gap-2 mb-2 pb-2 border-b border-border/30">
+                              <span className="text-muted-foreground">[{timestamp}]</span>
+                              <span className={cn("px-1.5 py-0.5 bg-background text-[8px] font-bold uppercase tracking-wider", logColor)}>
+                                {log.logType}
+                              </span>
+                            </div>
+                            <pre className="whitespace-pre-wrap break-words text-[8.5px] leading-relaxed text-foreground overflow-x-hidden">
+                              {removeEmojis(formatPricesInText(log.message))}
+                            </pre>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Quick Trade Logs */}
+            {showQuickTradeLogs && (
+              <div className={`${showAiBrainEngine ? 'w-1/2' : 'w-full'} h-96 overflow-y-auto p-3`}>
+                <div className="text-muted-foreground mb-3 uppercase font-bold text-[9px] font-mono">Quick Trade Logs:</div>
+                {tradeLogs.length === 0 ? (
+                  <div className="text-muted-foreground text-[9px]">No trades yet...</div>
                 ) : (
-                  aiLogs.slice(0, 50).reverse().map((log: any, idx: number) => {
-                    const logColor = log.logType === "ENTRY" ? "text-success" : 
-                                    log.logType === "EXIT" ? "text-warning" :
-                                    log.logType === "ANALYSIS" ? "text-foreground" :
-                                    log.logType === "DECISION" ? "text-foreground" :
-                                    "text-foreground";
-                    const timestamp = log.createdAt ? new Date(log.createdAt).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
-                    
-                    return (
-                      <div key={idx} className={cn("border border-border/50 p-2 bg-background/50", logColor)}>
-                        <div className="flex items-center gap-2 mb-2 pb-2 border-b border-border/30">
-                          <span className="text-muted-foreground">[{timestamp}]</span>
-                          <span className={cn("px-1.5 py-0.5 bg-background text-[8px] font-bold uppercase tracking-wider", logColor)}>
-                            {log.logType}
-                          </span>
+                  <div className="space-y-3">
+                    <ResponsiveContainer width="100%" height={150}>
+                      <BarChart data={tradeLogs.slice(-10).map((t: any) => ({
+                        pair: t.pair?.split('/')[0] || 'N/A',
+                        pnl: parseFloat(t.pnl || '0'),
+                        pnlPercent: parseFloat(t.pnlPercent || '0')
+                      }))}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                        <XAxis dataKey="pair" tick={{ fontSize: 8 }} />
+                        <YAxis tick={{ fontSize: 8 }} />
+                        <RechartsTooltip contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', fontSize: '10px' }} />
+                        <Bar dataKey="pnl" fill="#10b981" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                    <div className="text-[8px] font-mono space-y-1 mt-3 border-t border-border pt-2">
+                      {tradeLogs.slice().reverse().slice(0, 5).map((t: any, idx: number) => (
+                        <div key={idx} className="flex justify-between text-muted-foreground hover:text-foreground">
+                          <span>{t.pair} {t.side}</span>
+                          <span className={parseFloat(t.pnl) >= 0 ? 'text-success' : 'text-destructive'}>{formatPrice(parseFloat(t.pnl))}</span>
                         </div>
-                        <pre className="whitespace-pre-wrap break-words text-[8.5px] leading-relaxed text-foreground overflow-x-hidden">
-                          {removeEmojis(formatPricesInText(log.message))}
-                        </pre>
-                      </div>
-                    );
-                  })
+                      ))}
+                    </div>
+                  </div>
                 )}
               </div>
-            </div>
+            )}
           </div>
         )}
 
@@ -437,6 +478,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </Tooltip>
           </div>
           <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setShowAiBrainEngine(!showAiBrainEngine)}
+              className={cn("px-2 py-1 text-[8px] font-mono uppercase border transition-colors", showAiBrainEngine ? "bg-primary border-primary text-black" : "border-border text-white hover:border-primary hover:text-white")}
+              data-testid="toggle-ai-brain"
+            >
+              AI
+            </button>
+            <button 
+              onClick={() => setShowQuickTradeLogs(!showQuickTradeLogs)}
+              className={cn("px-2 py-1 text-[8px] font-mono uppercase border transition-colors", showQuickTradeLogs ? "bg-primary border-primary text-black" : "border-border text-white hover:border-primary hover:text-white")}
+              data-testid="toggle-quick-trade-logs"
+            >
+              TRADE LOGS
+            </button>
             <button className="p-1 hover:bg-secondary border border-transparent hover:border-border transition-colors">
               <Bell className="w-4 h-4 text-white" />
             </button>
