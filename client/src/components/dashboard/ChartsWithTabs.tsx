@@ -189,7 +189,7 @@ export function ChartsWithTabs() {
       </div>
 
       {/* Chart */}
-      <div className="flex-1 min-h-[300px] w-full relative group">
+      <div className="flex-1 min-h-[300px] w-full relative group pb-6">
         {activeTab !== "GLOBAL" && (
           <div className="absolute top-4 left-4 z-10 flex flex-col gap-2 pointer-events-none">
             <div className="px-2 py-1 bg-background/90 border border-border backdrop-blur text-[10px] font-mono shadow-sm flex items-center gap-2">
