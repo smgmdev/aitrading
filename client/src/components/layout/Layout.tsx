@@ -60,18 +60,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </nav>
 
         <div className="border-t border-border">
-          <div className="p-4 space-y-4">
-            <div className="space-y-1">
-               <div className="text-[10px] font-medium text-muted-foreground uppercase">Total Equity</div>
-               <div className="text-lg font-mono font-bold text-foreground">$124,592.45</div>
-               <div className="flex items-center gap-2 text-xs">
-                  <span className="text-success font-mono">+2.4%</span>
-                  <span className="text-muted-foreground text-[10px]">DAILY PNL</span>
-               </div>
-            </div>
-          </div>
-          
-          <button className="flex items-center justify-center gap-2 text-xs font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors w-full py-3 border-t border-border">
+          <button className="flex items-center justify-center gap-2 text-xs font-medium text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors w-full py-3">
             <LogOut className="w-3 h-3" />
             <span>DISCONNECT SESSION</span>
           </button>

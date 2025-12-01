@@ -48,12 +48,12 @@ export function AIStatus() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
       <StatusTile
-        label="ALGORITHM STATE"
-        value="ACTIVE"
-        subValue="SCALPING_V2"
+        label="TOTAL EQUITY"
+        value="$124,592.45"
+        subValue={`${stats.totalPnl > 0 ? "+" : ""}${stats.totalPnl.toFixed(2)} DAILY PNL`}
         icon={BrainCircuit}
-        status="success"
-        testId="status-algorithm"
+        status={stats.totalPnl > 0 ? "success" : "warning"}
+        testId="status-equity"
       />
 
       <StatusTile
