@@ -339,9 +339,9 @@ export default function Strategies() {
           <div className="bg-background border border-border p-0 shadow-sm" data-testid="form-binance-keys">
             <div className="p-4 border-b border-border flex items-center gap-2" style={{ backgroundColor: '#f0d0a6' }}>
               {config.connectedExchange === 'BINANCE' ? (
-                <Lock className="w-4 h-4 text-success" />
+                <Lock className="w-4 h-4 text-green-500" />
               ) : (
-                <LockOpen className="w-4 h-4 text-muted-foreground" />
+                <LockOpen className="w-4 h-4 text-red-500" />
               )}
               <h4 className="font-bold text-[11px] uppercase tracking-wide">Binance</h4>
               {config.connectedExchange === 'BINANCE' && (
@@ -389,9 +389,9 @@ export default function Strategies() {
           <div className="bg-background border border-border p-0 shadow-sm" data-testid="form-bybit-keys">
             <div className="p-4 border-b border-border flex items-center gap-2" style={{ backgroundColor: '#f0d0a6' }}>
               {config.connectedExchange === 'BYBIT' ? (
-                <Lock className="w-4 h-4 text-success" />
+                <Lock className="w-4 h-4 text-green-500" />
               ) : (
-                <LockOpen className="w-4 h-4 text-muted-foreground" />
+                <LockOpen className="w-4 h-4 text-red-500" />
               )}
               <h4 className="font-bold text-[11px] uppercase tracking-wide">Bybit</h4>
               {config.connectedExchange === 'BYBIT' && (
