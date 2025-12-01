@@ -192,11 +192,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* Trade Logs Console */}
         {showTradeLogsConsole && (
           <div className="h-48 border-b border-border bg-white overflow-y-auto">
-            <div className="p-3 text-xs font-mono">
-              <div className="text-black mb-2 uppercase font-bold">Trade Logs:</div>
-              <div className="space-y-2">
+            <div className="p-0 text-xs font-mono">
+              <div className="text-black px-3 py-2 uppercase font-bold bg-gray-50 sticky top-0">Trade Logs:</div>
+              <div className="divide-y divide-gray-200">
                 {tradeLogs.length === 0 ? (
-                  <div className="text-gray-600">No trades yet</div>
+                  <div className="text-gray-600 px-3 py-2">No trades yet</div>
                 ) : (
                   tradeLogs.slice(0, 30).map((log: any, idx: number) => {
                     const timestamp = log.exitTime ? new Date(log.exitTime).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
@@ -204,9 +204,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     const modeLabel = log.mode === "HFT_SCALPER" ? "HFT" : "SWING";
                     const sideLabel = log.side === "LONG" ? "LONG" : "SHORT";
                     return (
-                      <div key={idx} className="text-black text-[10px] flex gap-3 font-mono">
+                      <div key={idx} className="text-black text-[10px] flex gap-3 font-mono px-3 py-2 hover:bg-blue-100 transition-colors cursor-pointer">
                         <span className="text-gray-700 min-w-max">[{timestamp}]</span>
-                        <span className="text-black min-w-max">{log.pair} {sideLabel}</span>
+                        <span className="text-black min-w-max">{log.pair} <span className="text-gray-700">{sideLabel}</span></span>
                         <span className="text-gray-700 min-w-max">Entry: {formatPrice(parseFloat(log.entryPrice))}</span>
                         <span className="text-gray-600 min-w-max">{modeLabel}</span>
                         <span className="text-gray-700 min-w-max">Exit: {formatPrice(parseFloat(log.exitPrice))}</span>
