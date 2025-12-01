@@ -151,15 +151,15 @@ export function ChartsWithTabs() {
       </div>
 
       {/* Timeframes Bar */}
-      <div className="border-b border-border bg-background px-4 py-2">
-        <div className="flex border border-border bg-background w-fit">
+      <div className="border-b border-border bg-background">
+        <div className="flex border border-border bg-background">
           {TIMEFRAMES.map((tf) => (
             <button
               key={tf}
               onClick={() => setActiveTimeframe(tf)}
               data-testid={`timeframe-${tf}`}
               className={cn(
-                "text-[10px] font-bold px-3 py-1.5 transition-colors border-r border-border last:border-r-0",
+                "text-[10px] font-bold px-2 py-1 transition-colors border-r border-border last:border-r-0",
                 activeTimeframe === tf
                   ? "bg-primary text-primary-foreground"
                   : "hover:bg-secondary text-muted-foreground hover:text-foreground"
