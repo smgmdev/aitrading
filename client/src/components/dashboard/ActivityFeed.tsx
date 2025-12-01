@@ -77,14 +77,16 @@ export function ActivityFeed() {
             return (
               <div
                 key={log.id}
-                className="flex gap-3 px-3 py-1.5 hover:bg-white/5 border-b border-white/5 last:border-0"
+                className="px-3 py-1.5 hover:bg-white/5 border-b border-white/5 last:border-0"
                 data-testid={`activity-log-${index}`}
               >
-                <div className="text-gray-500 min-w-[90px] select-none">{time}</div>
-                <div className={cn("font-bold min-w-[60px]", getLogTypeColor(log.logType))}>
-                  {log.logType}
+                <div className="flex gap-2 mb-0.5">
+                  <div className="text-gray-500 min-w-[90px] select-none">{time}</div>
+                  <div className={cn("font-bold text-white", getLogTypeColor(log.logType))}>
+                    {log.logType}
+                  </div>
                 </div>
-                <div className="text-gray-300 flex-1">{log.message}</div>
+                <div className="text-gray-300 text-[10px]">{log.message}</div>
               </div>
             );
           })
