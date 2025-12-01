@@ -361,7 +361,7 @@ export default function Strategies() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Binance Connection */}
           <div className="bg-background border border-border p-0 shadow-sm" data-testid="form-binance-keys">
-            <div className="p-4 border-b border-border bg-orange-500/5 flex items-center gap-2">
+            <div className="p-4 border-b border-border flex items-center gap-2" style={{ backgroundColor: '#f0d0a6' }}>
               {config.connectedExchange === 'BINANCE' ? (
                 <Lock className="w-4 h-4 text-success" />
               ) : (
@@ -402,7 +402,7 @@ export default function Strategies() {
                 onClick={() => handleConnectExchange('BINANCE')}
                 disabled={loading || !!config.connectedExchange || !binanceKey || !binanceSecret}
                 data-testid="button-connect-binance"
-                className="w-full h-8 text-[10px] font-mono font-bold bg-primary text-primary-foreground hover:bg-primary/90"
+                className="w-full h-8 text-[10px] font-mono font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black uppercase"
               >
                 {config.connectedExchange === 'BINANCE' ? 'CONNECTED' : 'CONNECT'}
               </Button>
@@ -411,7 +411,7 @@ export default function Strategies() {
 
           {/* Bybit Connection */}
           <div className="bg-background border border-border p-0 shadow-sm" data-testid="form-bybit-keys">
-            <div className="p-4 border-b border-border bg-purple-500/5 flex items-center gap-2">
+            <div className="p-4 border-b border-border flex items-center gap-2" style={{ backgroundColor: '#f0d0a6' }}>
               {config.connectedExchange === 'BYBIT' ? (
                 <Lock className="w-4 h-4 text-success" />
               ) : (
@@ -452,7 +452,7 @@ export default function Strategies() {
                 onClick={() => handleConnectExchange('BYBIT')}
                 disabled={loading || !!config.connectedExchange || !bybitKey || !bybitSecret}
                 data-testid="button-connect-bybit"
-                className="w-full h-8 text-[10px] font-mono font-bold bg-primary text-primary-foreground hover:bg-primary/90"
+                className="w-full h-8 text-[10px] font-mono font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black uppercase"
               >
                 {config.connectedExchange === 'BYBIT' ? 'CONNECTED' : 'CONNECT'}
               </Button>
