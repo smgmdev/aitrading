@@ -242,17 +242,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 const trade = tradeLogs.find((t: any) => t.id === selectedTradeId);
                 if (!trade) return null;
 
-                // Find AI logs related to this trade
-                const relatedAiLogs = aiLogs.filter((log: any) => {
-                  if (log.relatedTradeId === `TRADE-${trade.id}`) return true;
-                  if (log.message?.includes(trade.pair)) {
-                    const logTime = log.createdAt ? new Date(log.createdAt).getTime() : 0;
-                    const entryTime = trade.entryTime ? new Date(trade.entryTime).getTime() : 0;
-                    const exitTime = trade.exitTime ? new Date(trade.exitTime).getTime() : 0;
-                    return logTime >= entryTime - 10000 && logTime <= exitTime + 10000;
-                  }
-                  return false;
-                });
+                // Find AI logs related to this trade by pair name
+                const relatedAiLogs = aiLogs.filter((log: any) => 
+                  log.message?.includes(trade.pair)
+);
 
                 return (
                   <div className="space-y-3">
