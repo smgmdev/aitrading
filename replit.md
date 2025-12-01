@@ -107,3 +107,22 @@ Preferred communication style: Simple, everyday language.
 - DATABASE_URL (required) - PostgreSQL connection string
 - NODE_ENV - development/production mode
 - REPL_ID - Replit deployment identifier (optional)
+
+## Deployment
+
+### Vercel Deployment Setup
+
+The project is configured for Vercel deployment with:
+- `vercel.json` - Vercel configuration with build command and environment settings
+- `.vercelignore` - Files excluded from Vercel builds
+- Full-stack support: Node.js backend (Express) + React frontend (Vite)
+
+**To deploy to Vercel:**
+1. Push code to GitHub repository
+2. Connect GitHub account to Vercel (https://vercel.com)
+3. Import the repository - Vercel will automatically:
+   - Run `npm run build` (builds both client and server)
+   - Deploy the Express backend to Node.js runtime
+   - Serve static React frontend from dist/public
+   - Set environment variables (add DATABASE_URL in Vercel project settings)
+4. The app runs as a single Node.js application serving both API and static files
