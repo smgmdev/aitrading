@@ -163,11 +163,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 {tradeLogs.length === 0 ? (
                   <div className="text-muted-foreground">No trades yet</div>
                 ) : (
-                  tradeLogs.slice(0, 20).map((log: any, idx: number) => (
-                    <div key={idx} className="text-foreground">
-                      <span className="text-success">[{log.pair}]</span> {log.side} @ ${parseFloat(log.exitPrice || log.entryPrice).toFixed(2)} | PnL: <span className={log.pnl >= 0 ? "text-success" : "text-destructive"}>{log.pnl >= 0 ? "+" : ""}{parseFloat(log.pnl).toFixed(2)}</span>
-                    </div>
-                  ))
+                  tradeLogs.slice(0, 20).map((log: any, idx: number) => {
+                    const timestamp = log.exitTime ? new Date(log.exitTime).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
+                    return (
+                      <div key={idx} className="text-foreground">
+                        <span className="text-muted-foreground">[{timestamp}]</span> <span className="text-success">[{log.pair}]</span> {log.side} @ ${parseFloat(log.exitPrice || log.entryPrice).toFixed(2)} | PnL: <span className={log.pnl >= 0 ? "text-success" : "text-destructive"}>{log.pnl >= 0 ? "+" : ""}{parseFloat(log.pnl).toFixed(2)}</span>
+                      </div>
+                    );
+                  })
                 )}
               </div>
             </div>
