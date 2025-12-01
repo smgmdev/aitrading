@@ -177,11 +177,22 @@ export class DatabaseStorage implements IStorage {
     if (!config) {
       const [newConfig] = await db.insert(systemConfig).values({
         connectedExchange: null,
+        binanceApiKey: null,
+        binanceApiSecret: null,
+        bybitApiKey: null,
+        bybitApiSecret: null,
       }).returning();
       return newConfig;
     }
 
-    const [updated] = await db.update(systemConfig).set({ connectedExchange: null, updatedAt: new Date() }).where(eq(systemConfig.id, config.id)).returning();
+    const [updated] = await db.update(systemConfig).set({ 
+      connectedExchange: null,
+      binanceApiKey: null,
+      binanceApiSecret: null,
+      bybitApiKey: null,
+      bybitApiSecret: null,
+      updatedAt: new Date() 
+    }).where(eq(systemConfig.id, config.id)).returning();
     return updated;
   }
 
