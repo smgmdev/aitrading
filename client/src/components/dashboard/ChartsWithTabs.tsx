@@ -84,18 +84,18 @@ export function ChartsWithTabs() {
 
   return (
     <div className="bg-background border border-border h-full flex flex-col relative">
-      {/* Tabs */}
-      <div className="border-b border-border bg-black overflow-x-auto">
-        <div className="flex min-w-max">
+      {/* Tabs Bar */}
+      <div className="bg-black border-b border-border">
+        <div className="flex overflow-x-auto">
           {/* Global Tab */}
           <button
             onClick={() => setActiveTab("GLOBAL")}
             data-testid="tab-global"
             className={cn(
-              "text-[11px] font-bold px-4 py-2 transition-colors border-r border-border whitespace-nowrap text-white",
+              "px-4 py-2.5 text-[11px] font-bold whitespace-nowrap border-r border-border transition-colors",
               activeTab === "GLOBAL"
-                ? "bg-primary"
-                : "bg-black hover:bg-gray-900"
+                ? "bg-primary text-primary-foreground"
+                : "bg-black text-white hover:bg-gray-900"
             )}
           >
             GLOBAL
@@ -108,10 +108,10 @@ export function ChartsWithTabs() {
               onClick={() => setActiveTab(position.tradeId)}
               data-testid={`tab-position-${position.id}`}
               className={cn(
-                "text-[11px] font-bold px-4 py-2 transition-colors border-r border-border whitespace-nowrap text-white",
+                "px-4 py-2.5 text-[11px] font-bold whitespace-nowrap border-r border-border transition-colors",
                 activeTab === position.tradeId
-                  ? "bg-primary"
-                  : "bg-black hover:bg-gray-900"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-black text-white hover:bg-gray-900"
               )}
             >
               {position.pair}
@@ -152,14 +152,14 @@ export function ChartsWithTabs() {
 
       {/* Timeframes Bar */}
       <div className="border-b border-border bg-background px-4 py-2">
-        <div className="flex border border-border bg-background min-w-max h-8 w-fit">
+        <div className="flex border border-border bg-background w-fit">
           {TIMEFRAMES.map((tf) => (
             <button
               key={tf}
               onClick={() => setActiveTimeframe(tf)}
               data-testid={`timeframe-${tf}`}
               className={cn(
-                "text-[10px] font-bold px-3 transition-colors border-r border-border last:border-r-0 min-w-[40px] flex-1 lg:flex-none flex items-center justify-center",
+                "text-[10px] font-bold px-3 py-1.5 transition-colors border-r border-border last:border-r-0",
                 activeTimeframe === tf
                   ? "bg-primary text-primary-foreground"
                   : "hover:bg-secondary text-muted-foreground hover:text-foreground"
