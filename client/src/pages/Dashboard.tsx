@@ -1,7 +1,7 @@
 import { Layout } from "@/components/layout/Layout";
 import { AIStatus } from "@/components/dashboard/AIStatus";
 import { ActiveTrades } from "@/components/dashboard/ActiveTrades";
-import { MarketChart } from "@/components/dashboard/MarketChart";
+import { ChartsWithTabs } from "@/components/dashboard/ChartsWithTabs";
 
 export default function Dashboard() {
   return (
@@ -14,7 +14,7 @@ export default function Dashboard() {
 
         {/* Chart Section - Full Width, Dominant Height */}
         <div className="flex-[2] min-h-[400px]">
-           <MarketChart />
+           <ChartsWithTabs />
         </div>
 
         {/* Active Trades Section */}
