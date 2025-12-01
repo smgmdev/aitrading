@@ -307,10 +307,15 @@ export default function Strategies() {
               </div>
               <Button
                 onClick={handleToggleTestMode}
-                className="h-9 px-6 font-mono text-xs font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black"
+                className="group h-9 px-6 font-mono text-xs font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black"
                 data-testid="button-toggle-test-mode"
               >
-                {testMode ? "Enable Live Trading" : "Switch to Test Mode"}
+                <span className="group-hover:hidden">
+                  {testMode ? "Real prices OFF" : "Real prices ON"}
+                </span>
+                <span className="hidden group-hover:inline">
+                  {testMode ? "Turn real prices ON" : "Turn real prices OFF"}
+                </span>
               </Button>
             </div>
           </div>
