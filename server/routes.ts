@@ -24,6 +24,12 @@ export async function registerRoutes(
     res.json(positions);
   });
 
+  app.get("/api/positions/manually-closed", async (req, res) => {
+    const limit = parseInt(req.query.limit as string) || 50;
+    const positions = await storage.getManuallyClosedPositions(limit);
+    res.json(positions);
+  });
+
   app.get("/api/positions/:id", async (req, res) => {
     const position = await storage.getPositionById(parseInt(req.params.id));
     if (!position) {
@@ -61,7 +67,7 @@ export async function registerRoutes(
     }
     
     const exitTime = new Date();
-    const closedPosition = await storage.closePosition(positionId, exitPrice, exitTime);
+    const closedPosition = await storage.closePositionByUser(positionId, exitPrice, exitTime);
     
     // Create log entry for manual close
     if (closedPosition) {

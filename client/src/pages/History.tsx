@@ -40,14 +40,18 @@ export default function HistoryPage() {
           setOpenTrades(Array.isArray(openData) ? openData : []);
         }
 
-        // Fetch closed positions
+        // Fetch closed positions (AI-closed)
         const closedRes = await fetch("/api/positions/closed?limit=100");
         if (closedRes.ok) {
           const closedData = await closedRes.json();
           setClosedTrades(Array.isArray(closedData) ? closedData : []);
-          
-          // For now, manually closed = closed positions (can be enhanced later with logs filtering)
-          setManuallyClosedTrades(Array.isArray(closedData) ? closedData.slice(0, 10) : []);
+        }
+
+        // Fetch manually closed positions
+        const manualRes = await fetch("/api/positions/manually-closed?limit=100");
+        if (manualRes.ok) {
+          const manualData = await manualRes.json();
+          setManuallyClosedTrades(Array.isArray(manualData) ? manualData : []);
         }
       } catch (error) {
         console.error("Failed to fetch positions:", error);

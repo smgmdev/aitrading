@@ -11,11 +11,13 @@ export interface IStorage {
   // Positions
   getOpenPositions(): Promise<Position[]>;
   getClosedPositions(limit?: number): Promise<Position[]>;
+  getManuallyClosedPositions(limit?: number): Promise<Position[]>;
   getAllPositions(): Promise<Position[]>;
   getPositionById(id: number): Promise<Position | undefined>;
   createPosition(position: InsertPosition): Promise<Position>;
   updatePosition(id: number, updates: Partial<InsertPosition>): Promise<Position | undefined>;
   closePosition(id: number, exitPrice: string, exitTime: Date): Promise<Position | undefined>;
+  closePositionByUser(id: number, exitPrice: string, exitTime: Date): Promise<Position | undefined>;
   
   // AI Logs
   getRecentLogs(limit?: number): Promise<AiLog[]>;
@@ -36,7 +38,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getClosedPositions(limit: number = 50): Promise<Position[]> {
-    return await db.select().from(positions).where(eq(positions.status, "CLOSED")).orderBy(desc(positions.exitTime)).limit(limit);
+    return await db.select().from(positions).where(and(eq(positions.status, "CLOSED"), eq(positions.closedByUser, false))).orderBy(desc(positions.exitTime)).limit(limit);
+  }
+
+  async getManuallyClosedPositions(limit: number = 50): Promise<Position[]> {
+    return await db.select().from(positions).where(and(eq(positions.status, "CLOSED"), eq(positions.closedByUser, true))).orderBy(desc(positions.exitTime)).limit(limit);
   }
 
   async getAllPositions(): Promise<Position[]> {
@@ -72,6 +78,29 @@ export class DatabaseStorage implements IStorage {
         exitTime,
         duration,
         status: "CLOSED",
+        closedByUser: false,
+      })
+      .where(eq(positions.id, id))
+      .returning();
+    
+    return updated || undefined;
+  }
+
+  async closePositionByUser(id: number, exitPrice: string, exitTime: Date): Promise<Position | undefined> {
+    const [position] = await db.select().from(positions).where(eq(positions.id, id));
+    if (!position) return undefined;
+
+    const entryTime = position.entryTime;
+    const duration = Math.floor((exitTime.getTime() - entryTime.getTime()) / 1000);
+
+    const [updated] = await db
+      .update(positions)
+      .set({
+        exitPrice,
+        exitTime,
+        duration,
+        status: "CLOSED",
+        closedByUser: true,
       })
       .where(eq(positions.id, id))
       .returning();

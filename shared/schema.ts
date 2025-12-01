@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, serial, timestamp, decimal, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, serial, timestamp, decimal, integer, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -24,6 +24,7 @@ export const positions = pgTable("positions", {
   entryTime: timestamp("entry_time").notNull().defaultNow(),
   exitTime: timestamp("exit_time"),
   duration: integer("duration"),
+  closedByUser: boolean("closed_by_user").notNull().default(false),
 });
 
 export const insertPositionSchema = createInsertSchema(positions).omit({
