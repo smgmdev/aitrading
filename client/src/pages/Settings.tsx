@@ -96,7 +96,7 @@ export default function Strategies() {
       <div className="space-y-6 max-w-[1200px] mx-auto">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-foreground tracking-tight uppercase">System Config</h1>
+            <h1 className="text-xl font-bold text-foreground tracking-tight uppercase">Exchange Config</h1>
             <p className="text-xs font-mono text-muted-foreground mt-1">EXCHANGE API KEY MANAGEMENT</p>
           </div>
         </div>

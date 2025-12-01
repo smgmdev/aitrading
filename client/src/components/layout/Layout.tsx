@@ -51,7 +51,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     { icon: LayoutDashboard, label: "TERMINAL", href: "/" },
     { icon: History, label: "EXECUTION LOGS", href: "/history" },
     { icon: Activity, label: "ALGO CONFIG", href: "/strategies" },
-    { icon: Settings, label: "SYSTEM CONFIG", href: "/settings" },
+    { icon: Settings, label: "EXCHANGE CONFIG", href: "/settings" },
   ];
 
   const statusColor = connectionStatus === "live" ? "bg-success" : connectionStatus === "testnet" ? "bg-warning" : "bg-destructive";
