@@ -153,11 +153,16 @@ export function ActivityFeed() {
 
             const formattedMessage = formatTradeLog(log.logType, log.message);
 
+            // Add permanent background for EXIT logs based on PnL
+            const hasPermanentBg = isExit && log.pnl !== undefined;
+            const permanentBgColor = isProfit ? "bg-green-500/15" : "bg-red-500/15";
+
             return (
               <div
                 key={log.id}
                 className={cn(
                   "px-3 py-1.5 hover:bg-white/5 border-b border-white/5 last:border-0",
+                  hasPermanentBg && permanentBgColor,
                   shouldFlash && (isProfit ? "flash-profit" : "flash-loss")
                 )}
                 data-testid={`activity-log-${index}`}
