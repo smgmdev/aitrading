@@ -45,7 +45,7 @@ async function initialize() {
 }
 
 // Export for Vercel serverless
-export default async (req: VercelRequest, res: VercelResponse) => {
+module.exports = async (req: VercelRequest, res: VercelResponse) => {
   await initialize();
   return app(req, res);
 };
