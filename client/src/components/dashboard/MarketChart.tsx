@@ -32,45 +32,47 @@ export function MarketChart() {
 
   return (
     <div className="bg-background border border-border h-full flex flex-col">
-      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-secondary/10">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-4 py-2 border-b border-border bg-secondary/10 gap-4">
+        <div className="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-start">
           <div>
             <div className="flex items-baseline gap-2">
               <h3 className="font-bold text-lg text-foreground">BTC/USDT</h3>
-              <span className="text-xs font-mono text-muted-foreground">PERPETUAL</span>
+              <span className="text-xs font-mono text-muted-foreground">PERP</span>
             </div>
           </div>
-          <div className="h-6 w-px bg-border"></div>
-          <div className="flex flex-col">
+          <div className="hidden lg:block h-6 w-px bg-border"></div>
+          <div className="flex flex-col items-end lg:items-start">
             <span className="text-[10px] text-muted-foreground uppercase font-medium">Current</span>
             <span className="text-sm font-mono font-bold text-foreground">${currentPrice.toFixed(2)}</span>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col items-end lg:items-start">
             <span className="text-[10px] text-muted-foreground uppercase font-medium">24h Change</span>
             <span className="text-sm font-mono font-bold text-success">+2.45%</span>
           </div>
         </div>
         
-        <div className="flex border border-border bg-background">
-          {TIMEFRAMES.map((tf) => (
-            <button 
-              key={tf}
-              onClick={() => setActiveTimeframe(tf)}
-              className={cn(
-                "text-[10px] font-bold px-3 py-1.5 transition-colors border-r border-border last:border-r-0 min-w-[32px]",
-                activeTimeframe === tf 
-                ? "bg-primary text-primary-foreground" 
-                : "hover:bg-secondary text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {tf}
-            </button>
-          ))}
+        <div className="w-full lg:w-auto overflow-x-auto">
+          <div className="flex border border-border bg-background min-w-max">
+            {TIMEFRAMES.map((tf) => (
+              <button 
+                key={tf}
+                onClick={() => setActiveTimeframe(tf)}
+                className={cn(
+                  "text-[10px] font-bold px-3 py-1.5 transition-colors border-r border-border last:border-r-0 min-w-[40px] flex-1 lg:flex-none",
+                  activeTimeframe === tf 
+                  ? "bg-primary text-primary-foreground" 
+                  : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {tf}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
       
       <div className="flex-1 min-h-[300px] w-full relative group">
-        <div className="absolute top-4 left-4 z-10 flex gap-2">
+        <div className="absolute top-4 left-4 z-10 flex gap-2 pointer-events-none">
              <div className="px-2 py-1 bg-background/80 border border-border backdrop-blur text-[10px] font-mono shadow-sm">
                 <span className="text-muted-foreground">AI SIGNAL:</span> <span className="text-success font-bold">LONG ENTRY</span>
              </div>
