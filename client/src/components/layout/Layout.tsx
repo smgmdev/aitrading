@@ -16,6 +16,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type ConnectionStatus = "live" | "testnet" | "disconnected";
 
@@ -36,6 +42,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [showAiBrainEngine, setShowAiBrainEngine] = useState<boolean>(false);
   const [tradeLogs, setTradeLogs] = useState<any[]>([]);
   const [aiLogs, setAiLogs] = useState<any[]>([]);
+  const [selectedTradeId, setSelectedTradeId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -204,7 +211,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     const modeLabel = log.mode === "HFT_SCALPER" ? "HFT" : "SWING";
                     const sideLabel = log.side === "LONG" ? "LONG" : "SHORT";
                     return (
-                      <div key={idx} className="text-black text-[10px] flex gap-3 font-mono px-3 py-2 transition-colors cursor-pointer trade-log-row">
+                      <div key={idx} onClick={() => setSelectedTradeId(log.id)} className="text-black text-[10px] flex gap-3 font-mono px-3 py-2 transition-colors cursor-pointer trade-log-row">
                         <span className="text-gray-700 min-w-max">[{timestamp}]</span>
                         <span className="text-black min-w-max">{log.pair} <span className="text-gray-700">{sideLabel}</span></span>
                         <span className="text-gray-700 min-w-max">Entry: {formatPrice(parseFloat(log.entryPrice))}</span>
@@ -220,6 +227,64 @@ export function Layout({ children }: { children: React.ReactNode }) {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Trade Details Modal */}
+        {selectedTradeId !== null && (
+          <Dialog open={selectedTradeId !== null} onOpenChange={(open) => {
+            if (!open) setSelectedTradeId(null);
+          }}>
+            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Trade Logic & Reasoning</DialogTitle>
+              </DialogHeader>
+              {(() => {
+                const trade = tradeLogs.find((t: any) => t.id === selectedTradeId);
+                if (!trade) return null;
+                
+                const relatedLogs = aiLogs.filter((log: any) => 
+                  log.message?.includes(trade.pair) || 
+                  (log.createdAt && trade.entryTime && new Date(log.createdAt).getTime() >= new Date(trade.entryTime).getTime() - 5000 && new Date(log.createdAt).getTime() <= new Date(trade.exitTime).getTime() + 5000)
+                );
+
+                return (
+                  <div className="space-y-4">
+                    <div className="bg-gray-50 p-3 rounded border border-gray-200">
+                      <h3 className="text-sm font-bold mb-2">TRADE SUMMARY</h3>
+                      <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
+                        <div>Pair: <span className="font-bold">{trade.pair}</span></div>
+                        <div>Side: <span className="font-bold">{trade.side}</span></div>
+                        <div>Mode: <span className="font-bold">{trade.mode === "HFT_SCALPER" ? "HFT" : "SWING"}</span></div>
+                        <div>Leverage: <span className="font-bold">{trade.leverage || 1}x</span></div>
+                        <div>Entry: <span className="font-bold">{formatPrice(parseFloat(trade.entryPrice))}</span></div>
+                        <div>Exit: <span className="font-bold">{formatPrice(parseFloat(trade.exitPrice))}</span></div>
+                        <div>PnL: <span className={cn("font-bold", parseFloat(trade.pnl) >= 0 ? "text-green-600" : "text-red-600")}>{formatPrice(parseFloat(trade.pnl))}</span></div>
+                        <div>Return: <span className={cn("font-bold", parseFloat(trade.pnlPercent) >= 0 ? "text-green-600" : "text-red-600")}>{parseFloat(trade.pnlPercent).toFixed(2)}%</span></div>
+                        <div>Stop Loss: <span className="font-bold">{formatPrice(parseFloat(trade.stopLoss || 0))}</span></div>
+                        <div>Take Profit: <span className="font-bold">{formatPrice(parseFloat(trade.takeProfit || 0))}</span></div>
+                      </div>
+                    </div>
+
+                    <div className="bg-blue-50 p-3 rounded border border-blue-200">
+                      <h3 className="text-sm font-bold mb-2">AI ANALYSIS & DECISION</h3>
+                      {relatedLogs.length === 0 ? (
+                        <div className="text-[10px] text-gray-600">No analysis logs found for this trade.</div>
+                      ) : (
+                        <div className="space-y-2">
+                          {relatedLogs.slice(0, 10).map((log: any, idx: number) => (
+                            <div key={idx} className="text-[10px] border-l-2 border-blue-300 pl-2 py-1">
+                              <div className="font-bold text-blue-700 mb-1">[{log.logType}]</div>
+                              <pre className="whitespace-pre-wrap break-words text-[9px] text-gray-700 leading-relaxed">{log.message}</pre>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
+            </DialogContent>
+          </Dialog>
         )}
 
         {/* AI Brain Engine Console */}
