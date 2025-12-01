@@ -1,6 +1,6 @@
 import { Terminal, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 type LogType = "ENTRY" | "EXIT" | "ANALYSIS" | "SCAN" | "HOLD" | "HFT";
 
@@ -10,17 +10,42 @@ interface Log {
   logType: string;
   message: string;
   pair?: string;
+  pnl?: number;
 }
 
 export function ActivityFeed() {
   const [logs, setLogs] = useState<Log[]>([]);
+  const [flashingIds, setFlashingIds] = useState<Set<number>>(new Set());
+  const seenIds = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     const fetchLogs = async () => {
       try {
         const res = await fetch("/api/logs?limit=20");
         const data = await res.json();
-        setLogs(data.reverse());
+        
+        // Parse PnL from message for EXIT logs
+        const logsWithPnL = data.map((log: any) => {
+          if (log.logType === "EXIT") {
+            const pnlMatch = log.message.match(/PnL:\s*([-+]?[\d.]+)/);
+            if (pnlMatch) {
+              return { ...log, pnl: parseFloat(pnlMatch[1]) };
+            }
+          }
+          return log;
+        });
+
+        const reversedLogs = logsWithPnL.reverse();
+        
+        // Trigger flash for new EXIT logs with PnL
+        reversedLogs.forEach((log) => {
+          if (log.logType === "EXIT" && log.pnl !== undefined && !seenIds.current.has(log.id)) {
+            seenIds.current.add(log.id);
+            setFlashingIds((prev) => new Set([...prev, log.id]));
+          }
+        });
+
+        setLogs(reversedLogs);
       } catch (error) {
         console.error("Failed to fetch logs:", error);
       }
@@ -74,11 +99,27 @@ export function ActivityFeed() {
               second: "2-digit",
               fractionalSecondDigits: 3,
             });
+
+            // Determine if this should flash
+            const isExit = log.logType === "EXIT";
+            const shouldFlash = isExit && log.pnl !== undefined && flashingIds.has(log.id);
+            const isProfit = log.pnl && log.pnl > 0;
+
             return (
               <div
                 key={log.id}
-                className="px-3 py-1.5 hover:bg-white/5 border-b border-white/5 last:border-0"
+                className={cn(
+                  "px-3 py-1.5 hover:bg-white/5 border-b border-white/5 last:border-0",
+                  shouldFlash && (isProfit ? "flash-profit" : "flash-loss")
+                )}
                 data-testid={`activity-log-${index}`}
+                onAnimationEnd={() => {
+                  setFlashingIds((prev) => {
+                    const updated = new Set(prev);
+                    updated.delete(log.id);
+                    return updated;
+                  });
+                }}
               >
                 <div className="flex gap-2 mb-0.5">
                   <div className="text-gray-500 min-w-[90px] select-none">{time}</div>
