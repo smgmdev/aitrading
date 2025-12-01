@@ -29,7 +29,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [winRatio, setWinRatio] = useState<string>("0%");
   const [totalTrades, setTotalTrades] = useState<number>(0);
   const [showTradeLogsConsole, setShowTradeLogsConsole] = useState<boolean>(false);
+  const [showAiBrainEngine, setShowAiBrainEngine] = useState<boolean>(false);
   const [tradeLogs, setTradeLogs] = useState<any[]>([]);
+  const [aiLogs, setAiLogs] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,6 +85,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
             setTradeLogs(closedPositions);
           }
         }
+
+        // Fetch AI logs
+        const logsRes = await fetch("/api/logs?limit=100");
+        if (logsRes.ok) {
+          const logs = await logsRes.json();
+          if (Array.isArray(logs)) {
+            setAiLogs(logs);
+          }
+        }
       } catch (error) {
         console.error("Failed to fetch data:", error);
         setConnectionStatus("disconnected");
@@ -90,7 +101,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 10000);
+    const interval = setInterval(fetchData, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -115,8 +126,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <TooltipProvider>
       <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans text-sm flex-col">
-        {/* Top Bar with Trade Logs Console Toggle */}
-        <div className="h-7 border-b border-border bg-secondary flex items-center px-4">
+        {/* Top Bar with Console Toggles */}
+        <div className="h-7 border-b border-border bg-secondary flex items-center px-4 gap-2">
           <button
             onClick={() => setShowTradeLogsConsole(!showTradeLogsConsole)}
             data-testid="button-toggle-trade-logs"
@@ -128,6 +139,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
             )}
           >
             TRADE LOGS CONSOLE
+          </button>
+          <button
+            onClick={() => setShowAiBrainEngine(!showAiBrainEngine)}
+            data-testid="button-toggle-ai-brain"
+            className={cn(
+              "px-3 py-1 text-[10px] font-mono uppercase transition-colors border",
+              showAiBrainEngine
+                ? "bg-cyan-500/30 text-cyan-300 border-cyan-500/50"
+                : "bg-transparent text-foreground border-border hover:bg-secondary/50 hover:border-foreground"
+            )}
+          >
+            AI BRAIN ENGINE
           </button>
         </div>
 
@@ -145,6 +168,35 @@ export function Layout({ children }: { children: React.ReactNode }) {
                       <span className="text-success">[{log.pair}]</span> {log.side} @ ${parseFloat(log.exitPrice || log.entryPrice).toFixed(2)} | PnL: <span className={log.pnl >= 0 ? "text-success" : "text-destructive"}>{log.pnl >= 0 ? "+" : ""}{parseFloat(log.pnl).toFixed(2)}</span>
                     </div>
                   ))
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* AI Brain Engine Console */}
+        {showAiBrainEngine && (
+          <div className="h-48 border-b border-border bg-black/50 overflow-y-auto">
+            <div className="p-3 text-[10px] font-mono">
+              <div className="text-cyan-400 mb-2 animate-pulse">▸ AI BRAIN ENGINE - REAL TIME DECISION LOG</div>
+              <div className="space-y-1">
+                {aiLogs.length === 0 ? (
+                  <div className="text-muted-foreground">Waiting for AI to think...</div>
+                ) : (
+                  aiLogs.slice(0, 50).reverse().map((log: any, idx: number) => {
+                    const logColor = log.logType === "ENTRY" ? "text-success" : 
+                                    log.logType === "EXIT" ? "text-warning" :
+                                    log.logType === "ANALYSIS" ? "text-cyan-300" :
+                                    log.logType === "DECISION" ? "text-cyan-400" :
+                                    "text-foreground";
+                    const timestamp = log.createdAt ? new Date(log.createdAt).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
+                    
+                    return (
+                      <div key={idx} className={cn("text-foreground", logColor)}>
+                        <span className="text-muted-foreground">[{timestamp}]</span> <span className="text-cyan-500">[{log.logType}]</span> {log.message}
+                      </div>
+                    );
+                  })
                 )}
               </div>
             </div>
