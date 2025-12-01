@@ -252,12 +252,12 @@ export function ChartsWithTabs() {
 
             {/* TP Line - Only if AI set it */}
             {chartData?.tpPrice && (
-              <ReferenceLine y={chartData.tpPrice} stroke="hsl(var(--success))" label={{ position: 'right', value: 'TP', fill: 'hsl(var(--success))', fontSize: 10, fontFamily: 'monospace' }} />
+              <ReferenceLine y={chartData.tpPrice} stroke="hsl(var(--success))" strokeWidth={2} strokeDasharray="5 5" label={{ position: 'right', value: 'TP', fill: 'hsl(var(--success))', fontSize: 10, fontFamily: 'monospace', fontWeight: 'bold' }} />
             )}
 
             {/* SL Line - Only if AI set it */}
             {chartData?.slPrice && (
-              <ReferenceLine y={chartData.slPrice} stroke="hsl(var(--destructive))" label={{ position: 'right', value: 'SL', fill: 'hsl(var(--destructive))', fontSize: 10, fontFamily: 'monospace' }} />
+              <ReferenceLine y={chartData.slPrice} stroke="hsl(var(--destructive))" strokeWidth={2} strokeDasharray="5 5" label={{ position: 'right', value: 'SL', fill: 'hsl(var(--destructive))', fontSize: 10, fontFamily: 'monospace', fontWeight: 'bold' }} />
             )}
 
             <Area
