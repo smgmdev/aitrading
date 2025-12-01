@@ -56,7 +56,8 @@ export function ActivityFeed() {
     return () => clearInterval(interval);
   }, []);
 
-  const getLogTypeColor = (type: string): string => {
+  const getLogTypeColor = (type: string | undefined): string => {
+    if (!type) return "text-gray-400";
     switch (type.toUpperCase()) {
       case "ENTRY":
         return "text-green-400";
@@ -75,7 +76,8 @@ export function ActivityFeed() {
     }
   };
 
-  const formatTradeLog = (logType: string, message: string): string => {
+  const formatTradeLog = (logType: string | undefined, message: string): string => {
+    if (!logType || !message) return "";
     const firstLine = message.split('\n')[0];
     
     if (logType === "ENTRY") {
