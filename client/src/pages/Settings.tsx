@@ -402,7 +402,7 @@ export default function Strategies() {
                 onClick={() => handleConnectExchange('BINANCE')}
                 disabled={loading || !!config.connectedExchange || !binanceKey || !binanceSecret}
                 data-testid="button-connect-binance"
-                className="w-full h-8 text-[10px] font-mono font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black uppercase"
+                className="w-full h-9 text-xs font-mono font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black uppercase"
               >
                 {config.connectedExchange === 'BINANCE' ? 'CONNECTED' : 'CONNECT'}
               </Button>
@@ -452,7 +452,7 @@ export default function Strategies() {
                 onClick={() => handleConnectExchange('BYBIT')}
                 disabled={loading || !!config.connectedExchange || !bybitKey || !bybitSecret}
                 data-testid="button-connect-bybit"
-                className="w-full h-8 text-[10px] font-mono font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black uppercase"
+                className="w-full h-9 text-xs font-mono font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black uppercase"
               >
                 {config.connectedExchange === 'BYBIT' ? 'CONNECTED' : 'CONNECT'}
               </Button>
