@@ -192,8 +192,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* Trade Logs Console */}
         {showTradeLogsConsole && (
           <div className="h-48 border-b border-border bg-white overflow-y-auto">
-            <div className="p-3 text-[10px] font-mono">
-              <div className="text-black mb-2 uppercase font-bold text-[11px]">Trade Logs:</div>
+            <div className="p-3 text-xs font-mono">
+              <div className="text-black mb-2 uppercase font-bold">Trade Logs:</div>
               <div className="space-y-2">
                 {tradeLogs.length === 0 ? (
                   <div className="text-gray-600">No trades yet</div>
@@ -202,10 +202,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     const timestamp = log.exitTime ? new Date(log.exitTime).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
                     const pnlNumber = parseFloat(log.pnl || 0);
                     const modeLabel = log.mode === "HFT_SCALPER" ? "HFT" : "SWING";
+                    const sideLabel = log.side === "LONG" ? "LONG" : "SHORT";
                     return (
-                      <div key={idx} className="text-black text-[10px] flex gap-3 font-mono">
+                      <div key={idx} className="text-black text-xs flex gap-3 font-mono">
                         <span className="text-gray-700 min-w-max">[{timestamp}]</span>
-                        <span className="text-black font-bold min-w-max">{log.pair}</span>
+                        <span className="text-black font-bold min-w-max">{log.pair} {sideLabel}</span>
                         <span className="text-gray-700 min-w-max">Entry: {formatPrice(parseFloat(log.entryPrice))}</span>
                         <span className="text-gray-600 min-w-max">{modeLabel}</span>
                         <span className="text-gray-700 min-w-max">Exit: {formatPrice(parseFloat(log.exitPrice))}</span>
