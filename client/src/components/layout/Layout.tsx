@@ -18,11 +18,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [connectedExchange, setConnectedExchange] = useState<string | null>(null);
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>("disconnected");
   const [latency, setLatency] = useState<number>(0);
+  const [equity, setEquity] = useState<number>(10000);
+  const [pnl24h, setPnl24h] = useState<number>(0);
+  const [winRatio, setWinRatio] = useState<string>("0%");
+  const [totalTrades, setTotalTrades] = useState<number>(0);
 
   useEffect(() => {
-    const fetchExchange = async () => {
+    const fetchData = async () => {
       const startTime = Date.now();
       try {
+        // Fetch exchange connection
         const res = await fetch("/api/exchange/connected");
         const endTime = Date.now();
         setLatency(endTime - startTime);
@@ -30,20 +35,53 @@ export function Layout({ children }: { children: React.ReactNode }) {
         const data = await res.json();
         setConnectedExchange(data.connected);
         
-        // Determine connection status (for now, if connected assume LIVE)
         if (data.connected) {
           setConnectionStatus("live");
         } else {
           setConnectionStatus("disconnected");
         }
+
+        // Fetch closed positions for PnL calculation
+        const closedRes = await fetch("/api/positions/closed?limit=200");
+        if (closedRes.ok) {
+          const closedPositions = await closedRes.json();
+          
+          if (Array.isArray(closedPositions)) {
+            // Calculate 24H PnL
+            const now = Date.now();
+            const oneDayAgo = now - 24 * 60 * 60 * 1000;
+            
+            let pnl24hSum = 0;
+            let winCount = 0;
+            
+            closedPositions.forEach((pos: any) => {
+              const exitTime = pos.exitTime ? new Date(pos.exitTime).getTime() : 0;
+              const pnl = parseFloat(pos.pnl || "0");
+              
+              if (exitTime >= oneDayAgo) {
+                pnl24hSum += pnl;
+              }
+              
+              if (pnl > 0) {
+                winCount++;
+              }
+            });
+            
+            setPnl24h(pnl24hSum);
+            const ratio = closedPositions.length > 0 ? Math.round((winCount / closedPositions.length) * 100) : 0;
+            setWinRatio(`${ratio}%`);
+            setTotalTrades(closedPositions.length);
+            setEquity(10000 + pnl24hSum);
+          }
+        }
       } catch (error) {
-        console.error("Failed to fetch connected exchange:", error);
+        console.error("Failed to fetch data:", error);
         setConnectionStatus("disconnected");
       }
     };
 
-    fetchExchange();
-    const interval = setInterval(fetchExchange, 10000);
+    fetchData();
+    const interval = setInterval(fetchData, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -62,8 +100,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans text-sm flex-col">
       {/* Header */}
-      <header className="h-8 border-b border-border flex items-center justify-between px-4 bg-black">
-        <div className="flex items-center gap-3">
+      <header className="h-8 border-b border-border flex items-center justify-between px-4 bg-black overflow-x-auto">
+        <div className="flex items-center gap-3 whitespace-nowrap">
            <div className="flex items-center gap-1 text-[10px] font-mono text-white uppercase">
               <span>LATENCY: {latency}MS</span>
            </div>
@@ -75,6 +113,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
            <div className="h-3 w-px bg-border"></div>
            <div className="flex items-center gap-1 text-[10px] font-mono text-white uppercase">
               <span>{exchangeLabel}</span>
+           </div>
+           <div className="h-3 w-px bg-border"></div>
+           <div className="flex items-center gap-1 text-[10px] font-mono text-white uppercase">
+              <span>EQUITY: ${equity.toFixed(2)}</span>
+           </div>
+           <div className="h-3 w-px bg-border"></div>
+           <div className={cn("flex items-center gap-1 text-[10px] font-mono uppercase", pnl24h >= 0 ? "text-success" : "text-destructive")}>
+              <span>24H PNL: {pnl24h >= 0 ? "+" : ""}{pnl24h.toFixed(2)}</span>
+           </div>
+           <div className="h-3 w-px bg-border"></div>
+           <div className="flex items-center gap-1 text-[10px] font-mono text-white uppercase">
+              <span>WIN RATIO: {winRatio} / {totalTrades}</span>
            </div>
         </div>
         
