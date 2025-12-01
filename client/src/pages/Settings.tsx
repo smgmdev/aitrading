@@ -150,29 +150,7 @@ export default function Strategies() {
             {/* Algo Config */}
             <div className="bg-background border border-border p-0 shadow-sm">
               <div className="p-4 border-b border-border bg-primary/5 flex items-center justify-between">
-                 <div className="flex items-center gap-2">
-                   <BrainCircuit className="w-4 h-4 text-primary" />
-                   <h3 className="font-bold text-sm uppercase tracking-wider text-primary">Algo Config</h3>
-                 </div>
-                 <Button 
-                    variant="default" 
-                    size="sm" 
-                    onClick={handleFullAutoOptimize}
-                    disabled={isAnalyzing}
-                    className="h-7 text-[10px] font-mono bg-primary text-primary-foreground hover:bg-primary/90"
-                  >
-                    {isAnalyzing ? (
-                      <>
-                        <RefreshCw className="w-3 h-3 mr-2 animate-spin" />
-                        RE-CALIBRATING...
-                      </>
-                    ) : (
-                      <>
-                        <Zap className="w-3 h-3 mr-2" />
-                        FORCE RE-ANALYSIS
-                      </>
-                    )}
-                  </Button>
+                 <h3 className="font-bold text-sm uppercase tracking-wider text-primary">Algo Config</h3>
               </div>
               
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
