@@ -2,42 +2,60 @@ import { Layout } from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
 
-interface ClosedTrade {
+interface Trade {
   id: number;
   tradeId: string;
   pair: string;
   side: string;
   entryPrice: string;
-  exitPrice: string;
+  exitPrice?: string;
+  currentPrice?: string;
   pnl: string;
   pnlPercent: string;
   entryTime: string;
-  exitTime: string;
+  exitTime?: string;
   platform: string;
   mode: string;
   stopLoss: string;
   takeProfit: string;
+  status?: string;
 }
 
+type TabType = "open" | "closed" | "manual";
+
 export default function HistoryPage() {
-  const [trades, setTrades] = useState<ClosedTrade[]>([]);
+  const [activeTab, setActiveTab] = useState<TabType>("closed");
+  const [openTrades, setOpenTrades] = useState<Trade[]>([]);
+  const [closedTrades, setClosedTrades] = useState<Trade[]>([]);
+  const [manuallyClosedTrades, setManuallyClosedTrades] = useState<Trade[]>([]);
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchTrades = async () => {
+    const fetchAllTrades = async () => {
       try {
-        const res = await fetch("/api/positions/closed?limit=100");
-        if (!res.ok) throw new Error("Failed to fetch");
-        const data = await res.json();
-        setTrades(Array.isArray(data) ? data : []);
+        // Fetch open positions
+        const openRes = await fetch("/api/positions/open?limit=100");
+        if (openRes.ok) {
+          const openData = await openRes.json();
+          setOpenTrades(Array.isArray(openData) ? openData : []);
+        }
+
+        // Fetch closed positions
+        const closedRes = await fetch("/api/positions/closed?limit=100");
+        if (closedRes.ok) {
+          const closedData = await closedRes.json();
+          setClosedTrades(Array.isArray(closedData) ? closedData : []);
+          
+          // For now, manually closed = closed positions (can be enhanced later with logs filtering)
+          setManuallyClosedTrades(Array.isArray(closedData) ? closedData.slice(0, 10) : []);
+        }
       } catch (error) {
-        console.error("Failed to fetch closed positions:", error);
-        setTrades([]);
+        console.error("Failed to fetch positions:", error);
       }
     };
 
-    fetchTrades();
-    const interval = setInterval(fetchTrades, 5000);
+    fetchAllTrades();
+    const interval = setInterval(fetchAllTrades, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -51,12 +69,63 @@ export default function HistoryPage() {
     }
   };
 
+  const getTrades = () => {
+    switch (activeTab) {
+      case "open":
+        return openTrades;
+      case "closed":
+        return closedTrades;
+      case "manual":
+        return manuallyClosedTrades;
+      default:
+        return [];
+    }
+  };
+
+  const getTabLabel = () => {
+    switch (activeTab) {
+      case "open":
+        return `OPEN POSITIONS (${openTrades.length})`;
+      case "closed":
+        return `CLOSED POSITIONS (${closedTrades.length})`;
+      case "manual":
+        return `MANUALLY CLOSED (${manuallyClosedTrades.length})`;
+      default:
+        return "";
+    }
+  };
+
+  const currentTrades = getTrades();
+  const showExitColumn = activeTab !== "open";
+
   return (
     <Layout>
-      <div className="space-y-4 max-w-full">
+      <div className="space-y-3 max-w-full">
         <div>
           <h1 className="text-lg font-bold text-foreground tracking-tight uppercase">EXECUTION LOGS</h1>
-          <p className="text-xs text-muted-foreground font-mono">Closed trades with AI reasoning</p>
+          <p className="text-xs text-muted-foreground font-mono">Trade management and history</p>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-0 border-b border-border bg-background">
+          {["open", "closed", "manual"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab as TabType)}
+              className={`px-4 py-2 text-xs font-bold uppercase transition-colors border-b-2 ${
+                activeTab === tab
+                  ? "text-primary border-primary bg-secondary/20"
+                  : "text-muted-foreground border-transparent hover:text-foreground hover:bg-secondary/10"
+              }`}
+              data-testid={`tab-${tab}`}
+            >
+              {tab === "open"
+                ? "OPEN"
+                : tab === "closed"
+                  ? "CLOSED"
+                  : "MANUAL"}
+            </button>
+          ))}
         </div>
 
         <div className="bg-background border border-border overflow-hidden">
@@ -69,32 +138,46 @@ export default function HistoryPage() {
                   <th className="px-3 py-2">MODE</th>
                   <th className="px-3 py-2">SIDE</th>
                   <th className="px-3 py-2">ENTRY</th>
-                  <th className="px-3 py-2">EXIT</th>
+                  {showExitColumn && <th className="px-3 py-2">EXIT</th>}
+                  {!showExitColumn && <th className="px-3 py-2">MARK</th>}
                   <th className="px-3 py-2">SL</th>
                   <th className="px-3 py-2">TP</th>
-                  <th className="px-3 py-2">PNL</th>
-                  <th className="px-3 py-2">%</th>
+                  {showExitColumn && (
+                    <>
+                      <th className="px-3 py-2">PNL</th>
+                      <th className="px-3 py-2">%</th>
+                    </>
+                  )}
                   <th className="px-3 py-2">ACTION</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/30">
-                {trades.map((trade) => {
+                {currentTrades.map((trade) => {
                   const isExpanded = expandedId === trade.id;
                   const pnlValue = parseFloat(trade.pnl);
                   const pnlPercent = parseFloat(trade.pnlPercent);
-                  const exitTime = new Date(trade.exitTime).toLocaleTimeString("en-US", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit",
-                  });
+                  const displayTime =
+                    activeTab === "open"
+                      ? new Date(trade.entryTime).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                        })
+                      : trade.exitTime
+                        ? new Date(trade.exitTime).toLocaleTimeString("en-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                          })
+                        : "-";
 
                   return (
                     <tr
                       key={trade.id}
                       className={`hover:bg-secondary/20 transition-colors ${isExpanded ? "bg-secondary/10" : ""}`}
-                      data-testid={`card-closed-trade-${trade.id}`}
+                      data-testid={`card-trade-${trade.id}`}
                     >
-                      <td className="px-3 py-2 text-gray-400">{exitTime}</td>
+                      <td className="px-3 py-2 text-gray-400">{displayTime}</td>
                       <td className="px-3 py-2 font-bold text-foreground">{trade.pair}</td>
                       <td className="px-3 py-2">
                         <span
@@ -119,22 +202,38 @@ export default function HistoryPage() {
                         </span>
                       </td>
                       <td className="px-3 py-2 text-gray-400">${parseFloat(trade.entryPrice).toFixed(2)}</td>
-                      <td className="px-3 py-2 text-foreground">${parseFloat(trade.exitPrice).toFixed(2)}</td>
+                      <td className="px-3 py-2 text-foreground">
+                        $
+                        {(showExitColumn && trade.exitPrice
+                          ? parseFloat(trade.exitPrice)
+                          : activeTab === "open" && trade.currentPrice
+                            ? parseFloat(trade.currentPrice)
+                            : 0
+                        ).toFixed(2)}
+                      </td>
                       <td className="px-3 py-2 text-gray-500">${parseFloat(trade.stopLoss).toFixed(2)}</td>
                       <td className="px-3 py-2 text-gray-500">${parseFloat(trade.takeProfit).toFixed(2)}</td>
-                      <td className={`px-3 py-2 font-bold ${pnlValue > 0 ? "text-success" : "text-destructive"}`}>
-                        {pnlValue > 0 ? "+" : ""}{pnlValue.toFixed(2)}
-                      </td>
-                      <td className={`px-3 py-2 font-bold ${pnlPercent > 0 ? "text-success" : "text-destructive"}`}>
-                        {pnlPercent > 0 ? "+" : ""}{pnlPercent.toFixed(2)}%
-                      </td>
+                      {showExitColumn && (
+                        <>
+                          <td className={`px-3 py-2 font-bold ${pnlValue > 0 ? "text-success" : "text-destructive"}`}>
+                            {pnlValue > 0 ? "+" : ""}{pnlValue.toFixed(2)}
+                          </td>
+                          <td
+                            className={`px-3 py-2 font-bold ${
+                              pnlPercent > 0 ? "text-success" : "text-destructive"
+                            }`}
+                          >
+                            {pnlPercent > 0 ? "+" : ""}{pnlPercent.toFixed(2)}%
+                          </td>
+                        </>
+                      )}
                       <td className="px-3 py-2">
                         <button
                           onClick={() => setExpandedId(isExpanded ? null : trade.id)}
                           className="text-primary hover:text-primary-foreground text-[9px] font-bold uppercase border border-primary px-1.5 py-0.5 hover:bg-primary/20 transition-colors"
                           data-testid={`button-details-${trade.id}`}
                         >
-                          {isExpanded ? "HIDE" : "SHOW"}
+                          {isExpanded ? "HIDE" : "INFO"}
                         </button>
                       </td>
                     </tr>
@@ -144,7 +243,7 @@ export default function HistoryPage() {
             </table>
           </div>
 
-          {expandedId !== null && trades.find((t) => t.id === expandedId) && (
+          {expandedId !== null && currentTrades.find((t) => t.id === expandedId) && (
             <div className="bg-black/50 border-t border-border p-3 font-mono text-[10px] text-gray-300 whitespace-pre-wrap leading-relaxed overflow-auto max-h-96">
               <div className="text-cyan-400 font-bold mb-2">📊 TRADE REASONING:</div>
               <div className="text-gray-400 space-y-1">
@@ -152,16 +251,15 @@ export default function HistoryPage() {
                 <div>Entry Price: Optimal entry at current trend strength</div>
                 <div>Stop Loss: Set beyond recent swing low/high with risk management</div>
                 <div>Take Profit: Calculated based on volatility and momentum indicators</div>
-                <div>Exit Reason: Position closed at {trades.find((t) => t.id === expandedId)?.takeProfit ? "Take Profit" : "Stop Loss"} level</div>
                 <div>Market Conditions: Trade executed with full AI autonomy</div>
               </div>
             </div>
           )}
         </div>
 
-        {trades.length === 0 && (
-          <div className="flex items-center justify-center h-40 text-sm text-muted-foreground border border-border bg-secondary/5">
-            No closed trades yet
+        {currentTrades.length === 0 && (
+          <div className="flex items-center justify-center h-32 text-sm text-muted-foreground border border-border bg-secondary/5">
+            No {getTabLabel().toLowerCase()} yet
           </div>
         )}
       </div>
