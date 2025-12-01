@@ -264,7 +264,7 @@ export default function Strategies() {
                     </div>
                     <Button
                       onClick={handleApplyPermissions}
-                      className="h-9 px-4 font-mono text-xs font-bold bg-success/20 text-success border border-success hover:bg-success/30 hover:shadow-lg hover:scale-105 transition-all"
+                      className="h-9 px-4 font-mono text-xs font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black"
                       data-testid="button-apply-permissions"
                     >
                       APPLY
