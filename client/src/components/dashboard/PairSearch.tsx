@@ -53,6 +53,12 @@ export function PairSearch({ value, onChange }: PairSearchProps) {
     setIsOpen(false);
   };
 
+  const handleClear = () => {
+    setSearch("");
+    onChange("");
+    setIsOpen(false);
+  };
+
   const displayValue = search || value;
 
   return (
@@ -61,11 +67,18 @@ export function PairSearch({ value, onChange }: PairSearchProps) {
         <Search className="absolute left-3 w-3 h-3 text-muted-foreground pointer-events-none" />
         <input
           type="text"
-          placeholder="Search pairs..."
+          placeholder="Search or type pair..."
           value={displayValue}
           onChange={(e) => {
             setSearch(e.target.value);
             setIsOpen(true);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && search.trim()) {
+              onChange(search.trim().toUpperCase());
+              setSearch("");
+              setIsOpen(false);
+            }
           }}
           onFocus={() => setIsOpen(true)}
           data-testid="input-pair-search"
@@ -73,10 +86,7 @@ export function PairSearch({ value, onChange }: PairSearchProps) {
         />
         {displayValue && (
           <button
-            onClick={() => {
-              setSearch("");
-              setIsOpen(false);
-            }}
+            onClick={handleClear}
             className="absolute right-3 text-muted-foreground hover:text-foreground cursor-pointer"
             data-testid="button-clear-search"
           >
@@ -90,7 +100,9 @@ export function PairSearch({ value, onChange }: PairSearchProps) {
           {loading ? (
             <div className="p-2 text-[10px] text-muted-foreground text-center">Loading pairs...</div>
           ) : filteredPairs.length === 0 ? (
-            <div className="p-2 text-[10px] text-muted-foreground text-center">No pairs found</div>
+            <div className="p-2 text-[10px] text-muted-foreground text-center">
+              {search.trim() ? `Type and press Enter to use "${search.trim().toUpperCase()}"` : "No pairs found"}
+            </div>
           ) : (
             filteredPairs.map((pair) => (
               <button
