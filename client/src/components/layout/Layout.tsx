@@ -99,7 +99,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 setShowEquityChange(false);
                 setEquityBlinkColor(null);
               }, 10000);
-              return () => clearTimeout(timer);
             }
             setTradeLogs(closedPositions);
           }
