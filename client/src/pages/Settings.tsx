@@ -310,10 +310,10 @@ export default function Strategies() {
                 data-testid="button-toggle-test-mode"
               >
                 <span className="group-hover:hidden">
-                  {testMode ? "REAL PRICES OFF" : "REAL PRICES ON"}
+                  {testMode ? "REAL PRICES ARE OFF" : "REAL PRICES ARE ON"}
                 </span>
                 <span className="hidden group-hover:inline">
-                  {testMode ? "TURN REAL PRICES ON" : "TURN REAL PRICES OFF"}
+                  {testMode ? "TURN REAL PRICES ARE ON" : "TURN REAL PRICES ARE OFF"}
                 </span>
               </Button>
             </div>
