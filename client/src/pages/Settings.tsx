@@ -309,7 +309,7 @@ export default function Strategies() {
                   placeholder="Paste Binance API Key"
                   value={binanceKey}
                   onChange={(e) => setBinanceKey(e.target.value)}
-                  disabled={!!(config.connectedExchange && config.connectedExchange !== 'BINANCE')}
+                  disabled={!!config.connectedExchange}
                   data-testid="input-binance-key"
                   className="font-mono text-xs h-8"
                 />
@@ -321,7 +321,7 @@ export default function Strategies() {
                   type="password"
                   value={binanceSecret}
                   onChange={(e) => setBinanceSecret(e.target.value)}
-                  disabled={!!(config.connectedExchange && config.connectedExchange !== 'BINANCE')}
+                  disabled={!!config.connectedExchange}
                   data-testid="input-binance-secret"
                   className="font-mono text-xs h-8"
                 />
@@ -329,7 +329,7 @@ export default function Strategies() {
             </div>
             <Button
               onClick={() => handleConnectExchange('BINANCE')}
-              disabled={loading || (config.connectedExchange && config.connectedExchange !== 'BINANCE') || !binanceKey || !binanceSecret}
+              disabled={loading || !!config.connectedExchange || !binanceKey || !binanceSecret}
               data-testid="button-connect-binance"
               className="w-full h-8 text-[10px] font-mono font-bold bg-primary text-primary-foreground hover:bg-primary/90"
             >
@@ -353,7 +353,7 @@ export default function Strategies() {
                   placeholder="Paste Bybit API Key"
                   value={bybitKey}
                   onChange={(e) => setBybitKey(e.target.value)}
-                  disabled={!!(config.connectedExchange && config.connectedExchange !== 'BYBIT')}
+                  disabled={!!config.connectedExchange}
                   data-testid="input-bybit-key"
                   className="font-mono text-xs h-8"
                 />
@@ -365,7 +365,7 @@ export default function Strategies() {
                   type="password"
                   value={bybitSecret}
                   onChange={(e) => setBybitSecret(e.target.value)}
-                  disabled={!!(config.connectedExchange && config.connectedExchange !== 'BYBIT')}
+                  disabled={!!config.connectedExchange}
                   data-testid="input-bybit-secret"
                   className="font-mono text-xs h-8"
                 />
@@ -373,7 +373,7 @@ export default function Strategies() {
             </div>
             <Button
               onClick={() => handleConnectExchange('BYBIT')}
-              disabled={loading || (config.connectedExchange && config.connectedExchange !== 'BYBIT') || !bybitKey || !bybitSecret}
+              disabled={loading || !!config.connectedExchange || !bybitKey || !bybitSecret}
               data-testid="button-connect-bybit"
               className="w-full h-8 text-[10px] font-mono font-bold bg-primary text-primary-foreground hover:bg-primary/90"
             >
