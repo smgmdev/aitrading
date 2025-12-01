@@ -243,7 +243,7 @@ export default function Strategies() {
                  <h3 className="font-bold text-sm uppercase tracking-wider">Permission Settings</h3>
               </div>
               <div className="p-6">
-                 <div className="flex items-end gap-4 max-w-md">
+                 <div className="flex gap-4 max-w-md">
                     <div className="flex-1">
                       <Label className="font-bold text-xs uppercase mb-2 block">Max Portfolio Allocation (%)</Label>
                       <Input 
@@ -262,14 +262,14 @@ export default function Strategies() {
                         className="font-mono text-lg"
                       />
                     </div>
-                    <Button
-                      onClick={handleApplyPermissions}
-                      className="h-9 px-4 font-mono text-xs font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black"
-                      data-testid="button-apply-permissions"
-                    >
-                      APPLY
-                    </Button>
                  </div>
+                 <Button
+                   onClick={handleApplyPermissions}
+                   className="w-32 h-9 font-mono text-xs font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black mt-4"
+                   data-testid="button-apply-permissions"
+                 >
+                   APPLY
+                 </Button>
                  <p className="text-[10px] text-muted-foreground mt-3">
                    * AI automatically balances risk across multiple assets.
                  </p>
@@ -296,7 +296,7 @@ export default function Strategies() {
             <h3 className="font-bold text-sm uppercase tracking-wider text-cyan-500">Trading Mode</h3>
           </div>
           <div className="p-6">
-            <div className="flex items-center justify-between">
+            <div className="space-y-4">
               <div className="space-y-1">
                 <Label className="font-bold text-xs uppercase">Test Mode {testMode ? '(ACTIVE)' : '(REAL)'}</Label>
                 <p className="text-[10px] text-muted-foreground">
@@ -307,7 +307,7 @@ export default function Strategies() {
               </div>
               <Button
                 onClick={handleToggleTestMode}
-                className="group h-9 px-6 font-mono text-xs font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black"
+                className="group w-40 h-9 font-mono text-xs font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black"
                 data-testid="button-toggle-test-mode"
               >
                 <span className="group-hover:hidden">
