@@ -301,7 +301,7 @@ export default function Strategies() {
                 <p className="text-[10px] text-muted-foreground">
                   {testMode 
                     ? 'Simulated prices and positions. No real trades.'
-                    : 'Using REAL exchange prices. Live trading active.'}
+                    : 'Using REAL exchange prices. No real trades.'}
                 </p>
               </div>
               <Button
