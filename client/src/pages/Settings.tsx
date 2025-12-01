@@ -3,7 +3,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { BrainCircuit, RefreshCw, ShieldCheck, Zap, Timer, Scale, Lock, Unlock } from "lucide-react";
+import { BrainCircuit, RefreshCw, ShieldCheck, Zap, Timer, Scale, Lock, Unlock, LockOpen } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 
@@ -298,7 +298,11 @@ export default function Strategies() {
           {/* Binance Connection */}
           <div className="space-y-3 p-4 border border-border/50 hover:border-border transition-colors" data-testid="form-binance-keys">
             <div className="flex items-center gap-2">
-              <Lock className={`w-4 h-4 ${config.connectedExchange === 'BINANCE' ? 'text-success' : 'text-muted-foreground'}`} />
+              {config.connectedExchange === 'BINANCE' ? (
+                <Lock className="w-4 h-4 text-success" />
+              ) : (
+                <LockOpen className="w-4 h-4 text-muted-foreground" />
+              )}
               <h4 className="font-bold text-[11px] uppercase tracking-wide">Binance</h4>
               {config.connectedExchange === 'BINANCE' && (
                 <span className="text-[8px] font-mono text-success border border-success/40 px-1.5 py-0.5">CONNECTED</span>
@@ -342,7 +346,11 @@ export default function Strategies() {
           {/* Bybit Connection */}
           <div className="space-y-3 p-4 border border-border/50 hover:border-border transition-colors" data-testid="form-bybit-keys">
             <div className="flex items-center gap-2">
-              <Lock className={`w-4 h-4 ${config.connectedExchange === 'BYBIT' ? 'text-success' : 'text-muted-foreground'}`} />
+              {config.connectedExchange === 'BYBIT' ? (
+                <Lock className="w-4 h-4 text-success" />
+              ) : (
+                <LockOpen className="w-4 h-4 text-muted-foreground" />
+              )}
               <h4 className="font-bold text-[11px] uppercase tracking-wide">Bybit</h4>
               {config.connectedExchange === 'BYBIT' && (
                 <span className="text-[8px] font-mono text-success border border-success/40 px-1.5 py-0.5">CONNECTED</span>
