@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, ReferenceLine } from "recharts";
 import { BrainCircuit, ShieldAlert, Timer } from "lucide-react";
+import { PairSearch } from "./PairSearch";
 
 interface Position {
   id: number;
@@ -34,6 +35,7 @@ export function ChartsWithTabs() {
   const [positions, setPositions] = useState<Position[]>([]);
   const [activeTab, setActiveTab] = useState("GLOBAL");
   const [activeTimeframe, setActiveTimeframe] = useState("1m");
+  const [globalPair, setGlobalPair] = useState("BTCUSDT");
   const data = generateData();
 
   useEffect(() => {
@@ -58,7 +60,7 @@ export function ChartsWithTabs() {
   const getChartData = () => {
     if (activeTab === "GLOBAL") {
       return {
-        pair: "MARKET OVERVIEW",
+        pair: globalPair,
         entryPrice: null,
         tpPrice: null,
         slPrice: null,
@@ -112,7 +114,7 @@ export function ChartsWithTabs() {
                   : "bg-black hover:bg-gray-900"
               )}
             >
-              {position.pair.replace("USDT", "")} ({parseFloat(position.entryPrice).toFixed(0)})
+              {position.pair}
             </button>
           ))}
         </div>
@@ -121,11 +123,17 @@ export function ChartsWithTabs() {
       {/* Chart Header */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-4 py-2 border-b border-border bg-secondary/10 gap-4">
         <div className="flex items-center gap-4 w-full lg:w-auto justify-between lg:justify-start">
-          <div>
-            <div className="flex items-baseline gap-2">
-              <h3 className="font-bold text-lg text-foreground">{chartData?.pair}</h3>
-              <span className="text-xs font-mono text-muted-foreground">PERP</span>
-            </div>
+          <div className="flex-1 lg:flex-none">
+            {activeTab === "GLOBAL" ? (
+              <PairSearch value={globalPair} onChange={setGlobalPair} />
+            ) : (
+              <div>
+                <div className="flex items-baseline gap-2">
+                  <h3 className="font-bold text-lg text-foreground">{chartData?.pair}</h3>
+                  <span className="text-xs font-mono text-muted-foreground">PERP</span>
+                </div>
+              </div>
+            )}
           </div>
           <div className="hidden lg:block h-6 w-px bg-border"></div>
           <div className="flex flex-col items-end lg:items-start">

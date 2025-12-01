@@ -109,5 +109,24 @@ export async function registerRoutes(
     res.json(config);
   });
 
+  // Trading pairs endpoint
+  app.get("/api/trading-pairs", async (req, res) => {
+    // Return default trading pairs for now
+    // In a real implementation, this would fetch from the connected exchange API
+    const defaultPairs = [
+      "BTCUSDT",
+      "ETHUSDT",
+      "SOLAUSDT",
+      "ADAUSDT",
+      "DOGEUSDT",
+      "XRPUSDT",
+      "AVAXUSDT",
+      "BNBUSDT",
+      "LINKUSDT",
+      "MATICUSDT",
+    ];
+    res.json({ pairs: defaultPairs });
+  });
+
   return httpServer;
 }
