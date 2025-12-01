@@ -1,4 +1,3 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "../server/routes";
 import { createServer } from "http";
@@ -44,8 +43,9 @@ async function initialize() {
   }
 }
 
-// Export for Vercel serverless
-module.exports = async (req: VercelRequest, res: VercelResponse) => {
-  await initialize();
-  return app(req, res);
-};
+initialize().catch(err => {
+  console.error("Failed to initialize app:", err);
+  process.exit(1);
+});
+
+export default app;
