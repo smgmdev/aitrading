@@ -7,11 +7,15 @@ import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 export default function Dashboard() {
   return (
     <Layout>
-      <div className="space-y-6 max-w-[1600px] mx-auto pb-6">
-        <AIStatus />
+      <div className="flex flex-col h-[calc(100vh-6rem)] gap-4">
+        {/* Top Stats Row */}
+        <div className="shrink-0">
+           <AIStatus />
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:h-[420px]">
-          <div className="lg:col-span-2 h-full">
+        {/* Main Grid - Split Chart and Feed */}
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-4 min-h-0">
+          <div className="lg:col-span-3 h-full">
             <MarketChart />
           </div>
           <div className="h-full">
@@ -19,7 +23,8 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="h-auto lg:h-[350px]">
+        {/* Bottom Section - Trades */}
+        <div className="h-[250px] shrink-0">
           <ActiveTrades />
         </div>
       </div>

@@ -1,56 +1,48 @@
-import { Terminal, Search, ShieldAlert, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Terminal, Search, ShieldAlert, ArrowRight, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const LOGS = [
-  { id: 1, time: "11:02", type: "scan", message: "Scanning 45 pairs for volatility" },
-  { id: 2, time: "11:03", type: "signal", message: "BTC/USDT RSI Divergence detected" },
-  { id: 3, time: "11:03", type: "action", message: "Entering LONG position @ 97,200" },
-  { id: 4, time: "11:03", type: "success", message: "Order filled successfully" },
-  { id: 5, time: "11:05", type: "info", message: "Adjusting dynamic Stop Loss" },
-  { id: 6, time: "11:06", type: "scan", message: "Analyzing market sentiment" },
+  { id: 1, time: "11:02:45.123", type: "SCAN", message: "Scanning 45 pairs for volatility patterns..." },
+  { id: 2, time: "11:03:12.005", type: "SIGNAL", message: "BTC/USDT RSI Divergence detected on 15m timeframe." },
+  { id: 3, time: "11:03:15.442", type: "EXEC", message: "LONG BTC/USDT @ 97,200 | Lev: 20x | Size: 1.5 BTC" },
+  { id: 4, time: "11:03:15.889", type: "ORDER", message: "Order #88239912 FILLED. Slippage: 0.01%" },
+  { id: 5, time: "11:05:00.100", type: "RISK", message: "Adjusting trailing Stop Loss to 96,800." },
+  { id: 6, time: "11:06:22.550", type: "INFO", message: "Sentiment Analysis: NEUTRAL-BULLISH (0.65)" },
 ];
 
 export function ActivityFeed() {
   return (
-    <div className="glass-card rounded-3xl p-6 h-full flex flex-col">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="font-semibold text-lg text-gray-900">Live Activity</h3>
-        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+    <div className="bg-background border border-border h-full flex flex-col font-mono text-xs">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-border bg-secondary/10">
+        <div className="flex items-center gap-2">
+           <Terminal className="w-3 h-3" />
+           <h3 className="font-bold text-foreground uppercase tracking-wider">System Logs</h3>
+        </div>
+        <div className="flex items-center gap-2">
+           <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+           <span className="text-[10px] text-muted-foreground">LIVE STREAM</span>
+        </div>
       </div>
       
-      <div className="flex-1 overflow-y-auto space-y-6 thin-scroll pr-2">
+      <div className="flex-1 overflow-y-auto p-0 tech-scroll bg-black text-green-500">
         {LOGS.map((log, index) => (
-          <div key={log.id} className="relative pl-6 pb-0 group">
-             {/* Timeline Line */}
-             {index !== LOGS.length - 1 && (
-               <div className="absolute left-[9px] top-6 bottom-[-24px] w-[2px] bg-gray-100 group-hover:bg-gray-200 transition-colors"></div>
-             )}
-             
-             {/* Timeline Dot */}
+          <div key={log.id} className="flex gap-3 px-3 py-1.5 hover:bg-white/5 border-b border-white/5 last:border-0">
+             <div className="text-gray-500 min-w-[90px] select-none">{log.time}</div>
              <div className={cn(
-               "absolute left-0 top-1 w-5 h-5 rounded-full border-4 border-white shadow-sm z-10 flex items-center justify-center",
-               log.type === 'scan' && "bg-blue-100",
-               log.type === 'signal' && "bg-orange-100",
-               log.type === 'action' && "bg-purple-100",
-               log.type === 'success' && "bg-green-100",
-               log.type === 'info' && "bg-gray-100",
-             )}>
-               <div className={cn(
-                 "w-1.5 h-1.5 rounded-full",
-                 log.type === 'scan' && "bg-blue-500",
-                 log.type === 'signal' && "bg-orange-500",
-                 log.type === 'action' && "bg-purple-500",
-                 log.type === 'success' && "bg-green-500",
-                 log.type === 'info' && "bg-gray-500",
-               )}></div>
-             </div>
-
-            <div className="flex flex-col">
-               <span className="text-[10px] font-medium text-gray-400 mb-0.5 font-mono">{log.time}</span>
-               <span className="text-sm font-medium text-gray-700">{log.message}</span>
-            </div>
+               "font-bold min-w-[50px]",
+               log.type === 'SCAN' && "text-blue-400",
+               log.type === 'SIGNAL' && "text-yellow-400",
+               log.type === 'EXEC' && "text-green-400",
+               log.type === 'ORDER' && "text-white",
+               log.type === 'RISK' && "text-red-400",
+               log.type === 'INFO' && "text-gray-400",
+             )}>{log.type}</div>
+             <div className="text-gray-300 flex-1">{log.message}</div>
           </div>
         ))}
+        <div className="px-3 py-1.5 text-gray-500 italic animate-pulse">
+           _cursor_active
+        </div>
       </div>
     </div>
   );

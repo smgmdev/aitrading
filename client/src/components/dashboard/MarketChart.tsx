@@ -1,43 +1,67 @@
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, ReferenceLine } from "recharts";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
-const data = [
-  { time: "10:00", value: 96200 },
-  { time: "10:05", value: 96350 },
-  { time: "10:10", value: 96300 },
-  { time: "10:15", value: 96450 },
-  { time: "10:20", value: 96600 },
-  { time: "10:25", value: 96550 },
-  { time: "10:30", value: 96700 },
-  { time: "10:35", value: 96850 },
-  { time: "10:40", value: 96800 },
-  { time: "10:45", value: 96950 },
-  { time: "10:50", value: 97100 },
-  { time: "10:55", value: 97050 },
-  { time: "11:00", value: 97200 },
-  { time: "11:05", value: 97150 },
-  { time: "11:10", value: 97300 },
-];
+// Simulated market data
+const generateData = () => {
+  const data = [];
+  let price = 96500;
+  for (let i = 0; i < 100; i++) {
+    price = price + (Math.random() - 0.5) * 100;
+    data.push({
+      time: i,
+      value: price,
+      formattedTime: `10:${i < 10 ? '0' + i : i}`
+    });
+  }
+  return data;
+};
+
+const data = generateData();
+
+const TIMEFRAMES = ["1s", "1m", "5m", "15m", "30m", "1h", "4h"];
 
 export function MarketChart() {
+  const [activeTimeframe, setActiveTimeframe] = useState("15m");
+  
+  // Simulated Trade Entry, TP, SL levels based on current price
+  const currentPrice = data[data.length - 1].value;
+  const entryPrice = 96450;
+  const tpPrice = 97200;
+  const slPrice = 96100;
+
   return (
-    <div className="glass-card rounded-3xl p-6 h-full flex flex-col">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-            <h3 className="font-semibold text-lg text-gray-900">BTC/USDT</h3>
+    <div className="bg-background border border-border h-full flex flex-col">
+      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-secondary/10">
+        <div className="flex items-center gap-4">
+          <div>
+            <div className="flex items-baseline gap-2">
+              <h3 className="font-bold text-lg text-foreground">BTC/USDT</h3>
+              <span className="text-xs font-mono text-muted-foreground">PERPETUAL</span>
+            </div>
           </div>
-          <p className="text-sm text-gray-500 mt-1 pl-4">AI Confidence Score: <span className="text-green-600 font-bold">89%</span></p>
+          <div className="h-6 w-px bg-border"></div>
+          <div className="flex flex-col">
+            <span className="text-[10px] text-muted-foreground uppercase font-medium">Current</span>
+            <span className="text-sm font-mono font-bold text-foreground">${currentPrice.toFixed(2)}</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] text-muted-foreground uppercase font-medium">24h Change</span>
+            <span className="text-sm font-mono font-bold text-success">+2.45%</span>
+          </div>
         </div>
-        <div className="bg-gray-100 p-1 rounded-xl flex gap-1">
-          {["15m", "1h", "4h", "1d"].map((tf) => (
+        
+        <div className="flex border border-border bg-background">
+          {TIMEFRAMES.map((tf) => (
             <button 
               key={tf}
-              className={`text-xs font-medium px-3 py-1.5 rounded-lg transition-all duration-200 ${
-                tf === "15m" 
-                ? "bg-white text-gray-900 shadow-sm" 
-                : "text-gray-500 hover:text-gray-700"
-              }`}
+              onClick={() => setActiveTimeframe(tf)}
+              className={cn(
+                "text-[10px] font-bold px-3 py-1.5 transition-colors border-r border-border last:border-r-0 min-w-[32px]",
+                activeTimeframe === tf 
+                ? "bg-primary text-primary-foreground" 
+                : "hover:bg-secondary text-muted-foreground hover:text-foreground"
+              )}
             >
               {tf}
             </button>
@@ -45,54 +69,67 @@ export function MarketChart() {
         </div>
       </div>
       
-      <div className="flex-1 min-h-[300px] w-full">
+      <div className="flex-1 min-h-[300px] w-full relative group">
+        <div className="absolute top-4 left-4 z-10 flex gap-2">
+             <div className="px-2 py-1 bg-background/80 border border-border backdrop-blur text-[10px] font-mono shadow-sm">
+                <span className="text-muted-foreground">AI SIGNAL:</span> <span className="text-success font-bold">LONG ENTRY</span>
+             </div>
+        </div>
+
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
+          <AreaChart data={data} margin={{ top: 20, right: 60, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.2}/>
-                <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
+                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
+                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" vertical={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} opacity={0.5} />
             <XAxis 
-              dataKey="time" 
-              stroke="#9CA3AF" 
-              fontSize={11} 
-              tickLine={false}
-              axisLine={false}
-              dy={10}
+              dataKey="formattedTime" 
+              stroke="hsl(var(--muted-foreground))" 
+              fontSize={10} 
+              tickLine={true}
+              axisLine={true}
+              fontFamily="monospace"
+              dy={5}
             />
             <YAxis 
               domain={['auto', 'auto']}
-              stroke="#9CA3AF" 
-              fontSize={11} 
-              tickLine={false}
-              axisLine={false}
-              tickFormatter={(value) => `$${value.toLocaleString()}`}
-              dx={-10}
+              orientation="right"
+              stroke="hsl(var(--muted-foreground))" 
+              fontSize={10} 
+              tickLine={true}
+              axisLine={true}
+              tickFormatter={(value) => value.toFixed(1)}
+              fontFamily="monospace"
+              width={60}
             />
             <Tooltip 
               contentStyle={{ 
-                backgroundColor: 'rgba(255, 255, 255, 0.9)', 
-                backdropFilter: 'blur(12px)',
-                borderColor: 'rgba(255, 255, 255, 0.5)',
-                borderRadius: '16px',
-                boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
-                padding: '12px 16px',
-                border: 'none'
+                backgroundColor: 'hsl(var(--background))', 
+                borderColor: 'hsl(var(--border))',
+                borderRadius: '0px',
+                boxShadow: 'none',
+                padding: '4px 8px',
               }}
-              itemStyle={{ color: '#111827', fontWeight: 600, fontSize: '13px' }}
-              labelStyle={{ color: '#6B7280', fontSize: '11px', marginBottom: '4px' }}
-              formatter={(value: number) => [`$${value.toLocaleString()}`, 'Price']}
+              itemStyle={{ color: 'hsl(var(--foreground))', fontFamily: 'monospace', fontSize: '11px' }}
+              labelStyle={{ color: 'hsl(var(--muted-foreground))', fontSize: '10px', marginBottom: '2px', fontFamily: 'monospace' }}
+              cursor={{ stroke: 'hsl(var(--muted-foreground))', strokeWidth: 1, strokeDasharray: '4 4' }}
             />
+            
+            <ReferenceLine y={entryPrice} stroke="hsl(var(--primary))" strokeDasharray="3 3" label={{ position: 'right', value: 'ENTRY', fill: 'hsl(var(--primary))', fontSize: 10, fontFamily: 'monospace' }} />
+            <ReferenceLine y={tpPrice} stroke="hsl(var(--success))" label={{ position: 'right', value: 'TP', fill: 'hsl(var(--success))', fontSize: 10, fontFamily: 'monospace' }} />
+            <ReferenceLine y={slPrice} stroke="hsl(var(--destructive))" label={{ position: 'right', value: 'SL', fill: 'hsl(var(--destructive))', fontSize: 10, fontFamily: 'monospace' }} />
+            
             <Area 
-              type="monotone" 
+              type="step" 
               dataKey="value" 
-              stroke="#3B82F6" 
-              strokeWidth={3}
+              stroke="hsl(var(--primary))" 
+              strokeWidth={1.5}
               fillOpacity={1} 
               fill="url(#colorValue)" 
+              isAnimationActive={false}
             />
           </AreaChart>
         </ResponsiveContainer>
