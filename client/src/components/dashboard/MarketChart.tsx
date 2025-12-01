@@ -83,7 +83,7 @@ export function MarketChart() {
              </div>
              <div className="px-2 py-1 bg-background/90 border border-border backdrop-blur text-[10px] font-mono shadow-sm flex items-center gap-2">
                 <ShieldAlert className="w-3 h-3 text-success" />
-                <span className="text-success font-bold">PROFIT > FEE CHECK: PASS</span>
+                <span className="text-success font-bold">PROFIT &gt; FEE CHECK: PASS</span>
              </div>
         </div>
 

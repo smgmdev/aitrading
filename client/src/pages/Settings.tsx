@@ -70,7 +70,7 @@ export default function Strategies() {
                        <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">
                          The AI has absolute control to execute trades ranging from sub-minute HFT scalps to multi-hour swing positions.
                          <br/><br/>
-                         <span className="font-bold text-foreground">Deciding Factor:</span> Net Profit > Fees.
+                         <span className="font-bold text-foreground">Deciding Factor:</span> Net Profit &gt; Fees.
                          If a trade is profitable after fees in 15 seconds, the AI will exit immediately.
                        </p>
                     </div>
