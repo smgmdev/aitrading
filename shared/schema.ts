@@ -18,6 +18,7 @@ export const positions = pgTable("positions", {
   pnlPercent: decimal("pnl_percent", { precision: 10, scale: 4 }).notNull().default("0"),
   status: varchar("status", { length: 20 }).notNull().default("OPEN"),
   platform: varchar("platform", { length: 20 }).notNull(),
+  mode: varchar("mode", { length: 30 }).notNull().default("HFT_SCALPER"),
   stopLoss: decimal("stop_loss", { precision: 18, scale: 8 }),
   takeProfit: decimal("take_profit", { precision: 18, scale: 8 }),
   entryTime: timestamp("entry_time").notNull().defaultNow(),

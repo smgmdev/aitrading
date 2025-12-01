@@ -4,6 +4,7 @@ import { randomUUID } from "crypto";
 const TRADING_PAIRS = ["BTCUSDT", "ETHUSDT", "SOLAUSDT", "ADAUSDT", "DOGEUSDT"];
 const PLATFORMS = ["BINANCE", "BYBIT"];
 const SIDES = ["LONG", "SHORT"];
+const MODES = ["HFT_SCALPER", "TECHNICAL_SWING"];
 
 interface SimulationConfig {
   enabled: boolean;
@@ -42,6 +43,8 @@ async function generateAiDecision() {
 
     const tradeId = `TRADE-${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
+    const mode = getRandomElement(MODES);
+
     await storage.createPosition({
       tradeId,
       pair,
@@ -54,13 +57,15 @@ async function generateAiDecision() {
       pnlPercent: "0",
       status: "OPEN",
       platform,
+      mode,
       stopLoss: (entryPrice * (side === "LONG" ? 0.98 : 1.02)).toString(),
       takeProfit: (entryPrice * (side === "LONG" ? 1.05 : 0.95)).toString(),
     });
 
+    const modeLabel = mode === "HFT_SCALPER" ? "HFT SCALPER" : "TECHNICAL SWING";
     await storage.createLog({
       logType: "ENTRY",
-      message: `AI opened ${side} position on ${pair} with ${leverage}x leverage`,
+      message: `AI opened ${side} position on ${pair} with ${leverage}x leverage [${modeLabel} mode]`,
       pair,
       relatedTradeId: tradeId,
     });

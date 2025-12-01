@@ -13,6 +13,7 @@ interface Trade {
   pnlPercent: string;
   platform: string;
   status: string;
+  mode: string;
 }
 
 export function ActiveTrades() {
@@ -78,6 +79,7 @@ export function ActiveTrades() {
             <thead>
               <tr className="bg-secondary/30 text-muted-foreground border-b border-border">
                 <th className="px-4 py-2 font-medium">PAIR</th>
+                <th className="px-4 py-2 font-medium">MODE</th>
                 <th className="px-4 py-2 font-medium">SIDE</th>
                 <th className="px-4 py-2 font-medium">ENTRY</th>
                 <th className="px-4 py-2 font-medium">MARK</th>
@@ -97,6 +99,19 @@ export function ActiveTrades() {
                     data-testid={`card-trade-${trade.id}`}
                   >
                     <td className="px-4 py-2.5 font-bold text-foreground">{trade.pair}</td>
+                    <td className="px-4 py-2.5">
+                      <span
+                        className={cn(
+                          "px-1.5 py-0.5 text-[10px] font-bold border",
+                          trade.mode === "HFT_SCALPER"
+                            ? "text-cyan-400 border-cyan-400 bg-cyan-500/10"
+                            : "text-purple-400 border-purple-400 bg-purple-500/10"
+                        )}
+                        data-testid={`text-mode-${trade.id}`}
+                      >
+                        {trade.mode === "HFT_SCALPER" ? "HFT" : "SWING"}
+                      </span>
+                    </td>
                     <td className="px-4 py-2.5">
                       <span
                         className={cn(
