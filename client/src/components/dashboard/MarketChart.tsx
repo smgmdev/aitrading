@@ -1,6 +1,6 @@
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, ReferenceLine } from "recharts";
 import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice, formatNumber } from "@/lib/utils";
 import { BrainCircuit, ShieldAlert, Timer } from "lucide-react";
 
 // Simulated market data for scalping (faster movements)
@@ -44,7 +44,7 @@ export function MarketChart() {
           <div className="hidden lg:block h-6 w-px bg-border"></div>
           <div className="flex flex-col items-end lg:items-start">
             <span className="text-[10px] text-muted-foreground uppercase font-medium">Current</span>
-            <span className="text-sm font-mono font-bold text-foreground">${currentPrice.toFixed(2)}</span>
+            <span className="text-sm font-mono font-bold text-foreground">{formatPrice(currentPrice)}</span>
           </div>
           <div className="flex flex-col items-end lg:items-start">
              <div className="flex items-center gap-1">

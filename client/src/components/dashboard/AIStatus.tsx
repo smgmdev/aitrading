@@ -1,5 +1,5 @@
 import { BrainCircuit, Zap, TrendingUp, Wifi, BarChart3 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice, formatNumber } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 interface StatsData {
@@ -58,7 +58,7 @@ export function AIStatus() {
 
       <StatusTile
         label="24H PNL"
-        value={`${stats.totalPnl > 0 ? "+" : ""}$${stats.totalPnl.toFixed(2)}`}
+        value={formatPrice(stats.totalPnl)}
         subValue={`${stats.tradeCount} TRADES`}
         icon={TrendingUp}
         status={stats.totalPnl > 0 ? "success" : "warning"}

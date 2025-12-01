@@ -7,7 +7,7 @@ import {
   LogOut,
   Bell
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice, formatNumber } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import {
@@ -184,7 +184,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     const pnlNumber = parseFloat(log.pnl || 0);
                     return (
                       <div key={idx} className="text-black text-[8px]">
-                        <span className="text-gray-500">[{timestamp}]</span> <span className="text-blue-600">{log.pair}</span> {log.side === "LONG" ? "🔵" : "🔴"} ${parseFloat(log.exitPrice || log.entryPrice).toFixed(2)} <span className={pnlNumber >= 0 ? "text-green-600" : "text-red-600"}>{pnlNumber >= 0 ? "✓" : "✗"} {pnlNumber >= 0 ? "+" : ""}{pnlNumber.toFixed(2)}</span>
+                        <span className="text-gray-500">[{timestamp}]</span> <span className="text-blue-600">{log.pair}</span> {log.side === "LONG" ? "🔵" : "🔴"} {formatPrice(parseFloat(log.exitPrice || log.entryPrice))} <span className={pnlNumber >= 0 ? "text-green-600" : "text-red-600"}>{pnlNumber >= 0 ? "✓" : "✗"} {formatPrice(pnlNumber)}</span>
                       </div>
                     );
                   })
@@ -264,10 +264,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="flex items-center gap-1 text-[10px] font-mono text-white uppercase cursor-help">
-                  <span className={showEquityChange ? "blink-equity" : ""}>EQUITY: ${equity.toFixed(2)}</span>
+                  <span className={showEquityChange ? "blink-equity" : ""}>EQUITY: {formatPrice(equity)}</span>
                   {showEquityChange && (
                     <span className={cn("font-bold ml-1", equityChange >= 0 ? "text-success" : "text-destructive")}>
-                      {equityChange >= 0 ? "↑" : "↓"} {equityChange >= 0 ? "+" : ""}{equityChange.toFixed(2)}
+                      {equityChange >= 0 ? "↑" : "↓"} {formatPrice(equityChange)}
                     </span>
                   )}
                 </div>
@@ -278,7 +278,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </Tooltip>
             <div className="h-3 w-px bg-border"></div>
             <div className={cn("flex items-center gap-1 text-[10px] font-mono uppercase", pnl24h >= 0 ? "text-success" : "text-destructive")}>
-              <span>24H PNL: {pnl24h >= 0 ? "+" : ""}{pnl24h.toFixed(2)}</span>
+              <span>24H PNL: {pnl24h >= 0 ? formatPrice(pnl24h) : formatPrice(pnl24h)}</span>
             </div>
             <div className="h-3 w-px bg-border"></div>
             <Tooltip>

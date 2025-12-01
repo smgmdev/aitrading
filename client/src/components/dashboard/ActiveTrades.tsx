@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn, formatPrice, formatNumber } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 interface Trade {
@@ -65,7 +65,7 @@ export function ActiveTrades() {
       <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-secondary/10">
         <h3 className="font-bold text-foreground text-sm uppercase tracking-wider">Open Positions</h3>
         <span className="text-xs font-mono text-muted-foreground" data-testid="text-total-exposure">
-          EXPOSURE: ${Math.abs(totalExposure).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+          EXPOSURE: {formatPrice(totalExposure)}
         </span>
       </div>
 
@@ -125,10 +125,10 @@ export function ActiveTrades() {
                       </span>
                     </td>
                     <td className="px-4 py-2.5 text-muted-foreground">
-                      ${parseFloat(trade.entryPrice).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                      {formatPrice(parseFloat(trade.entryPrice))}
                     </td>
                     <td className="px-4 py-2.5 text-foreground font-medium">
-                      ${parseFloat(trade.currentPrice).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                      {formatPrice(parseFloat(trade.currentPrice))}
                     </td>
                     <td className="px-4 py-2.5 text-warning">{trade.leverage}x</td>
                     <td className="px-4 py-2.5 text-right">
@@ -142,8 +142,7 @@ export function ActiveTrades() {
                       <div
                         className={cn("text-[10px]", pnlPercent > 0 ? "text-success/70" : "text-destructive/70")}
                       >
-                        {pnlValue > 0 ? "+" : ""}
-                        {pnlValue.toFixed(2)}
+                        {formatPrice(pnlValue)}
                       </div>
                     </td>
                     <td className="px-4 py-2.5 text-right">

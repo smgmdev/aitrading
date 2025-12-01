@@ -1,6 +1,7 @@
 import { Layout } from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
+import { formatPrice, formatNumber } from "@/lib/utils";
 
 interface Trade {
   id: number;
@@ -225,22 +226,22 @@ export default function HistoryPage() {
                           {trade.side}
                         </span>
                       </td>
-                      <td className="px-3 py-2 text-gray-400">${parseFloat(trade.entryPrice).toFixed(2)}</td>
+                      <td className="px-3 py-2 text-gray-400">{formatPrice(parseFloat(trade.entryPrice))}</td>
                       <td className="px-3 py-2 text-foreground">
-                        $
-                        {(showExitColumn && trade.exitPrice
-                          ? parseFloat(trade.exitPrice)
-                          : activeTab === "open" && trade.currentPrice
-                            ? parseFloat(trade.currentPrice)
-                            : 0
-                        ).toFixed(2)}
+                        {formatPrice(
+                          showExitColumn && trade.exitPrice
+                            ? parseFloat(trade.exitPrice)
+                            : activeTab === "open" && trade.currentPrice
+                              ? parseFloat(trade.currentPrice)
+                              : 0
+                        )}
                       </td>
-                      <td className="px-3 py-2 text-gray-500">${parseFloat(trade.stopLoss).toFixed(2)}</td>
-                      <td className="px-3 py-2 text-gray-500">${parseFloat(trade.takeProfit).toFixed(2)}</td>
+                      <td className="px-3 py-2 text-gray-500">{formatPrice(parseFloat(trade.stopLoss))}</td>
+                      <td className="px-3 py-2 text-gray-500">{formatPrice(parseFloat(trade.takeProfit))}</td>
                       {showExitColumn && (
                         <>
                           <td className={`px-3 py-2 font-bold ${pnlValue > 0 ? "text-success" : "text-destructive"}`}>
-                            {pnlValue > 0 ? "+" : ""}{pnlValue.toFixed(2)}
+                            {formatPrice(pnlValue)}
                           </td>
                           <td
                             className={`px-3 py-2 font-bold ${

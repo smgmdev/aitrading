@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice, formatNumber } from "@/lib/utils";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, ReferenceLine } from "recharts";
 import { BrainCircuit, ShieldAlert, Timer } from "lucide-react";
 import { PairSearch } from "./PairSearch";
@@ -144,7 +144,7 @@ export function ChartsWithTabs() {
         </div>
         <div className="flex flex-col ml-8">
           <span className="text-[10px] text-muted-foreground uppercase font-medium">Current</span>
-          <span className="text-sm font-mono font-bold text-foreground">${chartData?.currentPrice.toFixed(2)}</span>
+          <span className="text-sm font-mono font-bold text-foreground">{formatPrice(chartData?.currentPrice || 0)}</span>
         </div>
         {activeTab !== "GLOBAL" && chartData?.mode && (
           <div className="flex flex-col ml-8">
