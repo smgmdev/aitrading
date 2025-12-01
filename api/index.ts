@@ -43,9 +43,19 @@ async function initialize() {
   }
 }
 
-// Initialize on first request
+// Initialize on first request (only register routes, skip simulation)
 app.use(async (req, res, next) => {
-  await initialize();
+  if (!initialized) {
+    initialized = true;
+    const httpServer = createServer(app);
+    await registerRoutes(httpServer, app);
+    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+      const status = err.status || err.statusCode || 500;
+      const message = err.message || "Internal Server Error";
+      res.status(status).json({ message });
+    });
+    // Don't start simulation on Vercel - it's not needed for serverless
+  }
   next();
 });
 
