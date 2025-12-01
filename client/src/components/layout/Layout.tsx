@@ -256,21 +256,52 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   return timeA - timeB;
                 });
 
+                const entryTime = trade.entryTime ? new Date(trade.entryTime).toLocaleString('en-US', { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '-';
+                const exitTime = trade.exitTime ? new Date(trade.exitTime).toLocaleString('en-US', { hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '-';
+                const tradeDuration = trade.entryTime && trade.exitTime ? Math.round((new Date(trade.exitTime).getTime() - new Date(trade.entryTime).getTime()) / 1000) + 's' : '-';
+
                 return (
                   <div className="space-y-3">
                     <div className="bg-gray-50 p-3 border border-gray-200 text-[11px] font-mono">
-                      <h3 className="font-bold mb-2 uppercase">Trade Summary</h3>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div>Pair: <span className="font-bold">{trade.pair}</span></div>
-                        <div>Side: <span className="font-bold">{trade.side}</span></div>
-                        <div>Mode: <span className="font-bold">{trade.mode === "HFT_SCALPER" ? "HFT" : "SWING"}</span></div>
-                        <div>Leverage: <span className="font-bold">{trade.leverage || 1}x</span></div>
-                        <div>Entry Price: <span className="font-bold">{formatPrice(parseFloat(trade.entryPrice))}</span></div>
-                        <div>Exit Price: <span className="font-bold">{formatPrice(parseFloat(trade.exitPrice))}</span></div>
-                        <div>Stop Loss: <span className="font-bold">{formatPrice(parseFloat(trade.stopLoss || 0))}</span></div>
-                        <div>Take Profit: <span className="font-bold">{formatPrice(parseFloat(trade.takeProfit || 0))}</span></div>
-                        <div>PnL: <span className={cn("font-bold", parseFloat(trade.pnl) >= 0 ? "text-green-600" : "text-red-600")}>{formatPrice(parseFloat(trade.pnl))}</span></div>
-                        <div>Return: <span className={cn("font-bold", parseFloat(trade.pnlPercent) >= 0 ? "text-green-600" : "text-red-600")}>{parseFloat(trade.pnlPercent).toFixed(2)}%</span></div>
+                      <h3 className="font-bold mb-3 uppercase">Trade Details</h3>
+                      
+                      <div className="space-y-3">
+                        <div>
+                          <div className="font-bold text-gray-700 mb-1">Basic Info</div>
+                          <div className="grid grid-cols-2 gap-2 ml-2">
+                            <div>Pair: <span className="font-bold">{trade.pair}</span></div>
+                            <div>Side: <span className="font-bold">{trade.side}</span></div>
+                            <div>Mode: <span className="font-bold">{trade.mode === "HFT_SCALPER" ? "HFT SCALPER" : "TECHNICAL SWING"}</span></div>
+                            <div>Leverage: <span className="font-bold">{trade.leverage || 1}x</span></div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="font-bold text-gray-700 mb-1">Timing</div>
+                          <div className="grid grid-cols-1 gap-1 ml-2">
+                            <div>Entry Time: <span className="font-bold">{entryTime}</span></div>
+                            <div>Exit Time: <span className="font-bold">{exitTime}</span></div>
+                            <div>Duration: <span className="font-bold">{tradeDuration}</span></div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="font-bold text-gray-700 mb-1">Prices</div>
+                          <div className="grid grid-cols-2 gap-2 ml-2">
+                            <div>Entry: <span className="font-bold">{formatPrice(parseFloat(trade.entryPrice))}</span></div>
+                            <div>Exit: <span className="font-bold">{formatPrice(parseFloat(trade.exitPrice))}</span></div>
+                            <div>Stop Loss: <span className="font-bold">{formatPrice(parseFloat(trade.stopLoss || 0))}</span></div>
+                            <div>Take Profit: <span className="font-bold">{formatPrice(parseFloat(trade.takeProfit || 0))}</span></div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <div className="font-bold text-gray-700 mb-1">Performance</div>
+                          <div className="grid grid-cols-2 gap-2 ml-2">
+                            <div>PnL: <span className={cn("font-bold", parseFloat(trade.pnl) >= 0 ? "text-green-600" : "text-red-600")}>{formatPrice(parseFloat(trade.pnl))}</span></div>
+                            <div>Return: <span className={cn("font-bold", parseFloat(trade.pnlPercent) >= 0 ? "text-green-600" : "text-red-600")}>{parseFloat(trade.pnlPercent).toFixed(2)}%</span></div>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
