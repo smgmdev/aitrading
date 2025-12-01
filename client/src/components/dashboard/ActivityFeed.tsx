@@ -161,7 +161,7 @@ export function ActivityFeed() {
                 }}
               >
                 <div className="text-gray-300 text-[10px] leading-relaxed pl-0">
-                  <span className="text-gray-500">[{time}]</span> {formattedMessage}
+                  <span className="text-gray-500">[{time}]</span> <span className={cn("font-bold", getLogTypeColor(log.logType))}>{log.logType}</span> {formattedMessage}
                 </div>
               </div>
             );
