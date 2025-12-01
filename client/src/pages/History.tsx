@@ -127,7 +127,7 @@ export default function HistoryPage() {
     <Layout>
       <div className="space-y-3 max-w-full">
         <div>
-          <h1 className="text-lg font-bold text-foreground tracking-tight uppercase">EXECUTION LOGS</h1>
+          <h1 className="text-lg font-bold text-foreground tracking-tight uppercase">QUICK TRADE LOGS</h1>
           <p className="text-xs text-muted-foreground font-mono">Trade management and history</p>
         </div>
 
