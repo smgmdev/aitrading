@@ -265,7 +265,7 @@ export default function Strategies() {
                  </div>
                  <Button
                    onClick={handleApplyPermissions}
-                   className="w-32 h-9 font-mono text-xs font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black mt-4"
+                   className="w-40 h-9 font-mono text-xs font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black mt-4 uppercase"
                    data-testid="button-apply-permissions"
                  >
                    APPLY
@@ -307,14 +307,14 @@ export default function Strategies() {
               </div>
               <Button
                 onClick={handleToggleTestMode}
-                className="group w-40 h-9 font-mono text-xs font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black"
+                className="group w-48 h-9 font-mono text-xs font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black uppercase"
                 data-testid="button-toggle-test-mode"
               >
                 <span className="group-hover:hidden">
-                  {testMode ? "Real prices OFF" : "Real prices ON"}
+                  {testMode ? "REAL PRICES OFF" : "REAL PRICES ON"}
                 </span>
                 <span className="hidden group-hover:inline">
-                  {testMode ? "Turn real prices ON" : "Turn real prices OFF"}
+                  {testMode ? "TURN REAL PRICES ON" : "TURN REAL PRICES OFF"}
                 </span>
               </Button>
             </div>
