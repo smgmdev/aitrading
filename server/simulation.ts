@@ -6,7 +6,9 @@ import {
   shouldEnterTrade, 
   calculateTPSL,
   analyzeHFTExit,
-  getPriceHistory 
+  getPriceHistory,
+  getEntryReasoning,
+  getExitReasoning
 } from "./momentumAnalysis";
 
 const TRADING_PAIRS = ["BTCUSDT", "ETHUSDT", "SOLAUSDT", "ADAUSDT", "DOGEUSDT"];
@@ -89,10 +91,11 @@ async function generateAiDecision() {
     });
 
     const modeLabel = mode === "HFT_SCALPER" ? "HFT SCALPER" : "TECHNICAL SWING";
-    const momentumIndicator = analysis.momentum > 0 ? "⬆" : "⬇";
+    const entryReasoning = getEntryReasoning(pair, side, entryPrice, analysis, tpsl);
+    
     await storage.createLog({
       logType: "ENTRY",
-      message: `AI opened ${side} position on ${pair} with ${leverage}x leverage [${modeLabel} mode] - Momentum: ${analysis.momentum.toFixed(1)}% ${momentumIndicator}`,
+      message: `[${modeLabel}] ${side} ${pair} @ $${entryPrice.toFixed(2)} | ${leverage}x Leverage | SL: $${tpsl.sl.toFixed(2)} | TP: $${tpsl.tp1.toFixed(2)}\n\n${entryReasoning}`,
       pair,
       relatedTradeId: tradeId,
     });
@@ -172,9 +175,12 @@ async function generateAiDecision() {
 
     if (shouldClose) {
       await storage.closePosition(position.id, newPrice_str, new Date());
+      const exitAnalysis = analyzeMomentum(position.pair, parseFloat(newPrice_str));
+      const exitReasoning = getExitReasoning(position.pair, side, entryPrice, parseFloat(newPrice_str), exitReason, exitAnalysis);
+      
       await storage.createLog({
         logType: "EXIT",
-        message: `AI closed ${position.side} position on ${position.pair}: ${exitReason}. PnL: ${pnl}`,
+        message: `${position.side} ${position.pair} CLOSED | Exit: $${newPrice_str} | PnL: ${pnl} (${pnlPercent}%)\n\n${exitReasoning}`,
         pair: position.pair,
         relatedTradeId: position.tradeId,
       });

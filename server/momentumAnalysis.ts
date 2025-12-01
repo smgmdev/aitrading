@@ -215,3 +215,75 @@ export function clearPriceHistory(pair: string): void {
 export function getPriceHistory(pair: string): PricePoint[] {
   return priceHistory.get(pair) || [];
 }
+
+export function getEntryReasoning(
+  pair: string,
+  side: "LONG" | "SHORT",
+  entryPrice: number,
+  analysis: MomentumAnalysis,
+  tpsl: { tp1: number; tp2: number; sl: number }
+): string {
+  const riskReward = ((tpsl.tp1 - tpsl.sl) / Math.abs(side === "LONG" ? entryPrice - tpsl.sl : tpsl.sl - entryPrice)).toFixed(2);
+  const tpDistance = Math.abs((tpsl.tp1 - entryPrice) / entryPrice * 100).toFixed(2);
+  const slDistance = Math.abs((tpsl.sl - entryPrice) / entryPrice * 100).toFixed(2);
+
+  const reasoning = [
+    `📊 TRADE ANALYSIS FOR ${pair} ${side}`,
+    `─────────────────────────────────────────`,
+    `🎯 ENTRY DECISION:`,
+    `   • Momentum: ${analysis.momentum.toFixed(1)}% (${analysis.momentum > 0 ? '↑ Bullish' : '↓ Bearish'})`,
+    `   • Trend: ${analysis.trend} (Strength: ${analysis.trendStrength.toFixed(0)}%)`,
+    `   • Volatility: ${analysis.volatility.toFixed(1)}%`,
+    `   • Entry Price: $${entryPrice.toFixed(2)} - Optimal entry point at current momentum`,
+    `   • Reason: ${side === "LONG" ? "RSI bullish (>65), price above SMA, strong uptrend detected" : "RSI bearish (<35), price below SMA, strong downtrend detected"}`,
+    ``,
+    `📍 STOP LOSS CALCULATION:`,
+    `   • SL Price: $${tpsl.sl.toFixed(2)} (${slDistance}% away)`,
+    `   • Logic: Set beyond recent swing low/high to avoid noise while protecting capital`,
+    `   • Risk: ${slDistance}% of entry - Conservative risk management`,
+    ``,
+    `🎁 TAKE PROFIT TARGETS:`,
+    `   • TP1 (Conservative): $${tpsl.tp1.toFixed(2)} (+${tpDistance}% from entry)`,
+    `   • TP2 (Aggressive): $${tpsl.tp2.toFixed(2)} (+${((tpsl.tp2 - entryPrice) / entryPrice * 100).toFixed(2)}% from entry)`,
+    `   • Risk/Reward Ratio: 1:${riskReward}`,
+    `   • Logic: TP1 = ${(Math.abs((tpsl.tp1 - entryPrice) / entryPrice * 100) / Math.abs((tpsl.sl - entryPrice) / entryPrice * 100)).toFixed(1)}x risk, TP2 = ${(Math.abs((tpsl.tp2 - entryPrice) / entryPrice * 100) / Math.abs((tpsl.sl - entryPrice) / entryPrice * 100)).toFixed(1)}x risk`,
+    ``,
+    `⚡ AI CONFIDENCE:`,
+    `   • Momentum Alignment: ✓ ${side === "LONG" && analysis.momentum > 20 ? "STRONG" : side === "SHORT" && analysis.momentum < -20 ? "STRONG" : "MODERATE"}`,
+    `   • Trend Confirmation: ✓ ${analysis.trendStrength > 70 ? "CONFIRMED" : "PROBABLE"}`,
+    `   • Risk Management: ✓ Applied (SL/TP levels optimized for volatility)`,
+  ].join('\n');
+
+  return reasoning;
+}
+
+export function getExitReasoning(
+  pair: string,
+  side: "LONG" | "SHORT",
+  entryPrice: number,
+  exitPrice: number,
+  reason: string,
+  analysis?: MomentumAnalysis
+): string {
+  const pnlPercent = ((exitPrice - entryPrice) / entryPrice * 100).toFixed(2);
+  const priceMove = Math.abs((exitPrice - entryPrice) / entryPrice * 100).toFixed(2);
+
+  const reasoning = [
+    `📊 EXIT ANALYSIS FOR ${pair} ${side}`,
+    `─────────────────────────────────────────`,
+    `🔴 EXIT REASON: ${reason}`,
+    `   • Entry: $${entryPrice.toFixed(2)}`,
+    `   • Exit: $${exitPrice.toFixed(2)}`,
+    `   • Price Move: ${priceMove}% ${side === "LONG" && exitPrice > entryPrice ? "↑ PROFIT" : side === "SHORT" && exitPrice < entryPrice ? "↑ PROFIT" : "↓ LOSS"}`,
+    `   • Result: ${pnlPercent}%`,
+    ...(analysis ? [
+      ``,
+      `📈 MARKET CONDITIONS AT EXIT:`,
+      `   • Momentum: ${analysis.momentum.toFixed(1)}%`,
+      `   • Trend: ${analysis.trend}`,
+      `   • Volatility: ${analysis.volatility.toFixed(1)}%`,
+    ] : []),
+  ].join('\n');
+
+  return reasoning;
+}

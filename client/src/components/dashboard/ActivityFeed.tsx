@@ -121,13 +121,15 @@ export function ActivityFeed() {
                   });
                 }}
               >
-                <div className="flex gap-2 mb-0.5">
+                <div className="flex gap-2 mb-1">
                   <div className="text-gray-500 min-w-[90px] select-none">{time}</div>
                   <div className={cn("font-bold text-white", getLogTypeColor(log.logType))}>
                     {log.logType}
                   </div>
                 </div>
-                <div className="text-gray-300 text-[10px]">{log.message}</div>
+                <div className="text-gray-300 text-[10px] whitespace-pre-wrap leading-relaxed ml-[90px] bg-black/50 p-2 rounded border border-white/10">
+                  {log.message}
+                </div>
               </div>
             );
           })
