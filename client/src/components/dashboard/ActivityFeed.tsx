@@ -99,11 +99,20 @@ export function ActivityFeed() {
         }
         return "Manually closed position";
       }
-      // Parse format: SIDE PAIR CLOSED | Exit: $PRICE
-      const match = firstLine.match(/(\w+)\s+(\w+)\s+CLOSED/);
+      // Parse format: SIDE PAIR CLOSED | Exit: $PRICE | PnL: 123.45 (12.34%)
+      const match = firstLine.match(/(\w+)\s+(\w+)\s+CLOSED.*?PnL:\s*([-+]?[0-9.]+)\s*\(([^)]+)\)/);
       if (match) {
         const side = match[1].toLowerCase();
         const pair = match[2];
+        const pnl = match[3];
+        const pnlPercent = match[4];
+        return `AI closed ${side} on ${pair} pair with $${pnl} PnL (${pnlPercent})`;
+      }
+      // Fallback if PnL not found
+      const fallbackMatch = firstLine.match(/(\w+)\s+(\w+)\s+CLOSED/);
+      if (fallbackMatch) {
+        const side = fallbackMatch[1].toLowerCase();
+        const pair = fallbackMatch[2];
         return `AI closed ${side} on ${pair} pair`;
       }
       return firstLine;
