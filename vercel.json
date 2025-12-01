@@ -1,28 +1,27 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "env": {
-    "NODE_ENV": "production"
+  "outputDirectory": "dist/public",
+  "publicPath": "/",
+  "git": {
+    "deploymentEnabled": true
   },
-  "regions": ["sfo1"],
   "functions": {
     "api/index.ts": {
+      "runtime": "nodejs20.x",
       "memory": 3008,
-      "maxDuration": 60
+      "maxDuration": 60,
+      "regions": ["sfo1"]
     }
   },
   "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api"
+    { 
+      "source": "/api/(.*)", 
+      "destination": "/api" 
     },
-    {
-      "source": "/(.*)",
-      "destination": "/dist/public/$1"
-    },
-    {
-      "source": "/.*",
-      "destination": "/dist/public/index.html"
+    { 
+      "source": "/(.*)", 
+      "destination": "/index.html" 
     }
   ]
 }
