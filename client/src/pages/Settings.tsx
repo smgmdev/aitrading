@@ -30,6 +30,8 @@ export default function Strategies() {
   const [error, setError] = useState<string>("");
   const [validating, setValidating] = useState(false);
   const [testMode, setTestMode] = useState(true);
+  const [maxAllocation, setMaxAllocation] = useState("95");
+  const [maxPositions, setMaxPositions] = useState("5");
 
   useEffect(() => {
     fetchConfig();
@@ -57,6 +59,11 @@ export default function Strategies() {
     } catch (error) {
       console.error("Failed to toggle test mode:", error);
     }
+  };
+
+  const handleApplyPermissions = () => {
+    // Apply permission settings (would save to backend in full implementation)
+    alert(`Applied: Max Allocation ${maxAllocation}%, Max Positions ${maxPositions}`);
   };
 
   const handleFullAutoOptimize = () => {
@@ -248,8 +255,11 @@ export default function Strategies() {
                   </div>
                   <Button
                     onClick={handleToggleTestMode}
-                    className="h-8 px-4 font-mono text-xs"
-                    variant={testMode ? "outline" : "destructive"}
+                    className={`h-9 px-6 font-mono text-xs font-bold transition-all ${
+                      testMode 
+                        ? 'bg-primary/20 text-primary border border-primary hover:bg-primary/30 hover:shadow-lg hover:scale-105' 
+                        : 'bg-destructive/20 text-destructive border border-destructive hover:bg-destructive/30 hover:shadow-lg hover:scale-105'
+                    }`}
                   >
                     {testMode ? "Enable Live Trading" : "Switch to Test Mode"}
                   </Button>
@@ -257,18 +267,19 @@ export default function Strategies() {
               </div>
             </div>
 
-            {/* Capital Allocation Config */}
+            {/* Permission Settings Config */}
             <div className="bg-background border border-border p-0 shadow-sm">
-              <div className="p-4 border-b border-border bg-secondary/10">
-                 <h3 className="font-bold text-sm uppercase tracking-wider">Capital Allocation</h3>
+              <div className="p-4 border-b border-border bg-secondary/10 flex items-center justify-between">
+                 <h3 className="font-bold text-sm uppercase tracking-wider">Permission Settings</h3>
               </div>
               <div className="p-6">
-                 <div className="flex items-center gap-4 max-w-md">
+                 <div className="flex items-end gap-4 max-w-md">
                     <div className="flex-1">
                       <Label className="font-bold text-xs uppercase mb-2 block">Max Portfolio Allocation (%)</Label>
                       <Input 
                         type="number" 
-                        defaultValue="95"
+                        value={maxAllocation}
+                        onChange={(e) => setMaxAllocation(e.target.value)}
                         className="font-mono text-lg"
                       />
                     </div>
@@ -276,10 +287,18 @@ export default function Strategies() {
                       <Label className="font-bold text-xs uppercase mb-2 block">Max Open Positions</Label>
                       <Input 
                         type="number" 
-                        defaultValue="5"
+                        value={maxPositions}
+                        onChange={(e) => setMaxPositions(e.target.value)}
                         className="font-mono text-lg"
                       />
                     </div>
+                    <Button
+                      onClick={handleApplyPermissions}
+                      className="h-9 px-4 font-mono text-xs font-bold bg-success/20 text-success border border-success hover:bg-success/30 hover:shadow-lg hover:scale-105 transition-all"
+                      data-testid="button-apply-permissions"
+                    >
+                      APPLY
+                    </Button>
                  </div>
                  <p className="text-[10px] text-muted-foreground mt-3">
                    * AI automatically balances risk across multiple assets.
@@ -318,8 +337,11 @@ export default function Strategies() {
               </div>
               <Button
                 onClick={handleToggleTestMode}
-                className="h-8 px-4 font-mono text-xs"
-                variant={testMode ? "outline" : "destructive"}
+                className={`h-9 px-6 font-mono text-xs font-bold transition-all ${
+                  testMode 
+                    ? 'bg-primary/20 text-primary border border-primary hover:bg-primary/30 hover:shadow-lg hover:scale-105' 
+                    : 'bg-destructive/20 text-destructive border border-destructive hover:bg-destructive/30 hover:shadow-lg hover:scale-105'
+                }`}
                 data-testid="button-toggle-test-mode"
               >
                 {testMode ? "Enable Live Trading" : "Switch to Test Mode"}
@@ -332,7 +354,8 @@ export default function Strategies() {
         <div className="flex items-center justify-between px-4 py-3 bg-secondary/5 border-b border-border">
           <div className="flex items-center gap-3">
             <div className="text-[11px] font-mono uppercase font-bold text-muted-foreground">Status</div>
-            <span className={`text-[10px] font-mono font-bold px-2 py-1 border ${config.connectedExchange ? 'text-success border-success/40' : 'text-muted-foreground border-border'}`}>
+            <span className={`text-[10px] font-mono font-bold px-2 py-1 border flex items-center gap-2 ${config.connectedExchange ? 'text-success border-success/40' : 'text-muted-foreground border-border'}`}>
+              {config.connectedExchange ? <Lock className="w-3 h-3" /> : <LockOpen className="w-3 h-3" />}
               {config.connectedExchange ? `${config.connectedExchange}: ACTIVE` : 'DISCONNECTED'}
             </span>
           </div>
