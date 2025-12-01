@@ -65,16 +65,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <header className="h-8 border-b border-border flex items-center justify-between px-4 bg-black">
         <div className="flex items-center gap-3">
            <div className="flex items-center gap-1 text-[10px] font-mono text-white uppercase">
+              <span>LATENCY: {latency}MS</span>
+           </div>
+           <div className="h-3 w-px bg-border"></div>
+           <div className="flex items-center gap-1 text-[10px] font-mono text-white uppercase">
               <span className={cn("w-2 h-2 rounded-full", statusColor)}></span>
               <span>{statusLabel}</span>
            </div>
            <div className="h-3 w-px bg-border"></div>
            <div className="flex items-center gap-1 text-[10px] font-mono text-white uppercase">
               <span>{exchangeLabel}</span>
-           </div>
-           <div className="h-3 w-px bg-border"></div>
-           <div className="flex items-center gap-1 text-[10px] font-mono text-white uppercase">
-              <span>LATENCY: {latency}MS</span>
            </div>
         </div>
         
