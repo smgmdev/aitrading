@@ -5,7 +5,9 @@ import {
   Settings, 
   Activity, 
   LogOut,
-  Bell
+  Bell,
+  Lock,
+  LockOpen
 } from "lucide-react";
 import { cn, formatPrice, formatNumber, removeEmojis } from "@/lib/utils";
 import { useEffect, useState } from "react";
@@ -446,8 +448,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* Horizontal Navigation */}
         <nav className="h-10 border-b border-border bg-background flex items-center px-4 gap-0">
           {navItems.map((item) => {
-            const Icon = item.icon;
             const isActive = location === item.href;
+            
+            // Use dynamic icon for EXCHANGE CONFIG based on connection status
+            let Icon = item.icon;
+            if (item.label === "EXCHANGE CONFIG") {
+              Icon = connectedExchange ? Lock : LockOpen;
+            }
+            
             return (
               <Link key={item.href} href={item.href}>
                 <div className={cn(
