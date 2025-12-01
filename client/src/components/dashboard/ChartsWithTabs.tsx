@@ -147,7 +147,7 @@ export function ChartsWithTabs() {
           <span className="text-sm font-mono font-bold text-foreground">${chartData?.currentPrice.toFixed(2)}</span>
         </div>
         {activeTab !== "GLOBAL" && chartData?.mode && (
-          <div className="flex flex-col ml-auto">
+          <div className="flex flex-col ml-8">
             <div className="flex items-center gap-1">
               <BrainCircuit className={cn(
                 "w-3 h-3",
