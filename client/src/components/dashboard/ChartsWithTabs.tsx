@@ -10,6 +10,7 @@ interface Position {
   pair: string;
   entryPrice: string;
   currentPrice: string;
+  mode: string;
   takeProfit?: string;
   stopLoss?: string;
 }
@@ -65,6 +66,7 @@ export function ChartsWithTabs() {
         tpPrice: null,
         slPrice: null,
         currentPrice,
+        mode: null,
       };
     }
 
@@ -77,6 +79,7 @@ export function ChartsWithTabs() {
       tpPrice: position.takeProfit ? parseFloat(position.takeProfit) : null,
       slPrice: position.stopLoss ? parseFloat(position.stopLoss) : null,
       currentPrice: parseFloat(position.currentPrice),
+      mode: position.mode,
     };
   };
 
@@ -102,21 +105,26 @@ export function ChartsWithTabs() {
           </button>
 
           {/* Position Tabs */}
-          {positions.map((position) => (
-            <button
-              key={position.id}
-              onClick={() => setActiveTab(position.tradeId)}
-              data-testid={`tab-position-${position.id}`}
-              className={cn(
-                "px-4 py-2.5 text-[11px] font-bold whitespace-nowrap border-r border-border transition-colors",
-                activeTab === position.tradeId
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-black text-white hover:bg-gray-900"
-              )}
-            >
-              {position.pair}
-            </button>
-          ))}
+          {positions.map((position) => {
+            const modeLabel = position.mode === "HFT_SCALPER" ? "HFT" : "SWING";
+            const modeColor = position.mode === "HFT_SCALPER" ? "text-cyan-400" : "text-purple-400";
+            return (
+              <button
+                key={position.id}
+                onClick={() => setActiveTab(position.tradeId)}
+                data-testid={`tab-position-${position.id}`}
+                className={cn(
+                  "px-4 py-2.5 text-[11px] font-bold whitespace-nowrap border-r border-border transition-colors flex items-center gap-2",
+                  activeTab === position.tradeId
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-black text-white hover:bg-gray-900"
+                )}
+              >
+                <span>{position.pair}</span>
+                <span className={cn("text-[9px] font-mono", modeColor)}>{modeLabel}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -138,13 +146,23 @@ export function ChartsWithTabs() {
           <span className="text-[10px] text-muted-foreground uppercase font-medium">Current</span>
           <span className="text-sm font-mono font-bold text-foreground">${chartData?.currentPrice.toFixed(2)}</span>
         </div>
-        {activeTab !== "GLOBAL" && (
+        {activeTab !== "GLOBAL" && chartData?.mode && (
           <div className="flex flex-col ml-auto">
             <div className="flex items-center gap-1">
-              <BrainCircuit className="w-3 h-3 text-primary" />
-              <span className="text-[10px] text-primary uppercase font-bold">MODE: ADAPTIVE</span>
+              <BrainCircuit className={cn(
+                "w-3 h-3",
+                chartData.mode === "HFT_SCALPER" ? "text-cyan-500" : "text-purple-500"
+              )} />
+              <span className={cn(
+                "text-[10px] uppercase font-bold",
+                chartData.mode === "HFT_SCALPER" ? "text-cyan-400" : "text-purple-400"
+              )}>
+                MODE: {chartData.mode === "HFT_SCALPER" ? "HFT SCALPER" : "TECHNICAL SWING"}
+              </span>
             </div>
-            <span className="text-[10px] text-muted-foreground font-mono">HFT + SWING HYBRID</span>
+            <span className="text-[10px] text-muted-foreground font-mono">
+              {chartData.mode === "HFT_SCALPER" ? "SUB-MINUTE EXECUTION" : "1-12MIN SWING"}
+            </span>
           </div>
         )}
       </div>
