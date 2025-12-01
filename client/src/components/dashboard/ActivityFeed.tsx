@@ -5,9 +5,9 @@ const LOGS = [
   { id: 1, time: "11:03:08.005", type: "HFT", message: "ETH/USDT: Micro-opportunity detected. Fee spread covered." },
   { id: 2, time: "11:03:08.112", type: "EXEC", message: "LONG ETH/USDT @ 3450.20 | Lev: 80x (Quick Scalp)" },
   { id: 3, time: "11:03:15.442", type: "EXIT", message: "CLOSED ETH/USDT @ 3452.80 (+0.08% net) in 7.3s" },
-  { id: 4, time: "11:03:20.115", type: "SCAN", message: "Scanning 1H structures for swing setups..." },
-  { id: 5, time: "11:03:22.550", type: "ANALYSIS", message: "BTC/USDT: 4H Bull Flag confirmed. Preparing Swing Entry." },
-  { id: 6, time: "11:03:23.000", type: "HOLD", message: "SOL/USDT: Holding LONG. Trend strength increasing." },
+  { id: 4, time: "11:03:20.115", type: "SCAN", message: "Scanning 5m structures for swing setups..." },
+  { id: 5, time: "11:03:22.550", type: "ANALYSIS", message: "BTC/USDT: 15m Bull Flag confirmed. Preparing Swing Entry." },
+  { id: 6, time: "11:03:23.000", type: "HOLD", message: "SOL/USDT: Holding LONG. Targeting 12m duration." },
 ];
 
 export function ActivityFeed() {

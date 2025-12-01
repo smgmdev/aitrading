@@ -113,9 +113,9 @@ export default function Strategies() {
                     <div className="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
                     <Scale className="w-5 h-5 text-purple-500 mt-1 shrink-0" />
                     <div>
-                      <div className="font-mono font-bold text-sm mb-1">TECHNICAL SWING</div>
+                      <div className="font-mono font-bold text-sm mb-1">TECHNICAL SWING (1-12m)</div>
                       <p className="text-[10px] text-muted-foreground">
-                        Holds positions longer when chart structure (1H/4H) confirms a sustained trend.
+                        Holds positions slightly longer (up to 12 mins) when trend structure confirms strong momentum.
                       </p>
                     </div>
                  </div>
