@@ -296,8 +296,36 @@ export default function Strategies() {
     <Layout>
       <div className="space-y-6 max-w-[900px] mx-auto">
         <div>
-          <h1 className="text-xl font-bold text-foreground tracking-tight uppercase">Exchange Config</h1>
-          <p className="text-xs font-mono text-muted-foreground mt-1">EXCHANGE API KEY MANAGEMENT</p>
+          <h1 className="text-xl font-bold text-foreground tracking-tight uppercase">Settings</h1>
+          <p className="text-xs font-mono text-muted-foreground mt-1">EXCHANGE CONFIG & TRADING MODE</p>
+        </div>
+
+        {/* Test Mode Toggle */}
+        <div className="bg-background border border-border p-0 shadow-sm">
+          <div className="p-4 border-b border-border bg-cyan-500/5 flex items-center gap-2">
+            <Zap className="w-4 h-4 text-cyan-500" />
+            <h3 className="font-bold text-sm uppercase tracking-wider text-cyan-500">Trading Mode</h3>
+          </div>
+          <div className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <Label className="font-bold text-xs uppercase">Test Mode {testMode ? '(ACTIVE)' : '(REAL)'}</Label>
+                <p className="text-[10px] text-muted-foreground">
+                  {testMode 
+                    ? 'Simulated prices and positions. No real trades.'
+                    : 'Using REAL exchange prices. Live trading active.'}
+                </p>
+              </div>
+              <Button
+                onClick={handleToggleTestMode}
+                className="h-8 px-4 font-mono text-xs"
+                variant={testMode ? "outline" : "destructive"}
+                data-testid="button-toggle-test-mode"
+              >
+                {testMode ? "Enable Live Trading" : "Switch to Test Mode"}
+              </Button>
+            </div>
+          </div>
         </div>
 
         {/* Connection Status Bar */}
