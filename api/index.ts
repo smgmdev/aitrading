@@ -37,11 +37,27 @@ async function getDb() {
   // Handle pool errors
   pool.on('error', (err: any) => {
     console.error('Pool error:', err);
-    db = null; // Reset on error to force reconnection
+    db = null;
   });
 
   db = { pool };
   return db;
+}
+
+// Helper to convert snake_case to camelCase
+function toCamelCase(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(toCamelCase);
+  }
+  if (obj && typeof obj === 'object') {
+    const result: any = {};
+    for (const key in obj) {
+      const camelKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+      result[camelKey] = obj[key];
+    }
+    return result;
+  }
+  return obj;
 }
 
 // ===== POSITIONS ENDPOINTS =====
@@ -51,8 +67,10 @@ app.get("/api/positions", async (req, res) => {
   try {
     const database = await getDb();
     client = await database.pool.connect();
-    const result = await client.query("SELECT * FROM positions");
-    res.json(result.rows);
+    const result = await client.query(
+      "SELECT * FROM positions ORDER BY COALESCE(entry_time, NOW()) DESC"
+    );
+    res.json(toCamelCase(result.rows));
   } catch (err: any) {
     console.error("Positions error:", err.message);
     res.status(500).json({ error: err.message });
@@ -66,10 +84,13 @@ app.get("/api/positions/open", async (req, res) => {
   try {
     const database = await getDb();
     client = await database.pool.connect();
+    // Try different variations of status value
     const result = await client.query(
-      "SELECT * FROM positions WHERE status = 'OPEN' ORDER BY entry_time DESC"
+      `SELECT * FROM positions 
+       WHERE LOWER(status) = 'open' OR LOWER(status) = 'active'
+       ORDER BY entry_time DESC NULLS LAST`
     );
-    res.json(result.rows);
+    res.json(toCamelCase(result.rows));
   } catch (err: any) {
     console.error("Open positions error:", err.message);
     res.status(500).json({ error: err.message });
@@ -85,10 +106,13 @@ app.get("/api/positions/closed", async (req, res) => {
     client = await database.pool.connect();
     const limit = parseInt(req.query.limit as string) || 50;
     const result = await client.query(
-      "SELECT * FROM positions WHERE status = 'CLOSED' ORDER BY exit_time DESC LIMIT $1",
+      `SELECT * FROM positions 
+       WHERE LOWER(status) = 'closed'
+       ORDER BY exit_time DESC NULLS LAST
+       LIMIT $1`,
       [limit]
     );
-    res.json(result.rows);
+    res.json(toCamelCase(result.rows));
   } catch (err: any) {
     console.error("Closed positions error:", err.message);
     res.status(500).json({ error: err.message });
@@ -104,10 +128,13 @@ app.get("/api/positions/manually-closed", async (req, res) => {
     client = await database.pool.connect();
     const limit = parseInt(req.query.limit as string) || 50;
     const result = await client.query(
-      "SELECT * FROM positions WHERE status = 'CLOSED' AND closed_by_user = true ORDER BY exit_time DESC LIMIT $1",
+      `SELECT * FROM positions 
+       WHERE LOWER(status) = 'closed' AND closed_by_user = true
+       ORDER BY exit_time DESC NULLS LAST
+       LIMIT $1`,
       [limit]
     );
-    res.json(result.rows);
+    res.json(toCamelCase(result.rows));
   } catch (err: any) {
     console.error("Manually closed positions error:", err.message);
     res.status(500).json({ error: err.message });
@@ -128,7 +155,6 @@ app.post("/api/positions/:id/close", async (req, res) => {
       return res.status(400).json({ error: "exitPrice is required" });
     }
 
-    // Update position to closed
     const result = await client.query(
       `UPDATE positions 
        SET status = 'CLOSED', exit_price = $1, exit_time = NOW(), closed_by_user = true
@@ -141,7 +167,7 @@ app.post("/api/positions/:id/close", async (req, res) => {
       return res.status(404).json({ error: "Position not found" });
     }
 
-    res.json(result.rows[0]);
+    res.json(toCamelCase(result.rows[0]));
   } catch (err: any) {
     console.error("Close position error:", err.message);
     res.status(500).json({ error: err.message });
@@ -162,7 +188,7 @@ app.get("/api/logs", async (req, res) => {
       "SELECT * FROM ai_logs ORDER BY id DESC LIMIT $1",
       [limit]
     );
-    res.json(result.rows);
+    res.json(toCamelCase(result.rows));
   } catch (err: any) {
     console.error("Logs error:", err.message);
     res.status(500).json({ error: err.message });
@@ -207,7 +233,7 @@ app.post("/api/exchange/connect", async (req, res) => {
       [exchange]
     );
 
-    res.json(result.rows[0]);
+    res.json(toCamelCase(result.rows[0]));
   } catch (err: any) {
     console.error("Exchange connect error:", err.message);
     res.status(500).json({ error: err.message });
@@ -222,8 +248,8 @@ app.post("/api/exchange/disconnect", async (req, res) => {
     const database = await getDb();
     client = await database.pool.connect();
 
-    const result = await client.query(
-      "UPDATE system_config SET connected_exchange = NULL RETURNING *"
+    await client.query(
+      "UPDATE system_config SET connected_exchange = NULL"
     );
 
     res.json({ status: "disconnected" });
@@ -245,7 +271,7 @@ app.get("/api/config", async (req, res) => {
     const result = await client.query(
       "SELECT * FROM system_config LIMIT 1"
     );
-    res.json(result.rows[0] || {});
+    res.json(toCamelCase(result.rows[0] || {}));
   } catch (err: any) {
     console.error("Config error:", err.message);
     res.status(500).json({ error: err.message });
@@ -258,23 +284,10 @@ app.get("/api/config", async (req, res) => {
 
 app.get("/api/trading-pairs", async (req, res) => {
   try {
-    // Return list of available trading pairs
     const pairs = [
-      "BTCUSDT",
-      "ETHUSDT",
-      "SOLAUSDT",
-      "ADAUSDT",
-      "DOGEUSDT",
-      "XRPUSDT",
-      "BNBUSDT",
-      "AVAXUSDT",
-      "LINKUSDT",
-      "MATICUSDT",
-      "LITUSDT",
-      "APTUSDT",
-      "UNIUSDT",
-      "ARBUSDT",
-      "OPUSDT",
+      "BTCUSDT", "ETHUSDT", "SOLAUSDT", "ADAUSDT", "DOGEUSDT",
+      "XRPUSDT", "BNBUSDT", "AVAXUSDT", "LINKUSDT", "MATICUSDT",
+      "LITUSDT", "APTUSDT", "UNIUSDT", "ARBUSDT", "OPUSDT",
     ];
     res.json(pairs);
   } catch (err: any) {
