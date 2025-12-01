@@ -44,25 +44,8 @@ async function getDb() {
   return db;
 }
 
-// Logs endpoint
-app.get("/api/logs", async (req, res) => {
-  let client;
-  try {
-    const database = await getDb();
-    client = await database.pool.connect();
-    const result = await client.query(
-      "SELECT * FROM ai_logs ORDER BY id DESC LIMIT 100"
-    );
-    res.json(result.rows);
-  } catch (err: any) {
-    console.error("Logs error:", err.message);
-    res.status(500).json({ error: err.message });
-  } finally {
-    if (client) client.release();
-  }
-});
+// ===== POSITIONS ENDPOINTS =====
 
-// Positions endpoints
 app.get("/api/positions", async (req, res) => {
   let client;
   try {
@@ -114,7 +97,82 @@ app.get("/api/positions/closed", async (req, res) => {
   }
 });
 
-// Exchange connected endpoint
+app.get("/api/positions/manually-closed", async (req, res) => {
+  let client;
+  try {
+    const database = await getDb();
+    client = await database.pool.connect();
+    const limit = parseInt(req.query.limit as string) || 50;
+    const result = await client.query(
+      "SELECT * FROM positions WHERE status = 'CLOSED' AND closed_by_user = true ORDER BY exit_time DESC LIMIT $1",
+      [limit]
+    );
+    res.json(result.rows);
+  } catch (err: any) {
+    console.error("Manually closed positions error:", err.message);
+    res.status(500).json({ error: err.message });
+  } finally {
+    if (client) client.release();
+  }
+});
+
+app.post("/api/positions/:id/close", async (req, res) => {
+  let client;
+  try {
+    const database = await getDb();
+    client = await database.pool.connect();
+    const positionId = parseInt(req.params.id);
+    const { exitPrice } = req.body;
+
+    if (!exitPrice) {
+      return res.status(400).json({ error: "exitPrice is required" });
+    }
+
+    // Update position to closed
+    const result = await client.query(
+      `UPDATE positions 
+       SET status = 'CLOSED', exit_price = $1, exit_time = NOW(), closed_by_user = true
+       WHERE id = $2 
+       RETURNING *`,
+      [exitPrice, positionId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Position not found" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err: any) {
+    console.error("Close position error:", err.message);
+    res.status(500).json({ error: err.message });
+  } finally {
+    if (client) client.release();
+  }
+});
+
+// ===== LOGS ENDPOINT =====
+
+app.get("/api/logs", async (req, res) => {
+  let client;
+  try {
+    const database = await getDb();
+    client = await database.pool.connect();
+    const limit = parseInt(req.query.limit as string) || 100;
+    const result = await client.query(
+      "SELECT * FROM ai_logs ORDER BY id DESC LIMIT $1",
+      [limit]
+    );
+    res.json(result.rows);
+  } catch (err: any) {
+    console.error("Logs error:", err.message);
+    res.status(500).json({ error: err.message });
+  } finally {
+    if (client) client.release();
+  }
+});
+
+// ===== EXCHANGE ENDPOINTS =====
+
 app.get("/api/exchange/connected", async (req, res) => {
   let client;
   try {
@@ -133,12 +191,112 @@ app.get("/api/exchange/connected", async (req, res) => {
   }
 });
 
-// Catch-all for 404 on API routes
+app.post("/api/exchange/connect", async (req, res) => {
+  let client;
+  try {
+    const database = await getDb();
+    client = await database.pool.connect();
+    const { exchange } = req.body;
+
+    if (!exchange || !["BINANCE", "BYBIT"].includes(exchange)) {
+      return res.status(400).json({ error: "Invalid exchange" });
+    }
+
+    const result = await client.query(
+      "UPDATE system_config SET connected_exchange = $1 RETURNING *",
+      [exchange]
+    );
+
+    res.json(result.rows[0]);
+  } catch (err: any) {
+    console.error("Exchange connect error:", err.message);
+    res.status(500).json({ error: err.message });
+  } finally {
+    if (client) client.release();
+  }
+});
+
+app.post("/api/exchange/disconnect", async (req, res) => {
+  let client;
+  try {
+    const database = await getDb();
+    client = await database.pool.connect();
+
+    const result = await client.query(
+      "UPDATE system_config SET connected_exchange = NULL RETURNING *"
+    );
+
+    res.json({ status: "disconnected" });
+  } catch (err: any) {
+    console.error("Exchange disconnect error:", err.message);
+    res.status(500).json({ error: err.message });
+  } finally {
+    if (client) client.release();
+  }
+});
+
+// ===== CONFIG ENDPOINT =====
+
+app.get("/api/config", async (req, res) => {
+  let client;
+  try {
+    const database = await getDb();
+    client = await database.pool.connect();
+    const result = await client.query(
+      "SELECT * FROM system_config LIMIT 1"
+    );
+    res.json(result.rows[0] || {});
+  } catch (err: any) {
+    console.error("Config error:", err.message);
+    res.status(500).json({ error: err.message });
+  } finally {
+    if (client) client.release();
+  }
+});
+
+// ===== TRADING PAIRS ENDPOINT =====
+
+app.get("/api/trading-pairs", async (req, res) => {
+  try {
+    // Return list of available trading pairs
+    const pairs = [
+      "BTCUSDT",
+      "ETHUSDT",
+      "SOLAUSDT",
+      "ADAUSDT",
+      "DOGEUSDT",
+      "XRPUSDT",
+      "BNBUSDT",
+      "AVAXUSDT",
+      "LINKUSDT",
+      "MATICUSDT",
+      "LITUSDT",
+      "APTUSDT",
+      "UNIUSDT",
+      "ARBUSDT",
+      "OPUSDT",
+    ];
+    res.json(pairs);
+  } catch (err: any) {
+    console.error("Trading pairs error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ===== HEALTH CHECK =====
+
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
+// ===== 404 HANDLER =====
+
 app.all("/api/*", (req, res) => {
   res.status(404).json({ error: "Not found" });
 });
 
-// Serve frontend
+// ===== FRONTEND ROUTING =====
+
 app.get("*", (req, res) => {
   try {
     const indexPath = path.join(__dirname, "../dist/public/index.html");
@@ -150,11 +308,6 @@ app.get("*", (req, res) => {
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
-});
-
-// Health check
-app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
 });
 
 export default app;

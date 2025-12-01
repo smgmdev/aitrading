@@ -1,0 +1,80 @@
+index-tIJgZQ87.js:279  GET https://aitrading-wheat.vercel.app/api/trading-pairs 404 (Not Found)
+(anonymous) @ index-tIJgZQ87.js:279
+(anonymous) @ index-tIJgZQ87.js:279
+nu @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+Qn @ index-tIJgZQ87.js:48
+vA @ index-tIJgZQ87.js:48
+$A @ index-tIJgZQ87.js:48
+Hc @ index-tIJgZQ87.js:48
+HA @ index-tIJgZQ87.js:48
+su @ index-tIJgZQ87.js:48
+kA @ index-tIJgZQ87.js:48
+PA @ index-tIJgZQ87.js:48
+AA @ index-tIJgZQ87.js:48
+OA @ index-tIJgZQ87.js:48
+UA @ index-tIJgZQ87.js:48
+q @ index-tIJgZQ87.js:17Understand this error
+index-tIJgZQ87.js:167 Uncaught TypeError: Cannot read properties of undefined (reading 'toUpperCase')
+    at l (index-tIJgZQ87.js:167:74605)
+    at index-tIJgZQ87.js:168:2298
+    at Array.map (<anonymous>)
+    at A8 (index-tIJgZQ87.js:168:1618)
+    at Lp (index-tIJgZQ87.js:48:48289)
+    at nv (index-tIJgZQ87.js:48:71123)
+    at JO (index-tIJgZQ87.js:48:81497)
+    at jA (index-tIJgZQ87.js:48:117337)
+    at Hq (index-tIJgZQ87.js:48:116381)
+    at Av (index-tIJgZQ87.js:48:116211)
