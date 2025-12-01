@@ -89,7 +89,7 @@ export function AIStatus() {
 function StatusTile({ label, value, subValue, icon: Icon, status, testId }: any) {
   return (
     <div
-      className="bg-background border border-border p-3 flex items-center justify-between relative overflow-hidden group"
+      className="bg-background border border-border p-3 relative overflow-hidden group"
       data-testid={testId}
     >
       {status === "success" && <div className="absolute left-0 top-0 bottom-0 w-1 bg-success"></div>}
@@ -102,10 +102,6 @@ function StatusTile({ label, value, subValue, icon: Icon, status, testId }: any)
         </div>
         <div className="text-xl font-mono font-bold text-foreground tracking-tight">{value}</div>
         <div className="text-[10px] font-mono text-muted-foreground mt-1">{subValue}</div>
-      </div>
-
-      <div className="opacity-10 group-hover:opacity-20 transition-opacity">
-        <Icon className="w-8 h-8" />
       </div>
     </div>
   );
