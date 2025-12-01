@@ -89,10 +89,7 @@ export class DatabaseStorage implements IStorage {
     const [config] = await db.select().from(systemConfig).limit(1);
     if (!config) {
       // Create default config if none exists
-      const [newConfig] = await db.insert(systemConfig).values({
-        maxPortfolioAllocation: 95,
-        maxOpenPositions: 5,
-      }).returning();
+      const [newConfig] = await db.insert(systemConfig).values({}).returning();
       return newConfig;
     }
     return config;
@@ -101,10 +98,7 @@ export class DatabaseStorage implements IStorage {
   async updateSystemConfig(configUpdates: Partial<InsertSystemConfig>): Promise<SystemConfig> {
     const existing = await this.getSystemConfig();
     if (!existing) {
-      const [newConfig] = await db.insert(systemConfig).values({
-        maxPortfolioAllocation: configUpdates.maxPortfolioAllocation || 95,
-        maxOpenPositions: configUpdates.maxOpenPositions || 5,
-      }).returning();
+      const [newConfig] = await db.insert(systemConfig).values({}).returning();
       return newConfig;
     }
 

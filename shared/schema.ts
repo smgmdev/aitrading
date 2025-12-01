@@ -54,8 +54,6 @@ export type InsertAiLog = z.infer<typeof insertAiLogSchema>;
 // System Configuration Table
 export const systemConfig = pgTable("system_config", {
   id: serial("id").primaryKey(),
-  maxPortfolioAllocation: integer("max_portfolio_allocation").notNull().default(95),
-  maxOpenPositions: integer("max_open_positions").notNull().default(5),
   connectedExchange: varchar("connected_exchange", { length: 20 }),
   binanceApiKey: text("binance_api_key"),
   binanceApiSecret: text("binance_api_secret"),
