@@ -48,11 +48,27 @@ export async function registerRoutes(
     if (!exitPrice) {
       return res.status(400).json({ message: "exitPrice is required" });
     }
-    const position = await storage.closePosition(parseInt(req.params.id), exitPrice, new Date());
+    const positionId = parseInt(req.params.id);
+    const position = await storage.getPositionById(positionId);
     if (!position) {
       return res.status(404).json({ message: "Position not found" });
     }
-    res.json(position);
+    
+    const exitTime = new Date();
+    const closedPosition = await storage.closePosition(positionId, exitPrice, exitTime);
+    
+    // Create log entry for manual close
+    if (closedPosition) {
+      const pnl = parseFloat(closedPosition.pnl || "0");
+      const pnlPercent = (closedPosition.pnlPercent || "0").toString();
+      await storage.createLog({
+        logType: "EXIT",
+        message: `Manually closed ${position.side} position on ${position.pair} at ${exitPrice}. PnL: ${pnl.toFixed(2)} (${pnlPercent}%)`,
+        relatedTradeId: position.tradeId,
+      });
+    }
+    
+    res.json(closedPosition);
   });
 
   // AI Logs endpoints
