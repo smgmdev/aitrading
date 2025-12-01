@@ -341,7 +341,7 @@ export default function Strategies() {
               {config.connectedExchange === 'BINANCE' ? (
                 <Lock className="w-4 h-4 text-green-500" />
               ) : (
-                <LockOpen className="w-4 h-4 text-red-500" />
+                <LockOpen className="w-4 h-4" />
               )}
               <h4 className="font-bold text-[11px] uppercase tracking-wide">Binance</h4>
               {config.connectedExchange === 'BINANCE' && (
@@ -391,7 +391,7 @@ export default function Strategies() {
               {config.connectedExchange === 'BYBIT' ? (
                 <Lock className="w-4 h-4 text-green-500" />
               ) : (
-                <LockOpen className="w-4 h-4 text-red-500" />
+                <LockOpen className="w-4 h-4" />
               )}
               <h4 className="font-bold text-[11px] uppercase tracking-wide">Bybit</h4>
               {config.connectedExchange === 'BYBIT' && (
