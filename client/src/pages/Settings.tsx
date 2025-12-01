@@ -187,7 +187,7 @@ export default function Strategies() {
                    </div>
                 </div>
 
-                <div className="space-y-4 border-l border-border pl-0 md:pl-8">
+                <div className="space-y-4 pl-0 md:pl-0">
                    <h4 className="font-bold text-xs uppercase text-muted-foreground mb-2">Active Execution Modes</h4>
                    
                    <div className="p-3 border border-border bg-background relative overflow-hidden flex gap-3">
