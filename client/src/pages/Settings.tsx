@@ -26,6 +26,8 @@ export default function Strategies() {
   const [bybitKey, setBybitKey] = useState("");
   const [bybitSecret, setBybitSecret] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>("");
+  const [validating, setValidating] = useState(false);
 
   useEffect(() => {
     fetchConfig();
@@ -50,12 +52,15 @@ export default function Strategies() {
 
   const handleConnectExchange = async (exchange: "BINANCE" | "BYBIT") => {
     setLoading(true);
+    setValidating(true);
+    setError("");
     const key = exchange === "BINANCE" ? binanceKey : bybitKey;
     const secret = exchange === "BINANCE" ? binanceSecret : bybitSecret;
 
     if (!key || !secret) {
-      alert(`Please enter both API key and secret for ${exchange}`);
+      setError(`Please enter both API key and secret for ${exchange}`);
       setLoading(false);
+      setValidating(false);
       return;
     }
 
@@ -65,16 +70,28 @@ export default function Strategies() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ exchange, apiKey: key, apiSecret: secret }),
       });
+      
       if (res.ok) {
         const newConfig = await res.json();
         setConfig(newConfig);
-        alert(`Connected to ${exchange}`);
+        setError("");
+        if (exchange === "BINANCE") {
+          setBinanceKey("");
+          setBinanceSecret("");
+        } else {
+          setBybitKey("");
+          setBybitSecret("");
+        }
+      } else {
+        const errorData = await res.json();
+        setError(errorData.message || `Failed to connect to ${exchange}`);
       }
     } catch (error) {
       console.error("Failed to connect exchange:", error);
-      alert("Failed to connect exchange");
+      setError("Network error: Failed to reach the validation service");
     } finally {
       setLoading(false);
+      setValidating(false);
     }
   };
 
@@ -259,6 +276,20 @@ export default function Strategies() {
             </Button>
           )}
         </div>
+
+        {/* Error Message */}
+        {error && (
+          <div className="px-4 py-2 bg-destructive/10 border border-destructive/30 text-destructive text-[10px] font-mono rounded">
+            {error}
+          </div>
+        )}
+
+        {/* Validating Status */}
+        {validating && (
+          <div className="px-4 py-2 bg-primary/10 border border-primary/30 text-primary text-[10px] font-mono rounded">
+            Validating API credentials with exchange...
+          </div>
+        )}
 
         {/* Exchange Forms - Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

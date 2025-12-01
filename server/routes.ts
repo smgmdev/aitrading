@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertPositionSchema, insertAiLogSchema, insertSystemConfigSchema } from "@shared/schema";
+import { validateBinanceKeys, validateBybitKeys } from "./validation";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -129,8 +130,27 @@ export async function registerRoutes(
     if (!["BINANCE", "BYBIT"].includes(exchange)) {
       return res.status(400).json({ message: "exchange must be BINANCE or BYBIT" });
     }
-    const config = await storage.connectExchange(exchange, apiKey, apiSecret);
-    res.json(config);
+
+    // Validate API keys against real exchange API
+    try {
+      const isValid = exchange === "BINANCE"
+        ? await validateBinanceKeys(apiKey, apiSecret)
+        : await validateBybitKeys(apiKey, apiSecret);
+
+      if (!isValid) {
+        return res.status(401).json({ 
+          message: `Invalid ${exchange} API credentials. Please check your API key and secret.` 
+        });
+      }
+
+      const config = await storage.connectExchange(exchange, apiKey, apiSecret);
+      res.json(config);
+    } catch (error) {
+      console.error("Exchange connection error:", error);
+      return res.status(500).json({ 
+        message: "Failed to validate exchange credentials. Please try again." 
+      });
+    }
   });
 
   app.post("/api/exchange/disconnect", async (req, res) => {
