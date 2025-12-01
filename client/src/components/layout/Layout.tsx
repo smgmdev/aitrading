@@ -452,8 +452,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
             
             // Use dynamic icon for EXCHANGE CONFIG based on connection status
             let Icon = item.icon;
+            let iconColor = "";
+            
             if (item.label === "EXCHANGE CONFIG") {
-              Icon = connectedExchange ? Lock : LockOpen;
+              if (connectedExchange && connectedExchange.trim() !== "") {
+                Icon = Lock;
+                iconColor = "text-green-500";
+              } else {
+                Icon = LockOpen;
+                iconColor = "text-red-500";
+              }
             }
             
             return (
@@ -464,7 +472,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     ? "bg-secondary border-primary text-foreground" 
                     : "border-transparent text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
                 )}>
-                  <Icon className={cn("w-3 h-3", item.label === "EXCHANGE CONFIG" && (connectedExchange ? "text-green-500" : "text-red-500"))} />
+                  <Icon className={cn("w-3 h-3", iconColor)} />
                   <span>{item.label}</span>
                 </div>
               </Link>
