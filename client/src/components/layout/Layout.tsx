@@ -62,7 +62,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden font-sans text-sm flex-col">
       {/* Header */}
-      <header className="h-9 border-b border-border flex items-center justify-between px-4 bg-black py-1">
+      <header className="h-8 border-b border-border flex items-center justify-between px-4 bg-black">
         <div className="flex items-center gap-3">
            <div className="flex items-center gap-1 text-[10px] font-mono text-white">
               <span className={cn("w-2 h-2 rounded-full", statusColor)}></span>
@@ -79,8 +79,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </div>
         
         <div className="flex items-center gap-3">
-           <button className="p-2 hover:bg-secondary border border-transparent hover:border-border transition-colors">
-              <Bell className="w-4 h-4 text-muted-foreground" />
+           <button className="p-1 hover:bg-secondary border border-transparent hover:border-border transition-colors">
+              <Bell className="w-4 h-4 text-white" />
            </button>
         </div>
       </header>
