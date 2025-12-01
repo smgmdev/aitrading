@@ -5,8 +5,7 @@ import {
   Settings, 
   Activity, 
   LogOut,
-  Bell,
-  Network
+  Bell
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
@@ -91,7 +90,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
              </h2>
              <div className="h-4 w-px bg-border"></div>
              <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
-                <Network className="w-3 h-3" />
                 <span>{connectedExchange ? `${connectedExchange}: CONNECTED` : 'NO EXCHANGE: DISCONNECTED'}</span>
              </div>
           </div>

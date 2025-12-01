@@ -68,7 +68,7 @@ export function AIStatus() {
       <StatusTile
         label="WIN RATIO"
         value={`${stats.winRate.toFixed(1)}%`}
-        subValue="LIVE"
+        subValue={`${stats.tradeCount} TOTAL TRADES`}
         icon={BarChart3}
         status="neutral"
         testId="status-winrate"
