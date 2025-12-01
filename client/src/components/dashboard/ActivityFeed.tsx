@@ -80,7 +80,7 @@ export function ActivityFeed() {
       <div className="flex items-center justify-between px-3 py-2 border-b border-border bg-secondary/10">
         <div className="flex items-center gap-2">
           <Terminal className="w-3 h-3" />
-          <h3 className="font-bold text-foreground uppercase tracking-wider">TRADE LOGS</h3>
+          <h3 className="font-bold text-foreground uppercase tracking-wider">TRADE LOGS CONSOLE</h3>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
@@ -122,12 +122,12 @@ export function ActivityFeed() {
                 }}
               >
                 <div className="flex gap-2 mb-1">
-                  <div className="text-gray-500 min-w-[90px] select-none">{time}</div>
-                  <div className={cn("font-bold text-white", getLogTypeColor(log.logType))}>
+                  <div className="text-gray-500 select-none text-[10px]">{time}</div>
+                  <div className={cn("font-bold text-white text-[10px]", getLogTypeColor(log.logType))}>
                     {log.logType}
                   </div>
                 </div>
-                <div className="text-gray-300 text-[10px] whitespace-pre-wrap leading-relaxed ml-[90px] bg-black/50 p-2 rounded border border-white/10">
+                <div className="text-gray-300 text-[10px] whitespace-pre-wrap leading-relaxed pl-2 bg-black/50 p-1.5 rounded border border-white/10">
                   {log.message}
                 </div>
               </div>
