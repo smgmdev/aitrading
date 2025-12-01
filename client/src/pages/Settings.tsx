@@ -360,8 +360,8 @@ export default function Strategies() {
         {/* Exchange Forms - Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Binance Connection */}
-          <div className="space-y-3 p-4 border border-border/50 hover:border-border transition-colors" data-testid="form-binance-keys">
-            <div className="flex items-center gap-2">
+          <div className="bg-background border border-border p-0 shadow-sm" data-testid="form-binance-keys">
+            <div className="p-4 border-b border-border bg-orange-500/5 flex items-center gap-2">
               {config.connectedExchange === 'BINANCE' ? (
                 <Lock className="w-4 h-4 text-success" />
               ) : (
@@ -372,44 +372,46 @@ export default function Strategies() {
                 <span className="text-[8px] font-mono text-success border border-success/40 px-1.5 py-0.5">CONNECTED</span>
               )}
             </div>
-            <div className="space-y-2">
-              <div>
-                <Label className="font-bold text-[9px] uppercase mb-1.5 block text-muted-foreground">API Key</Label>
-                <Input
-                  placeholder="Paste Binance API Key"
-                  value={binanceKey}
-                  onChange={(e) => setBinanceKey(e.target.value)}
-                  disabled={!!config.connectedExchange}
-                  data-testid="input-binance-key"
-                  className="font-mono text-xs h-8"
-                />
+            <div className="p-6 space-y-4">
+              <div className="space-y-2">
+                <div>
+                  <Label className="font-bold text-[9px] uppercase mb-1.5 block text-muted-foreground">API Key</Label>
+                  <Input
+                    placeholder="Paste Binance API Key"
+                    value={binanceKey}
+                    onChange={(e) => setBinanceKey(e.target.value)}
+                    disabled={!!config.connectedExchange}
+                    data-testid="input-binance-key"
+                    className="font-mono text-xs h-8"
+                  />
+                </div>
+                <div>
+                  <Label className="font-bold text-[9px] uppercase mb-1.5 block text-muted-foreground">API Secret</Label>
+                  <Input
+                    placeholder="Paste Binance API Secret"
+                    type="password"
+                    value={binanceSecret}
+                    onChange={(e) => setBinanceSecret(e.target.value)}
+                    disabled={!!config.connectedExchange}
+                    data-testid="input-binance-secret"
+                    className="font-mono text-xs h-8"
+                  />
+                </div>
               </div>
-              <div>
-                <Label className="font-bold text-[9px] uppercase mb-1.5 block text-muted-foreground">API Secret</Label>
-                <Input
-                  placeholder="Paste Binance API Secret"
-                  type="password"
-                  value={binanceSecret}
-                  onChange={(e) => setBinanceSecret(e.target.value)}
-                  disabled={!!config.connectedExchange}
-                  data-testid="input-binance-secret"
-                  className="font-mono text-xs h-8"
-                />
-              </div>
+              <Button
+                onClick={() => handleConnectExchange('BINANCE')}
+                disabled={loading || !!config.connectedExchange || !binanceKey || !binanceSecret}
+                data-testid="button-connect-binance"
+                className="w-full h-8 text-[10px] font-mono font-bold bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                {config.connectedExchange === 'BINANCE' ? 'CONNECTED' : 'CONNECT'}
+              </Button>
             </div>
-            <Button
-              onClick={() => handleConnectExchange('BINANCE')}
-              disabled={loading || !!config.connectedExchange || !binanceKey || !binanceSecret}
-              data-testid="button-connect-binance"
-              className="w-full h-8 text-[10px] font-mono font-bold bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              {config.connectedExchange === 'BINANCE' ? 'CONNECTED' : 'CONNECT'}
-            </Button>
           </div>
 
           {/* Bybit Connection */}
-          <div className="space-y-3 p-4 border border-border/50 hover:border-border transition-colors" data-testid="form-bybit-keys">
-            <div className="flex items-center gap-2">
+          <div className="bg-background border border-border p-0 shadow-sm" data-testid="form-bybit-keys">
+            <div className="p-4 border-b border-border bg-purple-500/5 flex items-center gap-2">
               {config.connectedExchange === 'BYBIT' ? (
                 <Lock className="w-4 h-4 text-success" />
               ) : (
@@ -420,39 +422,41 @@ export default function Strategies() {
                 <span className="text-[8px] font-mono text-success border border-success/40 px-1.5 py-0.5">CONNECTED</span>
               )}
             </div>
-            <div className="space-y-2">
-              <div>
-                <Label className="font-bold text-[9px] uppercase mb-1.5 block text-muted-foreground">API Key</Label>
-                <Input
-                  placeholder="Paste Bybit API Key"
-                  value={bybitKey}
-                  onChange={(e) => setBybitKey(e.target.value)}
-                  disabled={!!config.connectedExchange}
-                  data-testid="input-bybit-key"
-                  className="font-mono text-xs h-8"
-                />
+            <div className="p-6 space-y-4">
+              <div className="space-y-2">
+                <div>
+                  <Label className="font-bold text-[9px] uppercase mb-1.5 block text-muted-foreground">API Key</Label>
+                  <Input
+                    placeholder="Paste Bybit API Key"
+                    value={bybitKey}
+                    onChange={(e) => setBybitKey(e.target.value)}
+                    disabled={!!config.connectedExchange}
+                    data-testid="input-bybit-key"
+                    className="font-mono text-xs h-8"
+                  />
+                </div>
+                <div>
+                  <Label className="font-bold text-[9px] uppercase mb-1.5 block text-muted-foreground">API Secret</Label>
+                  <Input
+                    placeholder="Paste Bybit API Secret"
+                    type="password"
+                    value={bybitSecret}
+                    onChange={(e) => setBybitSecret(e.target.value)}
+                    disabled={!!config.connectedExchange}
+                    data-testid="input-bybit-secret"
+                    className="font-mono text-xs h-8"
+                  />
+                </div>
               </div>
-              <div>
-                <Label className="font-bold text-[9px] uppercase mb-1.5 block text-muted-foreground">API Secret</Label>
-                <Input
-                  placeholder="Paste Bybit API Secret"
-                  type="password"
-                  value={bybitSecret}
-                  onChange={(e) => setBybitSecret(e.target.value)}
-                  disabled={!!config.connectedExchange}
-                  data-testid="input-bybit-secret"
-                  className="font-mono text-xs h-8"
-                />
-              </div>
+              <Button
+                onClick={() => handleConnectExchange('BYBIT')}
+                disabled={loading || !!config.connectedExchange || !bybitKey || !bybitSecret}
+                data-testid="button-connect-bybit"
+                className="w-full h-8 text-[10px] font-mono font-bold bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                {config.connectedExchange === 'BYBIT' ? 'CONNECTED' : 'CONNECT'}
+              </Button>
             </div>
-            <Button
-              onClick={() => handleConnectExchange('BYBIT')}
-              disabled={loading || !!config.connectedExchange || !bybitKey || !bybitSecret}
-              data-testid="button-connect-bybit"
-              className="w-full h-8 text-[10px] font-mono font-bold bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              {config.connectedExchange === 'BYBIT' ? 'CONNECTED' : 'CONNECT'}
-            </Button>
           </div>
         </div>
 
