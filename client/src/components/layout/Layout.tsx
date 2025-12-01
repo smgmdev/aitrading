@@ -179,10 +179,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
         {/* AI Brain Engine Console */}
         {showAiBrainEngine && (
-          <div className="h-48 border-b border-border bg-background overflow-y-auto">
-            <div className="p-3 text-[10px] font-mono">
-              <div className="text-muted-foreground mb-2">AI Brain Engine - Real Time Decision Log:</div>
-              <div className="space-y-1">
+          <div className="h-96 border-b border-border bg-background overflow-y-auto">
+            <div className="p-3 text-[9px] font-mono">
+              <div className="text-muted-foreground mb-3 uppercase font-bold">AI Brain Engine - Analytical Decision Log:</div>
+              <div className="space-y-4">
                 {aiLogs.length === 0 ? (
                   <div className="text-muted-foreground">Waiting for AI to think...</div>
                 ) : (
@@ -195,8 +195,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     const timestamp = log.createdAt ? new Date(log.createdAt).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
                     
                     return (
-                      <div key={idx} className={cn("text-foreground", logColor)}>
-                        <span className="text-muted-foreground">[{timestamp}]</span> <span className="text-muted-foreground">[{log.logType}]</span> {log.message}
+                      <div key={idx} className={cn("border border-border/50 p-2 bg-background/50", logColor)}>
+                        <div className="flex items-center gap-2 mb-2 pb-2 border-b border-border/30">
+                          <span className="text-muted-foreground">[{timestamp}]</span>
+                          <span className={cn("px-1.5 py-0.5 bg-background text-[8px] font-bold uppercase tracking-wider", logColor)}>
+                            {log.logType}
+                          </span>
+                        </div>
+                        <pre className="whitespace-pre-wrap break-words text-[8.5px] leading-relaxed text-foreground overflow-x-hidden">
+                          {log.message}
+                        </pre>
                       </div>
                     );
                   })
