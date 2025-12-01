@@ -50,7 +50,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const navItems = [
     { icon: LayoutDashboard, label: "TERMINAL", href: "/" },
     { icon: History, label: "EXECUTION LOGS", href: "/history" },
-    { icon: Activity, label: "ALGORITHMS", href: "/strategies" },
+    { icon: Activity, label: "ALGO CONFIG", href: "/strategies" },
     { icon: Settings, label: "SYSTEM CONFIG", href: "/settings" },
   ];
 
