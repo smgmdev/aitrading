@@ -242,14 +242,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 const trade = tradeLogs.find((t: any) => t.id === selectedTradeId);
                 if (!trade) return null;
 
-                // Find AI logs related to this specific trade by ID
+                // Find AI logs related to this specific trade
+                // Match by pair + entry price + side (ENTRY and EXIT logs for this trade)
+                const entryPriceStr = trade.entryPrice?.toString();
+                const sideText = trade.side === "LONG" ? "LONG" : "SHORT";
+                
                 const relatedAiLogs = aiLogs.filter((log: any) => {
-                  // Match by relatedTradeId if it exists
-                  if (log.relatedTradeId) {
-                    return log.relatedTradeId.includes(String(trade.id));
-                  }
-                  // Fallback to pair name matching
-                  return log.message?.includes(trade.pair);
+                  if (!log.message) return false;
+                  const msg = log.message;
+                  
+                  // Check if message contains pair, entry price, and side
+                  const hasPair = msg.includes(trade.pair);
+                  const hasPrice = msg.includes(formatPrice(parseFloat(entryPriceStr))) || msg.includes(entryPriceStr);
+                  const hasSide = msg.includes(sideText);
+                  
+                  return hasPair && hasPrice && hasSide;
                 }).sort((a: any, b: any) => {
                   const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
                   const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
