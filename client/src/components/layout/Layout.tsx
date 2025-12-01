@@ -156,19 +156,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
         {/* Trade Logs Console */}
         {showTradeLogsConsole && (
-          <div className="h-48 border-b border-border bg-black overflow-y-auto">
+          <div className="h-48 border-b border-border bg-white overflow-y-auto">
             <div className="p-3 text-[9px] font-mono">
-              <div className="text-muted-foreground mb-2 uppercase font-bold">Trade Logs:</div>
+              <div className="text-black mb-2 uppercase font-bold">Trade Logs:</div>
               <div className="space-y-1">
                 {tradeLogs.length === 0 ? (
-                  <div className="text-muted-foreground">No trades yet</div>
+                  <div className="text-gray-600">No trades yet</div>
                 ) : (
                   tradeLogs.slice(0, 30).map((log: any, idx: number) => {
                     const timestamp = log.exitTime ? new Date(log.exitTime).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "";
                     const pnlNumber = parseFloat(log.pnl || 0);
                     return (
-                      <div key={idx} className="text-foreground text-[8px]">
-                        <span className="text-muted-foreground">[{timestamp}]</span> <span className="text-cyan-400">{log.pair}</span> {log.side === "LONG" ? "🔵" : "🔴"} ${parseFloat(log.exitPrice || log.entryPrice).toFixed(2)} <span className={pnlNumber >= 0 ? "text-success" : "text-destructive"}>{pnlNumber >= 0 ? "✓" : "✗"} {pnlNumber >= 0 ? "+" : ""}{pnlNumber.toFixed(2)}</span>
+                      <div key={idx} className="text-black text-[8px]">
+                        <span className="text-gray-500">[{timestamp}]</span> <span className="text-blue-600">{log.pair}</span> {log.side === "LONG" ? "🔵" : "🔴"} ${parseFloat(log.exitPrice || log.entryPrice).toFixed(2)} <span className={pnlNumber >= 0 ? "text-green-600" : "text-red-600"}>{pnlNumber >= 0 ? "✓" : "✗"} {pnlNumber >= 0 ? "+" : ""}{pnlNumber.toFixed(2)}</span>
                       </div>
                     );
                   })
