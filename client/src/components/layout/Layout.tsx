@@ -200,7 +200,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {showTradeLogsConsole && (
           <div className="h-48 border-b border-border bg-white overflow-y-auto">
             <div className="p-0 text-xs font-mono">
-              <div className="text-black px-3 py-2 uppercase font-bold bg-gray-50 sticky top-0">Quick Logs:</div>
+              <div className="text-black px-3 py-2 uppercase font-bold bg-gray-50 sticky top-0">Trade Logs:</div>
               <div className="divide-y divide-gray-200">
                 {tradeLogs.length === 0 ? (
                   <div className="text-gray-600 px-3 py-2">No trades yet</div>
