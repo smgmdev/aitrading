@@ -4,15 +4,19 @@ import { storage } from "./storage";
 import { insertPositionSchema, insertAiLogSchema, insertSystemConfigSchema } from "@shared/schema";
 import { validateBinanceKeys, validateBybitKeys } from "./validation";
 
+// Wrapper to handle async errors in routes
+const asyncHandler = (fn: (req: any, res: any, next?: any) => Promise<any>) => 
+  (req: any, res: any, next: any) => Promise.resolve(fn(req, res, next)).catch(next);
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
   // Positions endpoints
-  app.get("/api/positions", async (req, res) => {
+  app.get("/api/positions", asyncHandler(async (req, res) => {
     const positions = await storage.getAllPositions();
     res.json(positions);
-  });
+  }));
 
   app.get("/api/positions/open", async (req, res) => {
     const positions = await storage.getOpenPositions();
@@ -218,6 +222,26 @@ export async function registerRoutes(
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
+  });
+
+  // Global error handler - MUST be last
+  app.use((err: any, req: any, res: any, next: any) => {
+    console.error("[ERROR] Unhandled error:", {
+      message: err?.message || "Unknown error",
+      stack: err?.stack,
+      name: err?.name,
+    });
+    
+    // Always return JSON for API errors
+    if (req.path.startsWith("/api/")) {
+      return res.status(500).json({
+        message: err?.message || "Internal server error",
+        error: process.env.NODE_ENV === "development" ? err?.stack : undefined,
+      });
+    }
+    
+    // For non-API routes, pass to next handler
+    next(err);
   });
 
   return httpServer;
