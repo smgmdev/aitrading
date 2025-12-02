@@ -131,18 +131,8 @@ export async function registerRoutes(
       return res.status(400).json({ message: "exchange must be BINANCE or BYBIT" });
     }
 
+    // Always validate API keys against real exchange API
     try {
-      // Get current config to check test mode
-      const currentConfig = await storage.getSystemConfig();
-      const isTestMode = currentConfig?.testMode ?? true;
-
-      // Skip validation in test mode - just store the keys
-      if (isTestMode) {
-        const config = await storage.connectExchange(exchange, apiKey, apiSecret);
-        return res.json(config);
-      }
-
-      // Validate API keys against real exchange API only in live mode
       const isValid = exchange === "BINANCE"
         ? await validateBinanceKeys(apiKey, apiSecret)
         : await validateBybitKeys(apiKey, apiSecret);

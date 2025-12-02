@@ -10,30 +10,41 @@ export async function validateBinanceKeys(apiKey: string, apiSecret: string): Pr
       .update(params)
       .digest("hex");
 
-    const response = await fetch(
-      `https://api.binance.com/api/v3/account?${params}&signature=${signature}`,
-      {
-        headers: {
-          "X-MBX-APIKEY": apiKey,
-        },
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+    try {
+      const response = await fetch(
+        `https://api.binance.com/api/v3/account?${params}&signature=${signature}`,
+        {
+          headers: {
+            "X-MBX-APIKEY": apiKey,
+          },
+          signal: controller.signal,
+        }
+      );
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error(`Binance API error (${response.status}):`, text);
+        return false;
       }
-    );
 
-    if (!response.ok) {
       const text = await response.text();
-      console.error(`Binance API error (${response.status}):`, text);
-      return false;
-    }
+      if (!text) {
+        console.error("Binance API returned empty response");
+        return false;
+      }
 
-    const text = await response.text();
-    if (!text) {
-      console.error("Binance API returned empty response");
-      return false;
+      const data = JSON.parse(text);
+      // Check if response has expected structure (balances array indicates valid response)
+      return Array.isArray(data.balances);
+    } catch (error) {
+      clearTimeout(timeoutId);
+      throw error;
     }
-
-    const data = JSON.parse(text);
-    // Check if response has expected structure (balances array indicates valid response)
-    return Array.isArray(data.balances);
   } catch (error) {
     console.error("Binance validation error:", error);
     return false;
@@ -52,30 +63,41 @@ export async function validateBybitKeys(apiKey: string, apiSecret: string): Prom
       .update(params)
       .digest("hex");
 
-    const response = await fetch(
-      `https://api.bybit.com/v5/account/wallet-balance?${params}&sign=${signature}`,
-      {
-        headers: {
-          "X-BYBIT-SIGN": signature,
-        },
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+    try {
+      const response = await fetch(
+        `https://api.bybit.com/v5/account/wallet-balance?${params}&sign=${signature}`,
+        {
+          headers: {
+            "X-BYBIT-SIGN": signature,
+          },
+          signal: controller.signal,
+        }
+      );
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error(`Bybit API error (${response.status}):`, text);
+        return false;
       }
-    );
 
-    if (!response.ok) {
       const text = await response.text();
-      console.error(`Bybit API error (${response.status}):`, text);
-      return false;
-    }
+      if (!text) {
+        console.error("Bybit API returned empty response");
+        return false;
+      }
 
-    const text = await response.text();
-    if (!text) {
-      console.error("Bybit API returned empty response");
-      return false;
+      const data = JSON.parse(text);
+      // Check if response has expected structure (retCode 0 indicates success)
+      return data.retCode === 0;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      throw error;
     }
-
-    const data = JSON.parse(text);
-    // Check if response has expected structure (retCode 0 indicates success)
-    return data.retCode === 0;
   } catch (error) {
     console.error("Bybit validation error:", error);
     return false;
