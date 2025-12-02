@@ -20,10 +20,18 @@ export async function validateBinanceKeys(apiKey: string, apiSecret: string): Pr
     );
 
     if (!response.ok) {
+      const text = await response.text();
+      console.error(`Binance API error (${response.status}):`, text);
       return false;
     }
 
-    const data = await response.json();
+    const text = await response.text();
+    if (!text) {
+      console.error("Binance API returned empty response");
+      return false;
+    }
+
+    const data = JSON.parse(text);
     // Check if response has expected structure (balances array indicates valid response)
     return Array.isArray(data.balances);
   } catch (error) {
@@ -54,10 +62,18 @@ export async function validateBybitKeys(apiKey: string, apiSecret: string): Prom
     );
 
     if (!response.ok) {
+      const text = await response.text();
+      console.error(`Bybit API error (${response.status}):`, text);
       return false;
     }
 
-    const data = await response.json();
+    const text = await response.text();
+    if (!text) {
+      console.error("Bybit API returned empty response");
+      return false;
+    }
+
+    const data = JSON.parse(text);
     // Check if response has expected structure (retCode 0 indicates success)
     return data.retCode === 0;
   } catch (error) {
