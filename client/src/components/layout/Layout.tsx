@@ -477,17 +477,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        {/* Main Content Area with Left Sidebar */}
+        {/* Main Content Area with Right Sidebar */}
         <div className="flex-1 flex overflow-hidden">
-          {/* Left Sidebar - AI Decision Stream */}
-          <aside className="w-80 border-r border-border bg-sidebar flex flex-col overflow-hidden">
-            <ActivityFeed />
-          </aside>
-
           {/* Main Content */}
           <main className="flex-1 overflow-y-auto bg-secondary/10 p-4">
             {children}
           </main>
+
+          {/* Right Sidebar - AI Decision Stream */}
+          <aside className="w-80 border-l border-border bg-sidebar flex flex-col overflow-hidden">
+            <ActivityFeed />
+          </aside>
         </div>
       </div>
     </TooltipProvider>
