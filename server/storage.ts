@@ -146,21 +146,28 @@ export class DatabaseStorage implements IStorage {
   }
 
   async connectExchange(exchange: string, apiKey: string, apiSecret: string): Promise<SystemConfig> {
+    console.log("[DB] connectExchange - getting current config...");
     const config = await this.getSystemConfig();
+    console.log("[DB] connectExchange - current config:", { id: config?.id, exchange: config?.connectedExchange });
+    
     if (!config) {
+      console.log("[DB] connectExchange - inserting new config...");
       const result = await db.insert(systemConfig).values({
         connectedExchange: exchange,
         [exchange === "BINANCE" ? "binanceApiKey" : "bybitApiKey"]: apiKey,
         [exchange === "BINANCE" ? "binanceApiSecret" : "bybitApiSecret"]: apiSecret,
       }).returning();
       
+      console.log("[DB] connectExchange - insert result:", { result, length: result.length });
       const [newConfig] = result;
       if (!newConfig) {
-        throw new Error("Failed to insert new config");
+        throw new Error("Failed to insert new config - returning empty");
       }
+      console.log("[DB] connectExchange - inserted successfully:", { id: newConfig.id, exchange: newConfig.connectedExchange });
       return newConfig;
     }
 
+    console.log("[DB] connectExchange - updating existing config id:", config.id);
     const updates: any = {
       connectedExchange: exchange,
       updatedAt: new Date(),
@@ -173,12 +180,16 @@ export class DatabaseStorage implements IStorage {
       updates.bybitApiSecret = apiSecret;
     }
 
+    console.log("[DB] connectExchange - update values:", { id: config.id, exchange, hasApiKey: !!apiKey, hasApiSecret: !!apiSecret });
     const result = await db.update(systemConfig).set(updates).where(eq(systemConfig.id, config.id)).returning();
+    
+    console.log("[DB] connectExchange - update result:", { result, length: result.length });
     const [updated] = result;
     
     if (!updated) {
-      throw new Error("Failed to update config");
+      throw new Error("Failed to update config - returning empty");
     }
+    console.log("[DB] connectExchange - updated successfully:", { id: updated.id, exchange: updated.connectedExchange });
     return updated;
   }
 
