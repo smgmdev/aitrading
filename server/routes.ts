@@ -12,6 +12,11 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Debug endpoint
+  app.get("/api/test", (req, res) => {
+    res.json({ test: "ok", timestamp: new Date().toISOString() });
+  });
+
   // Positions endpoints
   app.get("/api/positions", asyncHandler(async (req, res) => {
     const positions = await storage.getAllPositions();
