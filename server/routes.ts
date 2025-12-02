@@ -173,6 +173,35 @@ export async function registerRoutes(
     }
   });
 
+  app.post("/api/exchange/activate", async (req, res) => {
+    try {
+      const { exchange } = req.body;
+      if (!["BINANCE", "BYBIT"].includes(exchange)) {
+        return res.status(400).json({ message: "exchange must be BINANCE or BYBIT" });
+      }
+      
+      const config = await storage.getSystemConfig();
+      if (!config) {
+        return res.status(400).json({ message: "No configuration found" });
+      }
+      
+      // Check if keys exist for this exchange
+      const keysExist = exchange === "BINANCE" 
+        ? (config.binanceApiKey && config.binanceApiSecret)
+        : (config.bybitApiKey && config.bybitApiSecret);
+      
+      if (!keysExist) {
+        return res.status(400).json({ message: `No API keys found for ${exchange}. Add them to the database first.` });
+      }
+      
+      // Activate the exchange
+      const updated = await storage.updateSystemConfig({ connectedExchange: exchange });
+      res.json(updated);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  });
+
   app.post("/api/exchange/disconnect", async (req, res) => {
     const config = await storage.disconnectExchange();
     res.json(config);

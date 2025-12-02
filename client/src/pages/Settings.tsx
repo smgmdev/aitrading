@@ -73,65 +73,32 @@ export default function Strategies() {
     }, 2000);
   };
 
-  const handleConnectExchange = async (exchange: "BINANCE" | "BYBIT") => {
+  const handleActivateExchange = async (exchange: "BINANCE" | "BYBIT") => {
     setLoading(true);
-    setValidating(true);
     setError("");
-    const key = exchange === "BINANCE" ? binanceKey : bybitKey;
-    const secret = exchange === "BINANCE" ? binanceSecret : bybitSecret;
-
-    if (!key || !secret) {
-      setError(`Please enter both API key and secret for ${exchange}`);
-      setLoading(false);
-      setValidating(false);
-      return;
-    }
-
+    
     try {
-      console.log(`[UI] Connecting to ${exchange}...`);
-      const res = await fetch("/api/exchange/connect", {
+      console.log(`[UI] Activating ${exchange}...`);
+      const res = await fetch("/api/exchange/activate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ exchange, apiKey: key, apiSecret: secret }),
+        body: JSON.stringify({ exchange }),
       });
       
-      console.log(`[UI] Response status: ${res.status}`);
-      
       if (res.ok) {
-        // Server processed the request successfully
-        // Fetch fresh config instead of parsing response (which may be empty on Vercel)
-        console.log(`[UI] Connected, fetching updated config...`);
-        const configRes = await fetch("/api/config");
-        if (configRes.ok) {
-          const newConfig = await configRes.json();
-          console.log(`[UI] Config updated:`, newConfig);
-          setConfig(newConfig);
-          setError("");
-          if (exchange === "BINANCE") {
-            setBinanceKey("");
-            setBinanceSecret("");
-          } else {
-            setBybitKey("");
-            setBybitSecret("");
-          }
-        } else {
-          setError("Connected but failed to load config");
-        }
+        const newConfig = await res.json();
+        console.log(`[UI] Activated:`, newConfig);
+        setConfig(newConfig);
+        setError("");
       } else {
-        const responseText = await res.text();
-        try {
-          const errorData = JSON.parse(responseText);
-          setError(errorData.message || `Failed to connect to ${exchange}`);
-        } catch {
-          setError(`Failed to connect to ${exchange} (${res.status})`);
-        }
+        const errorData = await res.json();
+        setError(errorData.message || `Failed to activate ${exchange}`);
       }
     } catch (error: any) {
-      console.error("[UI] Failed to connect exchange:", error);
-      setError(`Network error: ${error.message || "Failed to reach the server"}`);
+      console.error("[UI] Failed to activate exchange:", error);
+      setError(`Error: ${error.message}`);
     } finally {
       setLoading(false);
-      setValidating(false);
     }
   };
 
@@ -365,112 +332,43 @@ export default function Strategies() {
           </div>
         )}
 
-        {/* Exchange Forms - Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Binance Connection */}
-          <div className="bg-background border border-border p-0 shadow-sm" data-testid="form-binance-keys">
-            <div className="p-4 border-b border-border flex items-center gap-2" style={{ backgroundColor: '#f0d0a6' }}>
-              {config.connectedExchange === 'BINANCE' ? (
-                <Lock className="w-4 h-4 text-green-500" />
-              ) : (
-                <LockOpen className="w-4 h-4" />
-              )}
-              <h4 className="font-bold text-[11px] uppercase tracking-wide">Binance</h4>
-              {config.connectedExchange === 'BINANCE' && (
-                <span className="text-[8px] font-mono text-success border border-success/40 px-1.5 py-0.5">CONNECTED</span>
-              )}
-            </div>
-            <div className="p-6 space-y-4">
-              <div className="space-y-2">
-                <div>
-                  <Label className="font-bold text-[9px] uppercase mb-1.5 block text-muted-foreground">API Key</Label>
-                  <Input
-                    placeholder="Paste Binance API Key"
-                    value={binanceKey}
-                    onChange={(e) => setBinanceKey(e.target.value)}
-                    disabled={!!config.connectedExchange}
-                    data-testid="input-binance-key"
-                    className="font-mono text-xs h-8"
-                  />
-                </div>
-                <div>
-                  <Label className="font-bold text-[9px] uppercase mb-1.5 block text-muted-foreground">API Secret</Label>
-                  <Input
-                    placeholder="Paste Binance API Secret"
-                    type="password"
-                    value={binanceSecret}
-                    onChange={(e) => setBinanceSecret(e.target.value)}
-                    disabled={!!config.connectedExchange}
-                    data-testid="input-binance-secret"
-                    className="font-mono text-xs h-8"
-                  />
-                </div>
-              </div>
-              <Button
-                onClick={() => handleConnectExchange('BINANCE')}
-                disabled={loading || !!config.connectedExchange || !binanceKey || !binanceSecret}
-                data-testid="button-connect-binance"
-                className="w-full h-9 text-xs font-mono font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black uppercase"
-              >
-                {config.connectedExchange === 'BINANCE' ? 'CONNECTED' : 'CONNECT'}
-              </Button>
-            </div>
+        {/* Exchange Activation Buttons */}
+        <div className="bg-background border border-border p-6 space-y-4">
+          <div className="space-y-1">
+            <h3 className="font-bold text-sm uppercase">Exchange Selection</h3>
+            <p className="text-[10px] text-muted-foreground">API keys must be added to database first. Click to activate.</p>
           </div>
-
-          {/* Bybit Connection */}
-          <div className="bg-background border border-border p-0 shadow-sm" data-testid="form-bybit-keys">
-            <div className="p-4 border-b border-border flex items-center gap-2" style={{ backgroundColor: '#f0d0a6' }}>
-              {config.connectedExchange === 'BYBIT' ? (
-                <Lock className="w-4 h-4 text-green-500" />
-              ) : (
-                <LockOpen className="w-4 h-4" />
-              )}
-              <h4 className="font-bold text-[11px] uppercase tracking-wide">Bybit</h4>
-              {config.connectedExchange === 'BYBIT' && (
-                <span className="text-[8px] font-mono text-success border border-success/40 px-1.5 py-0.5">CONNECTED</span>
-              )}
-            </div>
-            <div className="p-6 space-y-4">
-              <div className="space-y-2">
-                <div>
-                  <Label className="font-bold text-[9px] uppercase mb-1.5 block text-muted-foreground">API Key</Label>
-                  <Input
-                    placeholder="Paste Bybit API Key"
-                    value={bybitKey}
-                    onChange={(e) => setBybitKey(e.target.value)}
-                    disabled={!!config.connectedExchange}
-                    data-testid="input-bybit-key"
-                    className="font-mono text-xs h-8"
-                  />
-                </div>
-                <div>
-                  <Label className="font-bold text-[9px] uppercase mb-1.5 block text-muted-foreground">API Secret</Label>
-                  <Input
-                    placeholder="Paste Bybit API Secret"
-                    type="password"
-                    value={bybitSecret}
-                    onChange={(e) => setBybitSecret(e.target.value)}
-                    disabled={!!config.connectedExchange}
-                    data-testid="input-bybit-secret"
-                    className="font-mono text-xs h-8"
-                  />
-                </div>
-              </div>
-              <Button
-                onClick={() => handleConnectExchange('BYBIT')}
-                disabled={loading || !!config.connectedExchange || !bybitKey || !bybitSecret}
-                data-testid="button-connect-bybit"
-                className="w-full h-9 text-xs font-mono font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black uppercase"
-              >
-                {config.connectedExchange === 'BYBIT' ? 'CONNECTED' : 'CONNECT'}
-              </Button>
-            </div>
+          <div className="grid grid-cols-2 gap-4">
+            <Button
+              onClick={() => handleActivateExchange('BINANCE')}
+              disabled={loading || config.connectedExchange === 'BINANCE'}
+              data-testid="button-activate-binance"
+              className={`h-12 text-xs font-mono font-bold transition-all uppercase ${
+                config.connectedExchange === 'BINANCE'
+                  ? 'bg-green-500/20 text-green-600 border border-green-500/40 cursor-default'
+                  : 'bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black'
+              }`}
+            >
+              {config.connectedExchange === 'BINANCE' ? '✓ BINANCE ACTIVE' : 'ACTIVATE BINANCE'}
+            </Button>
+            <Button
+              onClick={() => handleActivateExchange('BYBIT')}
+              disabled={loading || config.connectedExchange === 'BYBIT'}
+              data-testid="button-activate-bybit"
+              className={`h-12 text-xs font-mono font-bold transition-all uppercase ${
+                config.connectedExchange === 'BYBIT'
+                  ? 'bg-green-500/20 text-green-600 border border-green-500/40 cursor-default'
+                  : 'bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black'
+              }`}
+            >
+              {config.connectedExchange === 'BYBIT' ? '✓ BYBIT ACTIVE' : 'ACTIVATE BYBIT'}
+            </Button>
           </div>
         </div>
 
         {/* Info Footer */}
         <div className="text-[9px] text-muted-foreground border-t border-border pt-4 italic">
-          Use read-only API keys with spot trading enabled only. Never share your API secret key.
+          To add/change API keys: Update system_config table in database directly. Use read-only keys only.
         </div>
       </div>
     </Layout>
