@@ -70,9 +70,23 @@ async function generateAiDecision() {
     try {
       const config = await storage.getSystemConfig();
       if (config?.connectedExchange && !config.testMode) {
-        const exchangeClient = createExchangeClient(config.connectedExchange);
-        const priceData = await exchangeClient.getPrice(pair);
-        entryPrice = priceData.price;
+        // Pass API credentials to the exchange client
+        const apiKey = config.connectedExchange === "BINANCE" 
+          ? config.binanceApiKey 
+          : config.bybitApiKey;
+        const apiSecret = config.connectedExchange === "BINANCE" 
+          ? config.binanceApiSecret 
+          : config.bybitApiSecret;
+        
+        if (apiKey && apiSecret) {
+          const exchangeClient = createExchangeClient(config.connectedExchange, {
+            apiKey,
+            apiSecret,
+          });
+          const priceData = await exchangeClient.getPrice(pair);
+          entryPrice = priceData.price;
+          console.log(`[TRADING] Fetched real ${config.connectedExchange} price for ${pair}: $${entryPrice}`);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch real price:", error);
