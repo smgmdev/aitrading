@@ -125,9 +125,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 3000);
+    const interval = setInterval(fetchData, 2000);
     return () => clearInterval(interval);
-  }, [location, equity]);
+  }, []);
 
   const navItems = [
     { icon: LayoutDashboard, label: "TERMINAL", href: "/" },
