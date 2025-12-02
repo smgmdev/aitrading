@@ -443,7 +443,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Horizontal Navigation */}
-        <nav className="h-10 border-b border-border bg-background flex items-center px-4 gap-0 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style]:none [scrollbar-width:none]">
+        <nav className="h-10 border-b border-border bg-background flex items-center pl-0 pr-4 gap-0 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style]:none [scrollbar-width:none]">
           {navItems.map((item) => {
             const isActive = location === item.href;
             
