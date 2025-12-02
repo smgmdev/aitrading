@@ -442,55 +442,52 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex overflow-hidden">
-          {/* Vertical Navigation Menu */}
-          <nav className="w-48 border-r border-border bg-background flex flex-col gap-0 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style]:none [scrollbar-width:none]">
-            {navItems.map((item) => {
-              const isActive = location === item.href;
-              
-              // Use dynamic icon for EXCHANGE CONFIG based on connection status
-              let Icon = item.icon;
-              let iconColor = "";
-              
-              if (item.label === "EXCHANGE CONFIG") {
-                if (connectedExchange && connectedExchange.trim() !== "") {
-                  Icon = Lock;
-                  iconColor = "text-green-500";
-                } else {
-                  Icon = LockOpen;
-                  iconColor = "text-red-500";
-                }
+        {/* Horizontal Navigation */}
+        <nav className="h-10 border-b border-border bg-background flex items-center px-4 gap-0 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style]:none [scrollbar-width:none]">
+          {navItems.map((item) => {
+            const isActive = location === item.href;
+            
+            // Use dynamic icon for EXCHANGE CONFIG based on connection status
+            let Icon = item.icon;
+            let iconColor = "";
+            
+            if (item.label === "EXCHANGE CONFIG") {
+              if (connectedExchange && connectedExchange.trim() !== "") {
+                Icon = Lock;
+                iconColor = "text-green-500";
+              } else {
+                Icon = LockOpen;
+                iconColor = "text-red-500";
               }
-              
-              return (
-                <Link key={item.href} href={item.href}>
-                  <div className={cn(
-                    "flex items-center gap-3 px-4 py-3 text-xs font-medium transition-colors cursor-pointer border-r-2 h-auto",
-                    isActive 
-                      ? "bg-secondary border-primary text-foreground" 
-                      : "border-transparent text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
-                  )}>
-                    <Icon className={cn("w-4 h-4", iconColor)} />
-                    <span>{item.label}</span>
-                  </div>
-                </Link>
-              );
-            })}
-          </nav>
+            }
+            
+            return (
+              <Link key={item.href} href={item.href}>
+                <div className={cn(
+                  "flex items-center gap-2 px-4 py-2 text-xs font-medium transition-colors cursor-pointer border-b-2 -mb-0.5 h-full flex items-center whitespace-nowrap",
+                  isActive 
+                    ? "bg-secondary border-primary text-foreground" 
+                    : "border-transparent text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+                )}>
+                  <Icon className={cn("w-3 h-3", iconColor)} />
+                  <span>{item.label}</span>
+                </div>
+              </Link>
+            );
+          })}
+        </nav>
 
-          {/* Content Area with Left Sidebar */}
-          <div className="flex-1 flex overflow-hidden">
-            {/* Left Sidebar - AI Decision Stream */}
-            <aside className="w-80 border-r border-border bg-sidebar flex flex-col overflow-hidden">
-              <ActivityFeed />
-            </aside>
+        {/* Main Content Area with Left Sidebar */}
+        <div className="flex-1 flex overflow-hidden">
+          {/* Left Sidebar - AI Decision Stream */}
+          <aside className="w-80 border-r border-border bg-sidebar flex flex-col overflow-hidden">
+            <ActivityFeed />
+          </aside>
 
-            {/* Main Content */}
-            <main className="flex-1 overflow-y-auto bg-secondary/10 p-4">
-              {children}
-            </main>
-          </div>
+          {/* Main Content */}
+          <main className="flex-1 overflow-y-auto bg-secondary/10 p-4">
+            {children}
+          </main>
         </div>
       </div>
     </TooltipProvider>
