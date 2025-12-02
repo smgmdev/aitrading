@@ -299,21 +299,32 @@ export default function Strategies() {
               <div className="space-y-1">
                 <Label className="font-bold text-xs uppercase">Exchange Price {testMode ? '(Simulated)' : '(Real Data)'}</Label>
                 <p className="text-[10px] text-muted-foreground">
-                  {testMode 
-                    ? 'Simulated prices and positions. No real trades.'
-                    : 'Using REAL exchange prices. No real trades.'}
+                  {config.connectedExchange 
+                    ? (testMode 
+                        ? 'Simulated prices and positions. No real trades.'
+                        : 'Using REAL exchange prices. No real trades.')
+                    : 'Connect an exchange first to enable real price mode.'}
                 </p>
               </div>
               <Button
                 onClick={handleToggleTestMode}
-                className="group w-48 h-9 font-mono text-xs font-bold transition-all bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black uppercase"
+                disabled={!config.connectedExchange || loading}
+                className={`group w-48 h-9 font-mono text-xs font-bold transition-all uppercase ${
+                  !config.connectedExchange || loading
+                    ? 'bg-muted text-muted-foreground border border-muted cursor-not-allowed opacity-50'
+                    : 'bg-black text-white hover:bg-white hover:text-black border border-black hover:border-black'
+                }`}
                 data-testid="button-toggle-test-mode"
               >
                 <span className="group-hover:hidden">
-                  {testMode ? "REAL PRICES ARE OFF" : "REAL PRICES ARE ON"}
+                  {config.connectedExchange 
+                    ? (testMode ? "REAL PRICES ARE OFF" : "REAL PRICES ARE ON")
+                    : "CONNECT EXCHANGE FIRST"}
                 </span>
                 <span className="hidden group-hover:inline">
-                  {testMode ? "TURN REAL PRICES ON" : "TURN REAL PRICES OFF"}
+                  {config.connectedExchange 
+                    ? (testMode ? "TURN REAL PRICES ON" : "TURN REAL PRICES OFF")
+                    : "CONNECT EXCHANGE FIRST"}
                 </span>
               </Button>
             </div>
