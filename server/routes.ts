@@ -157,6 +157,15 @@ export async function registerRoutes(
 
       console.log(`[CONNECT] Credentials valid, storing in database...`);
       const config = await storage.connectExchange(exchange, apiKey, apiSecret);
+      console.log(`[CONNECT] Config returned from storage:`, { config });
+      
+      if (!config) {
+        console.error("[CONNECT] Database returned undefined config");
+        return res.status(500).json({ 
+          message: "Failed to save credentials to database" 
+        });
+      }
+      
       console.log(`[CONNECT] Successfully connected ${exchange}:`, { id: config.id, exchange: config.connectedExchange });
       res.json(config);
     } catch (error: any) {

@@ -148,11 +148,16 @@ export class DatabaseStorage implements IStorage {
   async connectExchange(exchange: string, apiKey: string, apiSecret: string): Promise<SystemConfig> {
     const config = await this.getSystemConfig();
     if (!config) {
-      const [newConfig] = await db.insert(systemConfig).values({
+      const result = await db.insert(systemConfig).values({
         connectedExchange: exchange,
         [exchange === "BINANCE" ? "binanceApiKey" : "bybitApiKey"]: apiKey,
         [exchange === "BINANCE" ? "binanceApiSecret" : "bybitApiSecret"]: apiSecret,
       }).returning();
+      
+      const [newConfig] = result;
+      if (!newConfig) {
+        throw new Error("Failed to insert new config");
+      }
       return newConfig;
     }
 
@@ -168,7 +173,12 @@ export class DatabaseStorage implements IStorage {
       updates.bybitApiSecret = apiSecret;
     }
 
-    const [updated] = await db.update(systemConfig).set(updates).where(eq(systemConfig.id, config.id)).returning();
+    const result = await db.update(systemConfig).set(updates).where(eq(systemConfig.id, config.id)).returning();
+    const [updated] = result;
+    
+    if (!updated) {
+      throw new Error("Failed to update config");
+    }
     return updated;
   }
 
