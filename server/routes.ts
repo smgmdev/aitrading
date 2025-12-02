@@ -169,10 +169,8 @@ export async function registerRoutes(
       }
       
       console.log(`[CONNECT] Successfully connected ${exchange}:`, { id: config.id, exchange: config.connectedExchange });
-      console.log(`[CONNECT] Sending response:`, JSON.stringify(config).substring(0, 100));
       
-      // Ensure we send valid JSON
-      return res.json({
+      const responseObj = {
         id: config.id,
         connectedExchange: config.connectedExchange,
         testMode: config.testMode,
@@ -180,7 +178,15 @@ export async function registerRoutes(
         binanceApiSecret: config.binanceApiSecret ? "***" : undefined,
         bybitApiKey: config.bybitApiKey ? "***" : undefined,
         bybitApiSecret: config.bybitApiSecret ? "***" : undefined,
-      });
+      };
+      
+      console.log(`[CONNECT] Sending response:`, JSON.stringify(responseObj));
+      
+      // Explicitly set headers and send
+      res.setHeader("Content-Type", "application/json");
+      res.setHeader("Content-Length", Buffer.byteLength(JSON.stringify(responseObj)));
+      res.status(200).send(JSON.stringify(responseObj));
+      return;
     } catch (error: any) {
       console.error("[CONNECT] Error during connection:", {
         message: error.message,
