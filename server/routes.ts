@@ -169,7 +169,18 @@ export async function registerRoutes(
       }
       
       console.log(`[CONNECT] Successfully connected ${exchange}:`, { id: config.id, exchange: config.connectedExchange });
-      res.json(config);
+      console.log(`[CONNECT] Sending response:`, JSON.stringify(config).substring(0, 100));
+      
+      // Ensure we send valid JSON
+      return res.json({
+        id: config.id,
+        connectedExchange: config.connectedExchange,
+        testMode: config.testMode,
+        binanceApiKey: config.binanceApiKey ? "***" : undefined,
+        binanceApiSecret: config.binanceApiSecret ? "***" : undefined,
+        bybitApiKey: config.bybitApiKey ? "***" : undefined,
+        bybitApiSecret: config.bybitApiSecret ? "***" : undefined,
+      });
     } catch (error: any) {
       console.error("[CONNECT] Error during connection:", {
         message: error.message,
