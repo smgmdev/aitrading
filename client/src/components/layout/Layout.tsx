@@ -47,8 +47,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [selectedTradeId, setSelectedTradeId] = useState<number | null>(null);
 
   useEffect(() => {
-    let lastConnectionState = connectedExchange;
-    
     const fetchData = async () => {
       const startTime = Date.now();
       try {
@@ -59,12 +57,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         
         const data = await res.json();
         
-        // Only update connection state if it actually changed
-        if (data.connected !== lastConnectionState) {
-          lastConnectionState = data.connected;
-          setConnectedExchange(data.connected);
-          setConnectionStatus(data.connected ? "live" : "disconnected");
-        }
+        // Always update connection state (don't cache locally to avoid stale data)
+        setConnectedExchange(data.connected);
+        setConnectionStatus(data.connected ? "live" : "disconnected");
 
         // Fetch closed positions for PnL calculation
         const closedRes = await fetch("/api/positions/closed?limit=200");
