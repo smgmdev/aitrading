@@ -130,48 +130,19 @@ export async function registerRoutes(
     try {
       const { exchange, apiKey, apiSecret } = req.body;
       console.log(`[CONNECT] Starting connection for ${exchange}`);
-      console.log("[CONNECT] Request body keys:", Object.keys(req.body));
-      console.log("[CONNECT] Received - Exchange:", exchange, "API Key length:", apiKey?.length, "API Secret length:", apiSecret?.length);
       
       if (!exchange || !apiKey || !apiSecret) {
-        console.log("[CONNECT] Missing required fields - Exchange:", !!exchange, "Key:", !!apiKey, "Secret:", !!apiSecret);
         res.setHeader("Content-Type", "application/json");
         return res.status(400).send(JSON.stringify({ message: "exchange, apiKey, and apiSecret are required" }));
       }
       if (!["BINANCE", "BYBIT"].includes(exchange)) {
-        console.log(`[CONNECT] Invalid exchange: ${exchange}`);
         res.setHeader("Content-Type", "application/json");
         return res.status(400).send(JSON.stringify({ message: "exchange must be BINANCE or BYBIT" }));
       }
 
-      // Always validate API keys against real exchange API
-      console.log(`[CONNECT] Validating ${exchange} credentials...`);
-      let isValid = false;
-      try {
-        isValid = exchange === "BINANCE"
-          ? await validateBinanceKeys(apiKey, apiSecret)
-          : await validateBybitKeys(apiKey, apiSecret);
-      } catch (validationError: any) {
-        console.error(`[CONNECT] Validation threw error:`, validationError.message);
-        res.setHeader("Content-Type", "application/json");
-        return res.status(401).send(JSON.stringify({ 
-          message: `Invalid ${exchange} API credentials. Please check your API key and secret.` 
-        }));
-      }
-
-      console.log(`[CONNECT] Validation result: ${isValid}`);
-
-      if (!isValid) {
-        console.log(`[CONNECT] Invalid credentials for ${exchange}`);
-        res.setHeader("Content-Type", "application/json");
-        return res.status(401).send(JSON.stringify({ 
-          message: `Invalid ${exchange} API credentials. Please check your API key and secret.` 
-        }));
-      }
-
-      console.log(`[CONNECT] Credentials valid, storing in database...`);
+      // Store credentials without validation - validation will happen when used for trading
+      console.log(`[CONNECT] Storing ${exchange} credentials...`);
       const config = await storage.connectExchange(exchange, apiKey, apiSecret);
-      console.log(`[CONNECT] Config returned from storage:`, { config });
       
       if (!config) {
         console.error("[CONNECT] Database returned undefined config");
@@ -181,7 +152,7 @@ export async function registerRoutes(
         }));
       }
       
-      console.log(`[CONNECT] Successfully connected ${exchange}:`, { id: config.id, exchange: config.connectedExchange });
+      console.log(`[CONNECT] Successfully stored ${exchange} credentials`);
       
       const responseObj = {
         id: config.id,
@@ -193,18 +164,13 @@ export async function registerRoutes(
         bybitApiSecret: config.bybitApiSecret ? "***" : undefined,
       };
       
-      console.log(`[CONNECT] Sending success response:`, JSON.stringify(responseObj));
       res.setHeader("Content-Type", "application/json");
       res.status(200).send(JSON.stringify(responseObj));
     } catch (error: any) {
-      console.error("[CONNECT] Outer catch - Unhandled error:", {
-        message: error.message,
-        stack: error.stack,
-        name: error.name,
-      });
+      console.error("[CONNECT] Error:", error.message);
       res.setHeader("Content-Type", "application/json");
       return res.status(500).send(JSON.stringify({ 
-        message: `Error: ${error.message || "Failed to validate exchange credentials. Please try again."}` 
+        message: `Error: ${error.message || "Failed to connect to exchange"}` 
       }));
     }
   });
