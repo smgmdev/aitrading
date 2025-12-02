@@ -88,14 +88,19 @@ export default function Strategies() {
     }
 
     try {
+      console.log(`[UI] Connecting to ${exchange}...`);
       const res = await fetch("/api/exchange/connect", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ exchange, apiKey: key, apiSecret: secret }),
       });
       
+      console.log(`[UI] Response status: ${res.status}`);
+      
       if (res.ok) {
+        console.log(`[UI] Successfully connected, parsing response...`);
         const newConfig = await res.json();
+        console.log(`[UI] Config updated:`, newConfig);
         setConfig(newConfig);
         setError("");
         if (exchange === "BINANCE") {
@@ -106,12 +111,19 @@ export default function Strategies() {
           setBybitSecret("");
         }
       } else {
-        const errorData = await res.json();
-        setError(errorData.message || `Failed to connect to ${exchange}`);
+        try {
+          const errorData = await res.json();
+          console.log(`[UI] Error response:`, errorData);
+          setError(errorData.message || `Failed to connect to ${exchange}`);
+        } catch (jsonError) {
+          const text = await res.text();
+          console.error(`[UI] Non-JSON error response (${res.status}):`, text);
+          setError(`Error: ${text || `Failed to connect to ${exchange} (HTTP ${res.status})`}`);
+        }
       }
-    } catch (error) {
-      console.error("Failed to connect exchange:", error);
-      setError("Network error: Failed to reach the validation service");
+    } catch (error: any) {
+      console.error("[UI] Failed to connect exchange:", error);
+      setError(`Network error: ${error.message || "Failed to reach the validation service"}`);
     } finally {
       setLoading(false);
       setValidating(false);

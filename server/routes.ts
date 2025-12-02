@@ -124,31 +124,45 @@ export async function registerRoutes(
 
   app.post("/api/exchange/connect", async (req, res) => {
     const { exchange, apiKey, apiSecret } = req.body;
+    console.log(`[CONNECT] Starting connection for ${exchange}`);
+    
     if (!exchange || !apiKey || !apiSecret) {
+      console.log("[CONNECT] Missing required fields");
       return res.status(400).json({ message: "exchange, apiKey, and apiSecret are required" });
     }
     if (!["BINANCE", "BYBIT"].includes(exchange)) {
+      console.log(`[CONNECT] Invalid exchange: ${exchange}`);
       return res.status(400).json({ message: "exchange must be BINANCE or BYBIT" });
     }
 
     // Always validate API keys against real exchange API
     try {
+      console.log(`[CONNECT] Validating ${exchange} credentials...`);
       const isValid = exchange === "BINANCE"
         ? await validateBinanceKeys(apiKey, apiSecret)
         : await validateBybitKeys(apiKey, apiSecret);
 
+      console.log(`[CONNECT] Validation result: ${isValid}`);
+
       if (!isValid) {
+        console.log(`[CONNECT] Invalid credentials for ${exchange}`);
         return res.status(401).json({ 
           message: `Invalid ${exchange} API credentials. Please check your API key and secret.` 
         });
       }
 
+      console.log(`[CONNECT] Credentials valid, storing in database...`);
       const config = await storage.connectExchange(exchange, apiKey, apiSecret);
+      console.log(`[CONNECT] Successfully connected ${exchange}:`, { id: config.id, exchange: config.connectedExchange });
       res.json(config);
-    } catch (error) {
-      console.error("Exchange connection error:", error);
+    } catch (error: any) {
+      console.error("[CONNECT] Error during connection:", {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+      });
       return res.status(500).json({ 
-        message: "Failed to validate exchange credentials. Please try again." 
+        message: `Error: ${error.message || "Failed to validate exchange credentials. Please try again."}` 
       });
     }
   });
