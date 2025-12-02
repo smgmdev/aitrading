@@ -464,7 +464,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             return (
               <Link key={item.href} href={item.href}>
                 <div className={cn(
-                  "flex items-center gap-2 px-4 py-1 text-xs font-medium transition-colors cursor-pointer border-b-2 h-full flex items-center whitespace-nowrap",
+                  "flex items-center gap-2 px-4 py-3 text-xs font-medium transition-colors cursor-pointer border-b-2 h-full flex items-center whitespace-nowrap",
                   isActive 
                     ? "bg-secondary border-primary text-foreground" 
                     : "border-transparent text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
