@@ -129,9 +129,11 @@ export async function registerRoutes(
   app.post("/api/exchange/connect", async (req, res) => {
     const { exchange, apiKey, apiSecret } = req.body;
     console.log(`[CONNECT] Starting connection for ${exchange}`);
+    console.log("[CONNECT] Request body keys:", Object.keys(req.body));
+    console.log("[CONNECT] Received - Exchange:", exchange, "API Key length:", apiKey?.length, "API Secret length:", apiSecret?.length);
     
     if (!exchange || !apiKey || !apiSecret) {
-      console.log("[CONNECT] Missing required fields");
+      console.log("[CONNECT] Missing required fields - Exchange:", !!exchange, "Key:", !!apiKey, "Secret:", !!apiSecret);
       return res.status(400).json({ message: "exchange, apiKey, and apiSecret are required" });
     }
     if (!["BINANCE", "BYBIT"].includes(exchange)) {

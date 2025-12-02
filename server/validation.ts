@@ -4,8 +4,16 @@ import crypto from "crypto";
 export async function validateBinanceKeys(apiKey: string, apiSecret: string): Promise<boolean> {
   try {
     console.log("[BINANCE] Starting validation...");
+    console.log("[BINANCE] Received credentials - Key length:", apiKey?.length, "Secret length:", apiSecret?.length);
+    
+    if (!apiKey || !apiSecret) {
+      console.error("[BINANCE] Missing API credentials! Key:", !!apiKey, "Secret:", !!apiSecret);
+      return false;
+    }
+    
     const timestamp = Date.now();
     const params = `timestamp=${timestamp}`;
+    console.log("[BINANCE] Creating signature with params:", params);
     const signature = crypto
       .createHmac("sha256", apiSecret)
       .update(params)
@@ -67,9 +75,17 @@ export async function validateBinanceKeys(apiKey: string, apiSecret: string): Pr
 export async function validateBybitKeys(apiKey: string, apiSecret: string): Promise<boolean> {
   try {
     console.log("[BYBIT] Starting validation...");
+    console.log("[BYBIT] Received credentials - Key length:", apiKey?.length, "Secret length:", apiSecret?.length);
+    
+    if (!apiKey || !apiSecret) {
+      console.error("[BYBIT] Missing API credentials! Key:", !!apiKey, "Secret:", !!apiSecret);
+      return false;
+    }
+    
     const timestamp = Date.now().toString();
     const recv_window = "5000";
     const params = `api_key=${apiKey}&timestamp=${timestamp}&recv_window=${recv_window}`;
+    console.log("[BYBIT] Creating signature with params (api_key=***&timestamp=...&recv_window=...)");
     
     const signature = crypto
       .createHmac("sha256", apiSecret)
