@@ -370,7 +370,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         )}
 
         {/* Header */}
-        <header className="h-8 border-b border-border flex items-center justify-between px-4 bg-black overflow-x-auto scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+        <header className="h-8 border-b border-border flex items-center justify-between px-4 bg-black overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style]:none [scrollbar-width:none]">
           <div className="flex items-center gap-3 whitespace-nowrap min-w-min">
             <div className="flex items-center gap-1 text-[10px] font-mono text-white uppercase">
               <span>LATENCY: {latency}MS</span>
@@ -443,7 +443,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Horizontal Navigation */}
-        <nav className="h-10 border-b border-border bg-background flex items-center px-4 gap-0 overflow-x-auto scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+        <nav className="h-10 border-b border-border bg-background flex items-center px-4 gap-0 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style]:none [scrollbar-width:none]">
           {navItems.map((item) => {
             const isActive = location === item.href;
             
