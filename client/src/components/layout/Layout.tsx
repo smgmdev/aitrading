@@ -370,8 +370,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         )}
 
         {/* Header */}
-        <header className="h-8 border-b border-border flex items-center justify-between px-4 bg-black overflow-x-auto">
-          <div className="flex items-center gap-3 whitespace-nowrap">
+        <header className="h-8 border-b border-border flex items-center justify-between px-4 bg-black overflow-x-auto scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+          <div className="flex items-center gap-3 whitespace-nowrap min-w-min">
             <div className="flex items-center gap-1 text-[10px] font-mono text-white uppercase">
               <span>LATENCY: {latency}MS</span>
             </div>
@@ -443,7 +443,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Horizontal Navigation */}
-        <nav className="h-10 border-b border-border bg-background flex items-center px-4 gap-0">
+        <nav className="h-10 border-b border-border bg-background flex items-center px-4 gap-0 overflow-x-auto scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
           {navItems.map((item) => {
             const isActive = location === item.href;
             
@@ -464,7 +464,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             return (
               <Link key={item.href} href={item.href}>
                 <div className={cn(
-                  "flex items-center gap-2 px-4 py-2 text-xs font-medium transition-colors cursor-pointer border-b-2 -mb-0.5 h-full flex items-center",
+                  "flex items-center gap-2 px-4 py-2 text-xs font-medium transition-colors cursor-pointer border-b-2 -mb-0.5 h-full flex items-center whitespace-nowrap",
                   isActive 
                     ? "bg-secondary border-primary text-foreground" 
                     : "border-transparent text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
