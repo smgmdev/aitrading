@@ -132,12 +132,10 @@ export async function registerRoutes(
       console.log(`[CONNECT] Starting connection for ${exchange}`);
       
       if (!exchange || !apiKey || !apiSecret) {
-        res.setHeader("Content-Type", "application/json");
-        return res.status(400).send(JSON.stringify({ message: "exchange, apiKey, and apiSecret are required" }));
+        return res.status(400).json({ message: "exchange, apiKey, and apiSecret are required" });
       }
       if (!["BINANCE", "BYBIT"].includes(exchange)) {
-        res.setHeader("Content-Type", "application/json");
-        return res.status(400).send(JSON.stringify({ message: "exchange must be BINANCE or BYBIT" }));
+        return res.status(400).json({ message: "exchange must be BINANCE or BYBIT" });
       }
 
       // Store credentials without validation - validation will happen when used for trading
@@ -146,15 +144,14 @@ export async function registerRoutes(
       
       if (!config) {
         console.error("[CONNECT] Database returned undefined config");
-        res.setHeader("Content-Type", "application/json");
-        return res.status(500).send(JSON.stringify({ 
+        return res.status(500).json({ 
           message: "Failed to save credentials to database" 
-        }));
+        });
       }
       
       console.log(`[CONNECT] Successfully stored ${exchange} credentials`);
       
-      const responseObj = {
+      res.status(200).json({
         id: config.id,
         connectedExchange: config.connectedExchange,
         testMode: config.testMode,
@@ -162,16 +159,12 @@ export async function registerRoutes(
         binanceApiSecret: config.binanceApiSecret ? "***" : undefined,
         bybitApiKey: config.bybitApiKey ? "***" : undefined,
         bybitApiSecret: config.bybitApiSecret ? "***" : undefined,
-      };
-      
-      res.setHeader("Content-Type", "application/json");
-      res.status(200).send(JSON.stringify(responseObj));
+      });
     } catch (error: any) {
       console.error("[CONNECT] Error:", error.message);
-      res.setHeader("Content-Type", "application/json");
-      return res.status(500).send(JSON.stringify({ 
+      return res.status(500).json({ 
         message: `Error: ${error.message || "Failed to connect to exchange"}` 
-      }));
+      });
     }
   });
 
