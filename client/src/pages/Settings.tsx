@@ -95,16 +95,15 @@ export default function Strategies() {
         body: JSON.stringify({ exchange, apiKey: key, apiSecret: secret }),
       });
       
-      console.log(`[UI] Response status: ${res.status}, Content-Type: ${res.headers.get('content-type')}`);
-      
-      // Always read response as text first
-      const responseText = await res.text();
-      console.log(`[UI] Raw response (first 500 chars):`, responseText.substring(0, 500));
+      console.log(`[UI] Response status: ${res.status}`);
       
       if (res.ok) {
-        try {
-          console.log(`[UI] Successfully connected, parsing response...`);
-          const newConfig = JSON.parse(responseText);
+        // Server processed the request successfully
+        // Fetch fresh config instead of parsing response (which may be empty on Vercel)
+        console.log(`[UI] Connected, fetching updated config...`);
+        const configRes = await fetch("/api/config");
+        if (configRes.ok) {
+          const newConfig = await configRes.json();
           console.log(`[UI] Config updated:`, newConfig);
           setConfig(newConfig);
           setError("");
@@ -115,23 +114,21 @@ export default function Strategies() {
             setBybitKey("");
             setBybitSecret("");
           }
-        } catch (parseError: any) {
-          console.error(`[UI] Failed to parse successful response:`, parseError.message);
-          setError(`Error parsing response: ${parseError.message}`);
+        } else {
+          setError("Connected but failed to load config");
         }
       } else {
+        const responseText = await res.text();
         try {
           const errorData = JSON.parse(responseText);
-          console.log(`[UI] Error response:`, errorData);
           setError(errorData.message || `Failed to connect to ${exchange}`);
-        } catch (jsonError) {
-          console.error(`[UI] Non-JSON error response (${res.status}):`, responseText.substring(0, 500));
-          setError(`Server error (${res.status}): ${responseText.substring(0, 200) || `Failed to connect to ${exchange}`}`);
+        } catch {
+          setError(`Failed to connect to ${exchange} (${res.status})`);
         }
       }
     } catch (error: any) {
       console.error("[UI] Failed to connect exchange:", error);
-      setError(`Network error: ${error.message || "Failed to reach the validation service"}`);
+      setError(`Network error: ${error.message || "Failed to reach the server"}`);
     } finally {
       setLoading(false);
       setValidating(false);
