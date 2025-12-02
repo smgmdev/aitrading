@@ -150,13 +150,22 @@ export class DatabaseStorage implements IStorage {
     const config = await this.getSystemConfig();
     console.log("[DB] connectExchange - current config:", { id: config?.id, exchange: config?.connectedExchange });
     
+    // Prepare the values object with the proper API key fields
+    let insertValues: any = {
+      connectedExchange: exchange,
+    };
+    
+    if (exchange === "BINANCE") {
+      insertValues.binanceApiKey = apiKey;
+      insertValues.binanceApiSecret = apiSecret;
+    } else {
+      insertValues.bybitApiKey = apiKey;
+      insertValues.bybitApiSecret = apiSecret;
+    }
+    
     if (!config) {
       console.log("[DB] connectExchange - inserting new config...");
-      const result = await db.insert(systemConfig).values({
-        connectedExchange: exchange,
-        [exchange === "BINANCE" ? "binanceApiKey" : "bybitApiKey"]: apiKey,
-        [exchange === "BINANCE" ? "binanceApiSecret" : "bybitApiSecret"]: apiSecret,
-      }).returning();
+      const result = await db.insert(systemConfig).values(insertValues).returning();
       
       console.log("[DB] connectExchange - insert result:", { result, length: result.length });
       const [newConfig] = result;
@@ -169,16 +178,9 @@ export class DatabaseStorage implements IStorage {
 
     console.log("[DB] connectExchange - updating existing config id:", config.id);
     const updates: any = {
-      connectedExchange: exchange,
+      ...insertValues,
       updatedAt: new Date(),
     };
-    if (exchange === "BINANCE") {
-      updates.binanceApiKey = apiKey;
-      updates.binanceApiSecret = apiSecret;
-    } else {
-      updates.bybitApiKey = apiKey;
-      updates.bybitApiSecret = apiSecret;
-    }
 
     console.log("[DB] connectExchange - update values:", { id: config.id, exchange, hasApiKey: !!apiKey, hasApiSecret: !!apiSecret });
     const result = await db.update(systemConfig).set(updates).where(eq(systemConfig.id, config.id)).returning();
