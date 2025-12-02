@@ -443,7 +443,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Horizontal Navigation */}
-        <nav className="h-12 border-b border-border bg-background flex items-center pl-0 pr-4 py-0 gap-0 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style]:none [scrollbar-width:none]">
+        <nav className="border-b border-border bg-background flex items-stretch pl-0 pr-4 gap-0 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style]:none [scrollbar-width:none]">
           {navItems.map((item) => {
             const isActive = location === item.href;
             
@@ -464,7 +464,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             return (
               <Link key={item.href} href={item.href}>
                 <div className={cn(
-                  "flex items-center gap-2 px-4 py-3 text-xs font-medium transition-colors cursor-pointer border-b-2 h-full flex items-center whitespace-nowrap",
+                  "flex items-center gap-2 px-4 text-xs font-medium transition-colors cursor-pointer border-b-2 h-full whitespace-nowrap",
                   isActive 
                     ? "bg-secondary border-primary text-foreground" 
                     : "border-transparent text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
