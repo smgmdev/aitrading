@@ -158,6 +158,16 @@ export async function registerRoutes(
     res.json(config);
   });
 
+  // Force clear endpoint for debugging stale connection states
+  app.post("/api/exchange/force-clear", async (req, res) => {
+    try {
+      const config = await storage.disconnectExchange();
+      res.json({ success: true, config });
+    } catch (error) {
+      res.status(500).json({ success: false, error: "Failed to force clear" });
+    }
+  });
+
   // Trading pairs endpoint
   app.get("/api/trading-pairs", async (req, res) => {
     const defaultPairs = [
