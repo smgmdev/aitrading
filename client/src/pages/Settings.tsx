@@ -95,30 +95,38 @@ export default function Strategies() {
         body: JSON.stringify({ exchange, apiKey: key, apiSecret: secret }),
       });
       
-      console.log(`[UI] Response status: ${res.status}`);
+      console.log(`[UI] Response status: ${res.status}, Content-Type: ${res.headers.get('content-type')}`);
+      
+      // Always read response as text first
+      const responseText = await res.text();
+      console.log(`[UI] Raw response (first 500 chars):`, responseText.substring(0, 500));
       
       if (res.ok) {
-        console.log(`[UI] Successfully connected, parsing response...`);
-        const newConfig = await res.json();
-        console.log(`[UI] Config updated:`, newConfig);
-        setConfig(newConfig);
-        setError("");
-        if (exchange === "BINANCE") {
-          setBinanceKey("");
-          setBinanceSecret("");
-        } else {
-          setBybitKey("");
-          setBybitSecret("");
+        try {
+          console.log(`[UI] Successfully connected, parsing response...`);
+          const newConfig = JSON.parse(responseText);
+          console.log(`[UI] Config updated:`, newConfig);
+          setConfig(newConfig);
+          setError("");
+          if (exchange === "BINANCE") {
+            setBinanceKey("");
+            setBinanceSecret("");
+          } else {
+            setBybitKey("");
+            setBybitSecret("");
+          }
+        } catch (parseError: any) {
+          console.error(`[UI] Failed to parse successful response:`, parseError.message);
+          setError(`Error parsing response: ${parseError.message}`);
         }
       } else {
         try {
-          const errorData = await res.json();
+          const errorData = JSON.parse(responseText);
           console.log(`[UI] Error response:`, errorData);
           setError(errorData.message || `Failed to connect to ${exchange}`);
         } catch (jsonError) {
-          const text = await res.text();
-          console.error(`[UI] Non-JSON error response (${res.status}):`, text);
-          setError(`Error: ${text || `Failed to connect to ${exchange} (HTTP ${res.status})`}`);
+          console.error(`[UI] Non-JSON error response (${res.status}):`, responseText.substring(0, 500));
+          setError(`Server error (${res.status}): ${responseText.substring(0, 200) || `Failed to connect to ${exchange}`}`);
         }
       }
     } catch (error: any) {
